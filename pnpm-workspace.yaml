@@ -1,0 +1,17 @@
+packages:
+  - apps/*
+  - packages/*
+allowBuilds:
+  # preinstall 使用 Unix find，Windows 会失败；该脚本仅清理测试目录，可安全跳过
+  "@hatkom/nestjs-zod-prisma": false
+  "@prisma/engines": true
+  "@scarf/scarf": true
+  argon2: true
+  core-js: true
+  es5-ext: true
+  esbuild: true
+  ip2region-ts: false
+  msgpackr-extract: true
+  prisma: true
+  unrs-resolver: true
+  vue-demi: true

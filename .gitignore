@@ -1,0 +1,17 @@
+node_modules/
+
+# Docker bind-mount data (uploads / DB backups)
+/data/
+
+.env
+!.env.example
+!apps/admin/.env.pro
+
+*.log
+admin/dist/
+admin/dist-pro/
+admin/node_modules/
+
+server/node_modules/
+
+# apps/server/src/prisma/generated/

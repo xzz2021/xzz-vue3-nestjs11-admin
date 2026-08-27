@@ -1,0 +1,129 @@
+services:
+  admin:
+    build:
+      context: .
+      dockerfile: apps/admin/Dockerfile
+    container_name: app-admin
+    restart: always
+    depends_on:
+      server:
+        condition: service_healthy
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - default
+      - shared_net
+
+  migrate:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+      target: migrator
+    container_name: app-migrate
+    env_file:
+      - .env
+    environment:
+      PG_DATABASE_URL: ${PG_DATABASE_URL:?PG_DATABASE_URL is required}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  server:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+      target: runner
+    container_name: app-server
+    restart: always
+    env_file:
+      - .env
+    environment:
+      PG_DATABASE_URL: ${APP_DATABASE_URL:?APP_DATABASE_URL is required}
+      DB_BACKUP_DIR: ${DB_BACKUP_DIR:-/app/apps/server/backups}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000/health').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    volumes:
+      # Bind mounts (not named volumes): host dirs should be writable by container user `node` (uid 1000).
+      # Linux: mkdir -p data/server/{public,backups} && chown -R 1000:1000 data/server
+      - ./data/server/public:/app/apps/server/public
+      - ./data/server/backups:/app/apps/server/backups
+
+  postgres:
+    image: postgres:18-alpine
+    container_name: app-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
+      POSTGRES_USER: ${POSTGRES_ADMIN_USER:?POSTGRES_ADMIN_USER is required}
+      POSTGRES_PASSWORD: ${POSTGRES_ADMIN_PASSWORD:?POSTGRES_ADMIN_PASSWORD is required}
+      POSTGRES_MIGRATOR_USER: ${POSTGRES_MIGRATOR_USER:?POSTGRES_MIGRATOR_USER is required}
+      POSTGRES_MIGRATOR_PASSWORD: ${POSTGRES_MIGRATOR_PASSWORD:?POSTGRES_MIGRATOR_PASSWORD is required}
+      POSTGRES_APP_USER: ${POSTGRES_APP_USER:?POSTGRES_APP_USER is required}
+      POSTGRES_APP_PASSWORD: ${POSTGRES_APP_PASSWORD:?POSTGRES_APP_PASSWORD is required}
+      TZ: Asia/Shanghai
+    volumes:
+      - postgres-data:/var/lib/postgresql
+      - ./docker/postgres/init-users.sh:/docker-entrypoint-initdb.d/10-init-users.sh:ro
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_ADMIN_USER:?POSTGRES_ADMIN_USER is required} -d ${POSTGRES_DB:?POSTGRES_DB is required}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  redis:
+    image: redis:8-alpine
+    container_name: app-redis
+    restart: always
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:?REDIS_PASSWORD is required}
+    environment:
+      REDISCLI_AUTH: ${REDIS_PASSWORD:?REDIS_PASSWORD is required}
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep -q PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# 用于访问到其他compose的共享网络
+networks:
+  shared_net:
+    external: true
+
+volumes:
+  postgres-data:
+  redis-data:
