@@ -203,6 +203,12 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    prettier:
+      specifier: ^3.9.6
+      version: 3.9.6
+
 importers:
 
   .:
@@ -216,6 +222,9 @@ importers:
       husky:
         specifier: ^9.1.7
         version: 9.1.7
+      prettier:
+        specifier: 'catalog:'
+        version: 3.9.6
 
   apps/server:
     dependencies:
@@ -278,7 +287,7 @@ importers:
         specifier: ^30.5.1
         version: 30.5.1(@types/node@24.13.3)(ts-node@10.9.2(@types/node@24.13.3)(typescript@6.0.3))
       prettier:
-        specifier: ^3.9.6
+        specifier: 'catalog:'
         version: 3.9.6
       source-map-support:
         specifier: ^0.5.21

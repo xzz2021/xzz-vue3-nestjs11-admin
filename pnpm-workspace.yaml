@@ -1,10 +1,13 @@
 packages:
   - apps/*
   - packages/*
+
+catalog:
+  prettier: ^3.9.6
 allowBuilds:
   # preinstall 使用 Unix find，Windows 会失败；该脚本仅清理测试目录，可安全跳过
   "@hatkom/nestjs-zod-prisma": false
-  '@parcel/watcher': true
+  "@parcel/watcher": true
   "@prisma/engines": true
   "@scarf/scarf": true
   argon2: true
