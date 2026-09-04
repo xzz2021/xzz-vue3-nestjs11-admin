@@ -1,14 +1,19 @@
 // @ts-check
 
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
 import eslint from "@eslint/js";
 import { defineConfig } from "eslint/config";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
+const tsconfigRootDir = path.dirname(fileURLToPath(import.meta.url));
+
 export default defineConfig(
   {
-    ignores: ["dist"],
+    ignores: ["dist", "src/generated"],
   },
 
   {
@@ -25,7 +30,7 @@ export default defineConfig(
       },
       parserOptions: {
         projectService: true,
-        tsconfigRootDir: import.meta.dirname,
+        tsconfigRootDir,
       },
     },
     rules: {
@@ -37,10 +42,7 @@ export default defineConfig(
 
   {
     files: ["**/*.js", "**/*.mjs", "**/*.cjs"],
-    extends: [
-      eslint.configs.recommended,
-      tseslint.configs.disableTypeChecked,
-    ],
+    extends: [eslint.configs.recommended, tseslint.configs.disableTypeChecked],
     languageOptions: {
       globals: globals.node,
     },
