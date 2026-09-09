@@ -6,3 +6,4 @@ dist/
 
 public/
 backups/
+src/generated/

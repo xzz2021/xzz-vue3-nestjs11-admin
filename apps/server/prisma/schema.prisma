@@ -34,6 +34,7 @@ enum PermissionType {
   BUTTON
   DATA
   API
+  FIELD
   OTHER
 }
 
