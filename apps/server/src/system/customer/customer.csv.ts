@@ -1,4 +1,4 @@
-import type { CustomerStatus } from '@/generated/prisma/enums.js';
+import type { CustomerStatus } from '#/generated/prisma/enums.js';
 
 export const CUSTOMER_EXPORT_BATCH_SIZE = 500;
 export const CUSTOMER_EXPORT_MAX_ROWS = 10_000;

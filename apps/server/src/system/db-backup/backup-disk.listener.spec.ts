@@ -1,4 +1,4 @@
-import { DiskCleanupEventBus } from "@/system/file-cleanup/disk-cleanup.events.js";
+import { DiskCleanupEventBus } from "#/system/file-cleanup/disk-cleanup.events.js";
 import { BackupDiskListener } from "./backup-disk.listener.js";
 import type { DbBackupLifecycleService } from "./db-backup-lifecycle.service.js";
 

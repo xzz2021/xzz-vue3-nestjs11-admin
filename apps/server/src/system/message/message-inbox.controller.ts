@@ -1,5 +1,5 @@
-import { User } from "@/processor/decorator/index.js";
-import type { JwtUser } from "@/system/auth/dto/auth.dto.js";
+import { User } from "#/processor/decorator/index.js";
+import type { JwtUser } from "#/system/auth/dto/auth.dto.js";
 import { Body, Controller, Delete, Get, Post, Query } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { IdsDto, ListQueryDto } from "./dto/message.dto.js";

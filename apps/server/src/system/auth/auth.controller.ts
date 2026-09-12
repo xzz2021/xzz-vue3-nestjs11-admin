@@ -1,6 +1,6 @@
-import { Public, RequiredPermission, Serialize } from "@/processor/decorator/index.js";
-import { CaptchaGuard, JwtRefreshAuthGuard } from "@/processor/guard/index.js";
-import { clientIp } from "@/processor/utils/index.js";
+import { Public, RequiredPermission, Serialize } from "#/processor/decorator/index.js";
+import { CaptchaGuard, JwtRefreshAuthGuard } from "#/processor/guard/index.js";
+import { clientIp } from "#/processor/utils/index.js";
 import { Body, Controller, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import type { Request, Response } from "express";

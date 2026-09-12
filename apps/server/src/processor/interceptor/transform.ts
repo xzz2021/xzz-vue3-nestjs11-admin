@@ -1,5 +1,5 @@
-import { SKIP_WRAP_KEY } from '@/processor/decorator/skip-wrap.js';
-import { wrapSuccess } from '@/processor/utils/response.model.js';
+import { SKIP_WRAP_KEY } from '#/processor/decorator/skip-wrap.js';
+import { wrapSuccess } from '#/processor/utils/response.model.js';
 import {
   CallHandler,
   ExecutionContext,

@@ -1,4 +1,4 @@
-import { BackupTrigger } from '@/generated/prisma/client.js';
+import { BackupTrigger } from '#/generated/prisma/client.js';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';

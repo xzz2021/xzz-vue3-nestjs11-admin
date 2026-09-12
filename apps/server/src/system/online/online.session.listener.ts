@@ -4,7 +4,7 @@ import {
   type ForceLogoutRequestedPayload,
   type SessionEndedPayload,
   type SessionUserRevokedPayload,
-} from "@/system/session/session.events.js";
+} from "#/system/session/session.events.js";
 import { Injectable, OnModuleInit } from "@nestjs/common";
 import { OnlineGateway } from "./online.gateway.js";
 import { OnlineService } from "./online.service.js";

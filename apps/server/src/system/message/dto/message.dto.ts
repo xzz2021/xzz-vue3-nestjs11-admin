@@ -1,4 +1,4 @@
-import { MessageType, NoticeLevel } from '@/generated/prisma/client.js';
+import { MessageType, NoticeLevel } from '#/generated/prisma/client.js';
 import { createZodDto } from 'nestjs-zod/dto';
 import { z } from 'zod';
 

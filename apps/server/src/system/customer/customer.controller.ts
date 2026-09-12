@@ -1,6 +1,6 @@
-import { RequiredPermission, SkipWrap } from "@/processor/decorator/index.js";
-import type { AuthorizedJwtRequest } from "@/processor/guard/permission.js";
-import { clientIp } from "@/processor/utils/index.js";
+import { RequiredPermission, SkipWrap } from "#/processor/decorator/index.js";
+import type { AuthorizedJwtRequest } from "#/processor/guard/permission.js";
+import { clientIp } from "#/processor/utils/index.js";
 import {
   Body,
   Controller,

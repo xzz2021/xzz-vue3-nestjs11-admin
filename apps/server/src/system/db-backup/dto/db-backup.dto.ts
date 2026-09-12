@@ -1,5 +1,5 @@
-import { DbBackupConfigModel } from '@/generated/zod/index.js';
-import { BackupStatus, BackupTrigger } from '@/generated/prisma/client.js';
+import { DbBackupConfigModel } from '#/generated/zod/index.js';
+import { BackupStatus, BackupTrigger } from '#/generated/prisma/client.js';
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 

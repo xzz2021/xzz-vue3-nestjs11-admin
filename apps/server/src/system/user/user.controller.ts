@@ -1,7 +1,7 @@
-import { RequiredPermission } from "@/processor/decorator/index.js";
-import { clientIp } from "@/processor/utils/index.js";
-import type { JwtReqDto } from "@/system/auth/dto/auth.dto.js";
-import { multerConfigForAvatar } from "@/system/staticfile/multer.config.js";
+import { RequiredPermission } from "#/processor/decorator/index.js";
+import { clientIp } from "#/processor/utils/index.js";
+import type { JwtReqDto } from "#/system/auth/dto/auth.dto.js";
+import { multerConfigForAvatar } from "#/system/staticfile/multer.config.js";
 import {
   BadRequestException,
   Body,

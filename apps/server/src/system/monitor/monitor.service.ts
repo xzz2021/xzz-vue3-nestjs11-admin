@@ -1,7 +1,7 @@
-import { RedisHealthService } from '@/infrastructure/database/redis/redis-health.service.js';
-import { NoticeLevel } from '@/generated/prisma/enums.js';
-import { PgService } from '@/infrastructure/database/prisma/pg.service.js';
-import { MessageDeliveryService } from '@/system/message/message-delivery.service.js';
+import { RedisHealthService } from '#/infrastructure/database/redis/redis-health.service.js';
+import { NoticeLevel } from '#/generated/prisma/enums.js';
+import { PgService } from '#/infrastructure/database/prisma/pg.service.js';
+import { MessageDeliveryService } from '#/system/message/message-delivery.service.js';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { Injectable, Logger, OnModuleInit, Optional } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
@@ -44,7 +44,13 @@ export class MonitorService implements OnModuleInit {
   }
 
   async onModuleInit(): Promise<void> {
-    await this.hydrateErrorsFromRedis();
+    try {
+      await this.hydrateErrorsFromRedis();
+    } catch (error) {
+      this.logger.warn(
+        `监控错误缓存回放跳过: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
     // 启动时先采一次，避免前端空白
     void this.collectAndStore().catch((err) => {
       this.logger.warn(

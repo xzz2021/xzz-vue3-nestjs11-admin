@@ -1,5 +1,5 @@
 import { MenuType } from "@prisma/generated/zod/enums";
-import type { PgService } from "@/prisma/pg.service.js";
+import type { PgService } from "#/prisma/pg.service.js";
 import { MenuRepository } from "./menu.repository.js";
 import { MenuService } from "./menu.service.js";
 
@@ -20,11 +20,11 @@ describe("MenuService tree updates", () => {
     new MenuRepository({ $transaction: transaction }),
     {
       record: jest.fn(),
-    } as unknown as import("@/core/logger/audit-log.service.js").AuditLogService,
-    {} as import("@/system/role/role.repository.js").RoleRepository,
+    } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
+    {} as import("#/system/role/role.repository.js").RoleRepository,
     {
       invalidateUsers: jest.fn(),
-    } as unknown as import("@/processor/rbac/index.js").RbacPermissionCacheService,
+    } as unknown as import("#/processor/rbac/index.js").RbacPermissionCacheService,
   );
 
   beforeEach(() => {
@@ -112,13 +112,13 @@ describe("MenuService delete rules", () => {
     }),
     {
       record: jest.fn(),
-    } as unknown as import("@/core/logger/audit-log.service.js").AuditLogService,
+    } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
     {
       findUserIdsByPermissionIds,
-    } as unknown as import("@/system/role/role.repository.js").RoleRepository,
+    } as unknown as import("#/system/role/role.repository.js").RoleRepository,
     {
       invalidateUsers,
-    } as unknown as import("@/processor/rbac/index.js").RbacPermissionCacheService,
+    } as unknown as import("#/processor/rbac/index.js").RbacPermissionCacheService,
   );
 
   beforeEach(() => {

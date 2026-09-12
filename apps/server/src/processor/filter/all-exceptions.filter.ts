@@ -1,9 +1,9 @@
 //  这里是捕获所未知异常  无法拿到源信息
 // 如果需要源信息   后期考虑 实现return next.handle().pipe() 来捕获
 
-import { PgService } from "@/infrastructure/database/prisma/pg.service.js";
-import { ResOp } from "@/processor/utils/response.model.js";
-import { MonitorService } from "@/system/monitor/monitor.service.js";
+import { PgService } from "#/infrastructure/database/prisma/pg.service.js";
+import { ResOp } from "#/processor/utils/response.model.js";
+import { MonitorService } from "#/system/monitor/monitor.service.js";
 import type { LoggerService } from "@nestjs/common";
 import {
   ArgumentsHost,

@@ -1,4 +1,4 @@
-import { SKIP_WRAP_KEY } from "@/processor/decorator/skip-wrap";
+import { SKIP_WRAP_KEY } from "#/processor/decorator/skip-wrap";
 import { StreamableFile } from "@nestjs/common";
 import type { CallHandler, ExecutionContext } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";

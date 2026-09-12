@@ -1,4 +1,4 @@
-import { IS_PUBLIC_KEY, PERMISSION_KEY } from "@/processor/decorator/index.js";
+import { IS_PUBLIC_KEY, PERMISSION_KEY } from "#/processor/decorator/index.js";
 import { AuthController } from "./auth.controller.js";
 import type { AuthService } from "./auth.service.js";
 import type { CookieCommand } from "./http-cookie.js";
@@ -7,7 +7,7 @@ jest.mock("./auth.service", () => ({
   AuthService: class AuthService {},
 }));
 
-jest.mock("@/processor/guard", () => ({
+jest.mock("#/processor/guard/index.js", () => ({
   CaptchaGuard: class CaptchaGuard {},
   JwtRefreshAuthGuard: class JwtRefreshAuthGuard {},
 }));

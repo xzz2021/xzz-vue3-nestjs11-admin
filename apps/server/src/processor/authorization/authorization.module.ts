@@ -1,5 +1,5 @@
-import { RbacModule } from '@/processor/rbac/rbac.module.js';
-import { DepartmentModule } from '@/system/department/department.module.js';
+import { RbacModule } from '#/processor/rbac/rbac.module.js';
+import { DepartmentModule } from '#/system/department/department.module.js';
 import { Module } from '@nestjs/common';
 import { AuthorizationRepository } from './authorization.repository.js';
 import { AuthorizationService } from './authorization.service.js';

@@ -1,4 +1,4 @@
-import { PERMISSION_KEY } from "@/processor/decorator/index.js";
+import { PERMISSION_KEY } from "#/processor/decorator/index.js";
 import { StaticfileController } from "./staticfile.controller.js";
 
 jest.mock("./staticfile.service", () => ({

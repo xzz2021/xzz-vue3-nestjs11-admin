@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus } from "@nestjs/common";
-import { ErrorEnum } from "@/processor/constants/error-code.js";
+import { ErrorEnum } from "#/processor/constants/error-code.js";
 import {
   joinFolderKey,
   joinObjectKey,

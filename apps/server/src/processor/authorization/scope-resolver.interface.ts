@@ -1,4 +1,4 @@
-import type { DataScope } from '@/generated/prisma/enums.js';
+import type { DataScope } from '#/generated/prisma/enums.js';
 import type { ResolvedGrant } from './scope.types.js';
 
 export interface CustomDepartmentInput {

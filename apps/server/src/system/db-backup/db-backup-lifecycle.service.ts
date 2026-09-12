@@ -1,5 +1,5 @@
-import { BackupStatus } from "@/generated/prisma/client.js";
-import { FileCleanupService } from "@/system/file-cleanup/file-cleanup.service.js";
+import { BackupStatus } from "#/generated/prisma/client.js";
+import { FileCleanupService } from "#/system/file-cleanup/file-cleanup.service.js";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { promises as fs } from "node:fs";
 

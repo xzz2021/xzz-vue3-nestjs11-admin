@@ -1,5 +1,5 @@
-import { AuthorizationCacheUnavailableException } from '@/processor/authorization/authorization.errors.js';
-import { RedisKeys } from '@/processor/constants/cache.js';
+import { AuthorizationCacheUnavailableException } from '#/processor/authorization/authorization.errors.js';
+import { RedisKeys } from '#/processor/constants/cache.js';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { Injectable } from '@nestjs/common';
 import { Redis } from 'ioredis';

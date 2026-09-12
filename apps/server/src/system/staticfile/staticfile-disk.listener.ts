@@ -1,5 +1,5 @@
-import { DiskCleanupEventBus } from "@/system/file-cleanup/disk-cleanup.events.js";
-import type { FileCleanupJob } from "@/system/file-cleanup/file-cleanup.types.js";
+import { DiskCleanupEventBus } from "#/system/file-cleanup/disk-cleanup.events.js";
+import type { FileCleanupJob } from "#/system/file-cleanup/file-cleanup.types.js";
 import { Injectable, OnModuleInit } from "@nestjs/common";
 import { StaticfileService } from "./staticfile.service.js";
 

@@ -1,5 +1,5 @@
-import { RedisAtomicService } from '@/infrastructure/database/redis/redis-atomic.service.js';
-import { RedisKeys } from '@/processor/constants/cache.js';
+import { RedisAtomicService } from '#/infrastructure/database/redis/redis-atomic.service.js';
+import { RedisKeys } from '#/processor/constants/cache.js';
 import { Injectable } from '@nestjs/common';
 import { OrganizationGenerationUnavailableException } from './authorization.errors.js';
 

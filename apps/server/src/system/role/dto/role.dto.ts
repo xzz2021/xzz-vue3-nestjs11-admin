@@ -2,8 +2,8 @@ import {
   MenuModel,
   PermissionModel,
   RoleModel,
-} from '@/generated/zod/index.js';
-import { DataScope } from '@/generated/prisma/enums.js';
+} from '#/generated/zod/index.js';
+import { DataScope } from '#/generated/prisma/enums.js';
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 

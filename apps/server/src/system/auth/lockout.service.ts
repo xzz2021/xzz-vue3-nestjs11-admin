@@ -1,4 +1,4 @@
-import { RedisKeys } from '@/processor/constants/cache.js';
+import { RedisKeys } from '#/processor/constants/cache.js';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { Redis } from 'ioredis';

@@ -1,5 +1,5 @@
-import type { DataScope } from '@/generated/prisma/enums.js';
-import { PgService } from '@/infrastructure/database/prisma/pg.service.js';
+import type { DataScope } from '#/generated/prisma/enums.js';
+import { PgService } from '#/infrastructure/database/prisma/pg.service.js';
 import { Injectable } from '@nestjs/common';
 import type { CustomDepartmentInput } from './scope-resolver.interface.js';
 

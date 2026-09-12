@@ -1,6 +1,6 @@
-import { RequiredPermission, Serialize } from "@/processor/decorator/index.js";
-import { clientIp } from "@/processor/utils/index.js";
-import type { JwtReqDto } from "@/system/auth/dto/auth.dto.js";
+import { RequiredPermission, Serialize } from "#/processor/decorator/index.js";
+import { clientIp } from "#/processor/utils/index.js";
+import type { JwtReqDto } from "#/system/auth/dto/auth.dto.js";
 import { Body, Controller, Delete, Get, Post, Req } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { DepartmentService } from "./department.service.js";

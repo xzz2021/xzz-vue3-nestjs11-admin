@@ -1,4 +1,4 @@
-import { RequiredPermission } from "@/processor/decorator/index.js";
+import { RequiredPermission } from "#/processor/decorator/index.js";
 import { Body, Controller, Delete, Param, Post } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { CreatePermissionDto, UpdatePermissionDto } from "./dto/permission.dto.js";

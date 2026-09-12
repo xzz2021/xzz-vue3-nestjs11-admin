@@ -1,4 +1,4 @@
-import { MenuModel, PermissionModel } from '@/generated/zod/index.js';
+import { MenuModel, PermissionModel } from '#/generated/zod/index.js';
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 

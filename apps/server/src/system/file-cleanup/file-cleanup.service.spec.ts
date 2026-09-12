@@ -12,7 +12,7 @@ jest.mock("node:fs", () => ({
   },
 }));
 
-jest.mock("@/system/staticfile/multer.config", () => ({
+jest.mock("#/system/staticfile/multer.config.js", () => ({
   getStaticFileRoot: () => "/static-root",
   tryResolvePathInsideRoot: jest.fn((root: string, target: string) => {
     const normalizedRoot = root.replace(/\\/g, "/");

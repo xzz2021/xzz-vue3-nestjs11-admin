@@ -1,11 +1,15 @@
+import { bullQueueErrorProvider } from '#/infrastructure/database/redis/bull-error.provider.js';
+import {
+  createQuietRedis,
+  redisTarget,
+} from '#/infrastructure/database/redis/redis-connection.log.js';
 import {
   buildRedisOptions,
   type AppRedisConfig,
-} from '@/infrastructure/database/redis/redis-options.js';
+} from '#/infrastructure/database/redis/redis-options.js';
 import { BullModule } from '@nestjs/bullmq';
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import type { ConnectionOptions } from 'bullmq';
 import { DiskCleanupEventBus } from './disk-cleanup.events.js';
 import { FILE_CLEANUP_QUEUE } from './file-cleanup.constants.js';
 import { FileCleanupProcessor } from './file-cleanup.processor.js';
@@ -17,16 +21,27 @@ import { FileCleanupService } from './file-cleanup.service.js';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         const redis = configService.get<AppRedisConfig>('redis');
+        const logger = new Logger('BullMQ');
         return {
-          connection: buildRedisOptions(redis, {
-            maxRetriesPerRequest: null,
-          }) as ConnectionOptions,
+          connection: createQuietRedis(
+            buildRedisOptions(redis, {
+              maxRetriesPerRequest: null,
+              enableOfflineQueue: false,
+            }),
+            logger,
+            redisTarget(redis?.host, redis?.port),
+          ),
         };
       },
     }),
     BullModule.registerQueue({ name: FILE_CLEANUP_QUEUE }),
   ],
-  providers: [DiskCleanupEventBus, FileCleanupService, FileCleanupProcessor],
+  providers: [
+    DiskCleanupEventBus,
+    FileCleanupService,
+    FileCleanupProcessor,
+    bullQueueErrorProvider(FILE_CLEANUP_QUEUE),
+  ],
   exports: [FileCleanupService, DiskCleanupEventBus],
 })
 export class FileCleanupModule {}

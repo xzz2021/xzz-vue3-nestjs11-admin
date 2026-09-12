@@ -1,10 +1,10 @@
-import { AuditAction } from '@/core/logger/audit-action.js';
-import { AuditLogService } from '@/core/logger/audit-log.service.js';
-import { Prisma } from '@/generated/prisma/client.js';
-import { RbacPermissionCacheService } from '@/processor/rbac/index.js';
-import { uniqueBy } from '@/processor/utils/array.js';
-import { listToTree } from '@/processor/utils/list2tree.util.js';
-import { assertAcyclicParent } from '@/processor/utils/tree-cycle.js';
+import { AuditAction } from '#/core/logger/audit-action.js';
+import { AuditLogService } from '#/core/logger/audit-log.service.js';
+import { Prisma } from '#/generated/prisma/client.js';
+import { RbacPermissionCacheService } from '#/processor/rbac/index.js';
+import { uniqueBy } from '#/processor/utils/array.js';
+import { listToTree } from '#/processor/utils/list2tree.util.js';
+import { assertAcyclicParent } from '#/processor/utils/tree-cycle.js';
 import {
   BadRequestException,
   Injectable,
@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { CreateMenuDto, MenuSortDto, UpdateMenuDto } from './dto/menu.dto.js';
 import { MenuRepository } from './menu.repository.js';
-import { RoleRepository } from '@/system/role/role.repository.js';
+import { RoleRepository } from '#/system/role/role.repository.js';
 
 @Injectable()
 export class MenuService {

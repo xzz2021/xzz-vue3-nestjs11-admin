@@ -1,7 +1,7 @@
 import {
   SessionEventBus,
   SESSION_EVENTS,
-} from "@/system/session/session.events.js";
+} from "#/system/session/session.events.js";
 import { BadRequestException } from "@nestjs/common";
 import type { OnlineGateway } from "./online.gateway.js";
 import type { OnlineService } from "./online.service.js";

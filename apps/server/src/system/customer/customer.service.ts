@@ -1,7 +1,7 @@
-import { AuditAction } from '@/core/logger/audit-action.js';
-import { AuditLogService } from '@/core/logger/audit-log.service.js';
-import { Prisma } from '@/generated/prisma/client.js';
-import type { AuthorizationContext } from '@/processor/authorization/authorization-context.js';
+import { AuditAction } from '#/core/logger/audit-action.js';
+import { AuditLogService } from '#/core/logger/audit-log.service.js';
+import { Prisma } from '#/generated/prisma/client.js';
+import type { AuthorizationContext } from '#/processor/authorization/authorization-context.js';
 import {
   BadRequestException,
   ConflictException,

@@ -3,7 +3,7 @@ import type {
   BackupTrigger,
   DbBackupConfig,
   DbBackupJob,
-} from "@/generated/prisma/client.js";
+} from "#/generated/prisma/client.js";
 
 export interface BackupRuntimeConfig {
   dir: string;

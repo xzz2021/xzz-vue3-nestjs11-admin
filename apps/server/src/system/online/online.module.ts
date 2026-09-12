@@ -1,4 +1,4 @@
-import { SessionModule } from "@/system/session/session.module.js";
+import { SessionModule } from "#/system/session/session.module.js";
 import { Module } from "@nestjs/common";
 import { OnlineController } from "./online.controller.js";
 import { OnlineGateway } from "./online.gateway.js";

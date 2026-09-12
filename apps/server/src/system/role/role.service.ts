@@ -1,11 +1,11 @@
-import { AuditAction } from '@/core/logger/audit-action.js';
-import { AuditLogService } from '@/core/logger/audit-log.service.js';
-import { Prisma, type Menu } from '@/generated/prisma/client.js';
-import { DataScope } from '@/generated/prisma/enums.js';
-import { RbacPermissionCacheService } from '@/processor/rbac/index.js';
-import { uniqueBy } from '@/processor/utils/array.js';
-import { listToTree } from '@/processor/utils/list2tree.util.js';
-import { sqlBatchUpdateRoles } from '@/processor/utils/sql-batch.js';
+import { AuditAction } from '#/core/logger/audit-action.js';
+import { AuditLogService } from '#/core/logger/audit-log.service.js';
+import { Prisma, type Menu } from '#/generated/prisma/client.js';
+import { DataScope } from '#/generated/prisma/enums.js';
+import { RbacPermissionCacheService } from '#/processor/rbac/index.js';
+import { uniqueBy } from '#/processor/utils/array.js';
+import { listToTree } from '#/processor/utils/list2tree.util.js';
+import { sqlBatchUpdateRoles } from '#/processor/utils/sql-batch.js';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   CreateRoleDto,

@@ -1,8 +1,8 @@
-import { AuditAction } from '@/core/logger/audit-action.js';
-import { AuditLogService } from '@/core/logger/audit-log.service.js';
-import { Prisma } from '@/generated/prisma/client.js';
-import { OrganizationGenerationService } from '@/processor/authorization/organization-generation.service.js';
-import { assertAcyclicParent } from '@/processor/utils/tree-cycle.js';
+import { AuditAction } from '#/core/logger/audit-action.js';
+import { AuditLogService } from '#/core/logger/audit-log.service.js';
+import { Prisma } from '#/generated/prisma/client.js';
+import { OrganizationGenerationService } from '#/processor/authorization/organization-generation.service.js';
+import { assertAcyclicParent } from '#/processor/utils/tree-cycle.js';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DepartmentRepository } from './department.repository.js';
 import {

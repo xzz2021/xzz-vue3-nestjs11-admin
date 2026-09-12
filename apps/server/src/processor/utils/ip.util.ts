@@ -17,7 +17,7 @@ type Ip2regionModule = {
   newWithBuffer: (buffer: Buffer) => IpSearcher;
 };
 
-const requireIp2region = createRequire(__filename);
+const requireIp2region = createRequire(import.meta.url);
 
 let searcher: IpSearcher | null = null;
 

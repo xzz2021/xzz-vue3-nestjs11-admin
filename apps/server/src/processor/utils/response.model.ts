@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   RESPONSE_SUCCESS_CODE,
   RESPONSE_SUCCESS_MSG,
-} from '@/processor/constants/response.js';
+} from '#/processor/constants/response.js';
 import { formatDateToYMDHMS } from './date.js';
 
 export class ResOp<T = unknown> {

@@ -1,5 +1,5 @@
 // jwt-refresh-auth.guard.ts
-import { RtTokenService } from '@/system/auth/rt.token.service.js';
+import { RtTokenService } from '#/system/auth/rt.token.service.js';
 import {
   ExecutionContext,
   Injectable,

@@ -1,12 +1,12 @@
-import { Prisma } from "@/prisma/generated/prisma/client.js";
-import type { PgService } from "@/prisma/pg.service.js";
+import { Prisma } from "#/prisma/generated/prisma/client.js";
+import type { PgService } from "#/prisma/pg.service.js";
 import { DepartmentRepository } from "./department.repository.js";
 import { DepartmentService } from "./department.service.js";
 
 const organizationGenerationBump = jest.fn().mockResolvedValue(undefined);
 const organizationGeneration = {
   bump: organizationGenerationBump,
-} as unknown as import("@/processor/authorization/organization-generation.service.js").OrganizationGenerationService;
+} as unknown as import("#/processor/authorization/organization-generation.service.js").OrganizationGenerationService;
 
 describe("DepartmentService tree updates", () => {
   const findMany = jest.fn();
@@ -26,7 +26,7 @@ describe("DepartmentService tree updates", () => {
     new DepartmentRepository({ $transaction: transaction }),
     {
       record: jest.fn(),
-    } as unknown as import("@/core/logger/audit-log.service.js").AuditLogService,
+    } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
     organizationGeneration,
   );
 
@@ -118,7 +118,7 @@ describe("DepartmentService list queries", () => {
     }),
     {
       record: jest.fn(),
-    } as unknown as import("@/core/logger/audit-log.service.js").AuditLogService,
+    } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
     organizationGeneration,
   );
 
@@ -178,7 +178,7 @@ describe("DepartmentService delete rules", () => {
     new DepartmentRepository(deleteDb),
     {
       record: jest.fn(),
-    } as unknown as import("@/core/logger/audit-log.service.js").AuditLogService,
+    } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
     organizationGeneration,
   );
 
@@ -230,7 +230,7 @@ describe("DepartmentService unique names", () => {
     new DepartmentRepository({ $transaction: transaction }),
     {
       record: jest.fn(),
-    } as unknown as import("@/core/logger/audit-log.service.js").AuditLogService,
+    } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
     organizationGeneration,
   );
 
@@ -257,7 +257,7 @@ describe("DepartmentService lookup", () => {
     }),
     {
       record: jest.fn(),
-    } as unknown as import("@/core/logger/audit-log.service.js").AuditLogService,
+    } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
     organizationGeneration,
   );
 

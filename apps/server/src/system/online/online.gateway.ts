@@ -1,6 +1,6 @@
-import { extractIP, getIp, lookupIpLocation } from "@/processor/utils/index.js";
-import { Public } from "@/processor/decorator/index.js";
-import { TokenService } from "@/system/auth/token.service.js";
+import { extractIP, getIp, lookupIpLocation } from "#/processor/utils/index.js";
+import { Public } from "#/processor/decorator/index.js";
+import { TokenService } from "#/system/auth/token.service.js";
 import { Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";

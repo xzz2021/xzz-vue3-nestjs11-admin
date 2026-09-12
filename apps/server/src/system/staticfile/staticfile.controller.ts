@@ -1,6 +1,6 @@
-import { RequiredPermission } from "@/processor/decorator/index.js";
-import { Serialize } from "@/processor/decorator/serialize.js";
-import type { JwtReqDto } from "@/system/auth/dto/auth.dto.js";
+import { RequiredPermission } from "#/processor/decorator/index.js";
+import { Serialize } from "#/processor/decorator/serialize.js";
+import type { JwtReqDto } from "#/system/auth/dto/auth.dto.js";
 import {
   BadRequestException,
   Body,

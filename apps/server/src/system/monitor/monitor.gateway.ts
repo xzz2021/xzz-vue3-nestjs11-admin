@@ -13,7 +13,7 @@ import {
 import type { IncomingMessage } from "node:http";
 import type { Server } from "ws";
 import WebSocket from "ws";
-import { Public } from "@/processor/decorator/index.js";
+import { Public } from "#/processor/decorator/index.js";
 import { MonitorService } from "./monitor.service.js";
 
 type AuthedSocket = WebSocket & {

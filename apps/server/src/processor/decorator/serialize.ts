@@ -1,6 +1,6 @@
 import { UseInterceptors } from '@nestjs/common';
 import { ClassConstructor } from 'class-transformer';
-import { SerializeInterceptor } from '@/processor/interceptor/serialize.js';
+import { SerializeInterceptor } from '#/processor/interceptor/serialize.js';
 
 // 序列化装饰器  简化代码
 export function Serialize(dto: ClassConstructor<any>) {

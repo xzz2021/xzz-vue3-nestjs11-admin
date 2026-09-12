@@ -1,4 +1,4 @@
-import type { TokenService } from "@/system/auth/token.service";
+import type { TokenService } from "#/system/auth/token.service";
 import type { ExecutionContext } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { AuthGuard } from "@nestjs/passport";

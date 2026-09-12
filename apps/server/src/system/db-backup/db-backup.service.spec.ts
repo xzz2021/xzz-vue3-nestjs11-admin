@@ -1,11 +1,11 @@
 import { ConflictException, NotFoundException } from "@nestjs/common";
 
-import { BackupStatus, BackupTrigger } from "@/prisma/generated/prisma/client.js";
+import { BackupStatus, BackupTrigger } from "#/prisma/generated/prisma/client.js";
 import type { RedisService } from "@liaoliaots/nestjs-redis";
 import type { ConfigService } from "@nestjs/config";
 import type { Queue } from "bullmq";
 
-import type { FileCleanupService } from "@/system/file-cleanup/file-cleanup.service.js";
+import type { FileCleanupService } from "#/system/file-cleanup/file-cleanup.service.js";
 import { DbBackupConfigService } from "./db-backup-config.service.js";
 import { DbBackupLifecycleService } from "./db-backup-lifecycle.service.js";
 import { DbBackupRepository } from "./db-backup.repository.js";

@@ -1,6 +1,6 @@
-import { AuditLogService } from "@/core/logger/audit-log.service.js";
-import { CustomerStatus } from "@/prisma/generated/prisma/enums.js";
-import { AuthorizationContext } from "@/processor/authorization/authorization-context.js";
+import { AuditLogService } from "#/core/logger/audit-log.service.js";
+import { CustomerStatus } from "#/prisma/generated/prisma/enums.js";
+import { AuthorizationContext } from "#/processor/authorization/authorization-context.js";
 import {
   BadRequestException,
   ConflictException,

@@ -1,4 +1,4 @@
-import { CustomerStatus } from '@/generated/prisma/enums.js';
+import { CustomerStatus } from '#/generated/prisma/enums.js';
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 

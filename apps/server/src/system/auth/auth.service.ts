@@ -1,8 +1,8 @@
-import { AuditAction } from '@/core/logger/audit-action.js';
-import { AuditLogService } from '@/core/logger/audit-log.service.js';
-import { isTransientDbError } from '@/processor/filter/prisma.exception.js';
-import { hashPayPassword, verifyPayPassword } from '@/processor/utils/index.js';
-import { UserRepository } from '@/system/user/user.repository.js';
+import { AuditAction } from '#/core/logger/audit-action.js';
+import { AuditLogService } from '#/core/logger/audit-log.service.js';
+import { isTransientDbError } from '#/processor/filter/prisma.exception.js';
+import { hashPayPassword, verifyPayPassword } from '#/processor/utils/index.js';
+import { UserRepository } from '#/system/user/user.repository.js';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import {
   BadRequestException,

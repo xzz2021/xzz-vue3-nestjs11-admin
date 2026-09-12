@@ -1,6 +1,6 @@
 import { ExecutionContext } from "@nestjs/common";
 import { lastValueFrom, throwError } from "rxjs";
-import type { LogService } from "@/core/logger/logger.service";
+import type { LogService } from "#/core/logger/logger.service";
 import { OperationLogInterceptor } from "./operation.log";
 
 describe("OperationLogInterceptor", () => {

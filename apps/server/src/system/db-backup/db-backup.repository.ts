@@ -2,8 +2,8 @@ import {
   BackupStatus,
   BackupTrigger,
   Prisma,
-} from '@/generated/prisma/client.js';
-import { PgService } from '@/infrastructure/database/prisma/pg.service.js';
+} from '#/generated/prisma/client.js';
+import { PgService } from '#/infrastructure/database/prisma/pg.service.js';
 import { Injectable } from '@nestjs/common';
 
 import { DB_BACKUP_CONFIG_ID } from './db-backup.constants.js';

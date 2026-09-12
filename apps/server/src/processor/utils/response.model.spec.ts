@@ -2,7 +2,7 @@ import { ResOp, wrapSuccess } from "./response.model";
 import {
   RESPONSE_SUCCESS_CODE,
   RESPONSE_SUCCESS_MSG,
-} from "@/processor/constants";
+} from "#/processor/constants";
 
 describe("wrapSuccess", () => {
   it("wraps primitives, arrays and null as data", () => {

@@ -1,4 +1,4 @@
-import { OrganizationGenerationModule } from "@/processor/authorization/organization-generation.module.js";
+import { OrganizationGenerationModule } from "#/processor/authorization/organization-generation.module.js";
 import { Module } from "@nestjs/common";
 import { DepartmentController } from "./department.controller.js";
 import { DepartmentRepository } from "./department.repository.js";

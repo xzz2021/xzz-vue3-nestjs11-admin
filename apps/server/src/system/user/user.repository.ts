@@ -1,6 +1,6 @@
-import { Prisma } from '@/generated/prisma/client.js';
-import { PgService } from '@/infrastructure/database/prisma/pg.service.js';
-import { lookupIpLocation } from '@/processor/utils/index.js';
+import { Prisma } from '#/generated/prisma/client.js';
+import { PgService } from '#/infrastructure/database/prisma/pg.service.js';
+import { lookupIpLocation } from '#/processor/utils/index.js';
 import { Injectable } from '@nestjs/common';
 
 const USER_LIST_SELECT = {

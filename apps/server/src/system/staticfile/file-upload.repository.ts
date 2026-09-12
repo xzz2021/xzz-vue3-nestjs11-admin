@@ -1,5 +1,5 @@
-import { FileUploadStatus, Prisma } from '@/generated/prisma/client.js';
-import { PgService } from '@/infrastructure/database/prisma/pg.service.js';
+import { FileUploadStatus, Prisma } from '#/generated/prisma/client.js';
+import { PgService } from '#/infrastructure/database/prisma/pg.service.js';
 import { Injectable } from '@nestjs/common';
 
 const OPEN_STATUSES: FileUploadStatus[] = [

@@ -1,5 +1,8 @@
 import type { RedisOptions } from "ioredis";
 
+/** 断线后重连间隔（毫秒） */
+export const REDIS_RECONNECT_INTERVAL_MS = 15_000;
+
 export type AppRedisConfig = {
   host?: string;
   port?: number;
@@ -17,10 +20,14 @@ export function buildRedisOptions(
   overrides: RedisOptions = {},
 ): RedisOptions {
   const password = redis?.password?.trim();
+  const host =
+    !redis?.host || redis.host === "localhost" ? "127.0.0.1" : redis.host;
   return {
-    host: redis?.host || "127.0.0.1",
+    host,
     port: redis?.port || 6379,
     db: redis?.db ?? 0,
+    retryStrategy: () => REDIS_RECONNECT_INTERVAL_MS,
+    ...(host === "127.0.0.1" ? { family: 4 as const } : {}),
     ...(password ? { password } : {}),
     ...overrides,
   };

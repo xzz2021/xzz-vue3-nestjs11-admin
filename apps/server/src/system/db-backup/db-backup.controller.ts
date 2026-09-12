@@ -1,5 +1,5 @@
-import { BackupTrigger } from "@/generated/prisma/client.js";
-import { RequiredPermission, User } from "@/processor/decorator/index.js";
+import { BackupTrigger } from "#/generated/prisma/client.js";
+import { RequiredPermission, User } from "#/processor/decorator/index.js";
 import {
   Body,
   Controller,

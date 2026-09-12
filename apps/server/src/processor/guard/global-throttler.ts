@@ -1,6 +1,6 @@
 // custom-throttler.guard.ts
-import { RATE_KEY } from '@/processor/decorator/rate-key.js';
-import { getIp } from '@/processor/utils/ip.util.js';
+import { RATE_KEY } from '#/processor/decorator/rate-key.js';
+import { getIp } from '#/processor/utils/ip.util.js';
 import {
   ExecutionContext,
   HttpException,

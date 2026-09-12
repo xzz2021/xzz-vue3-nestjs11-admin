@@ -1,7 +1,7 @@
-import type { AuthorizationContext } from '@/processor/authorization/authorization-context.js';
-import { AuthorizationService } from '@/processor/authorization/authorization.service.js';
-import { PERMISSION_KEY } from '@/processor/decorator/permission.js';
-import { isTransientDbError } from '@/processor/filter/prisma.exception.js';
+import type { AuthorizationContext } from '#/processor/authorization/authorization-context.js';
+import { AuthorizationService } from '#/processor/authorization/authorization.service.js';
+import { PERMISSION_KEY } from '#/processor/decorator/permission.js';
+import { isTransientDbError } from '#/processor/filter/prisma.exception.js';
 import {
   CanActivate,
   ExecutionContext,

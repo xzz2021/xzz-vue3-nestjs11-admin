@@ -1,5 +1,5 @@
-import type { SessionEventBus } from "@/system/session/session.events.js";
-import { SESSION_EVENTS } from "@/system/session/session.events.js";
+import type { SessionEventBus } from "#/system/session/session.events.js";
+import { SESSION_EVENTS } from "#/system/session/session.events.js";
 import { BadRequestException } from "@nestjs/common";
 import type { RtTokenService } from "./rt.token.service.js";
 import { SessionRevocationService } from "./session-revocation.service.js";

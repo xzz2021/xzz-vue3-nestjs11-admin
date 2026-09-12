@@ -7,7 +7,7 @@ import {
   ExceptionFilter,
   HttpException,
 } from '@nestjs/common';
-import { formatDateToYMDHMS } from '@/processor/utils/date.js';
+import { formatDateToYMDHMS } from '#/processor/utils/date.js';
 
 // 启用后不会再报错 而是返回定义好的数据
 @Catch(HttpException)

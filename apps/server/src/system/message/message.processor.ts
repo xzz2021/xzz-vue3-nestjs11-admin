@@ -1,4 +1,8 @@
-import { Processor, WorkerHost } from "@nestjs/bullmq";
+import {
+  logRedisConnectFailure,
+  redisTargetFromEnv,
+} from "#/infrastructure/database/redis/redis-connection.log.js";
+import { OnWorkerEvent, Processor, WorkerHost } from "@nestjs/bullmq";
 import { Logger } from "@nestjs/common";
 import { Job } from "bullmq";
 import { MessageDeliveryService } from "./message-delivery.service.js";
@@ -11,6 +15,11 @@ export class MessageProcessor extends WorkerHost {
 
   constructor(private readonly delivery: MessageDeliveryService) {
     super();
+  }
+
+  @OnWorkerEvent("error")
+  onWorkerError(error: Error) {
+    logRedisConnectFailure(this.logger, redisTargetFromEnv(), error);
   }
 
   async process(job: Job<MessageDispatchJob>): Promise<{ count: number }> {

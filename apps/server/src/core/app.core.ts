@@ -1,32 +1,34 @@
-import { PrismaModule } from '@/infrastructure/database/prisma/prisma.module.js';
+import { PrismaModule } from '#/infrastructure/database/prisma/prisma.module.js';
 import {
   GlobalThrottlerGuard,
   PermissionGuard,
   RtJwtAuthGuard,
-} from '@/processor/guard/index.js';
-import { StaticfileModule } from '@/system/staticfile/staticfile.module.js';
+} from '#/processor/guard/index.js';
+import { StaticfileModule } from '#/system/staticfile/staticfile.module.js';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 
 import { CONFIG_MODULE } from './config.js';
 import { SERVER_STATIC_MODULE } from './server.static.js';
 // import { ClsModule } from 'nestjs-cls';
-import { WinstonLoggerModule } from '@/core/logger/winston.module.js';
-import { AllExceptionsFilter } from '@/processor/filter/all-exceptions.filter.js';
+import { WinstonLoggerModule } from '#/core/logger/winston.module.js';
+import { AllExceptionsFilter } from '#/processor/filter/all-exceptions.filter.js';
 import {
   OperationLogInterceptor,
   TransformInterceptor,
-} from '@/processor/interceptor/index.js';
+} from '#/processor/interceptor/index.js';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';
 import { ThrottlerModule } from '@nestjs/throttler';
 
-import { AppRedisModule } from '@/infrastructure/database/redis/redis.module.js';
-import { AuthorizationModule } from '@/processor/authorization/authorization.module.js';
-import { RbacModule } from '@/processor/rbac/rbac.module.js';
-import { UserPersistenceModule } from '@/system/user/user-persistence.module.js';
-import { DynamicModule } from '@nestjs/common';
+import { AppRedisModule } from '#/infrastructure/database/redis/redis.module.js';
+import { AuthorizationModule } from '#/processor/authorization/authorization.module.js';
+import { RbacModule } from '#/processor/rbac/rbac.module.js';
+import { UserPersistenceModule } from '#/system/user/user-persistence.module.js';
+import type { DynamicModule, Type } from '@nestjs/common';
 
-export const CORE_MODULE: (DynamicModule | StaticfileModule)[] = [
+export const CORE_MODULE: Array<
+  Type | DynamicModule | Promise<DynamicModule>
+> = [
   CONFIG_MODULE,
   SERVER_STATIC_MODULE,
   StaticfileModule,

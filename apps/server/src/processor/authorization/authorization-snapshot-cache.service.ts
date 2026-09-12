@@ -1,5 +1,5 @@
-import { RedisKeys } from '@/processor/constants/cache.js';
-import { RbacPermissionCacheService } from '@/processor/rbac/rbac-permission-cache.service.js';
+import { RedisKeys } from '#/processor/constants/cache.js';
+import { RbacPermissionCacheService } from '#/processor/rbac/rbac-permission-cache.service.js';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { Injectable } from '@nestjs/common';
 import { Redis } from 'ioredis';

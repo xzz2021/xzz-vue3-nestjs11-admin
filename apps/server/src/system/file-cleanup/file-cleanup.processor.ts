@@ -1,4 +1,8 @@
-import { Processor, WorkerHost } from "@nestjs/bullmq";
+import {
+  logRedisConnectFailure,
+  redisTargetFromEnv,
+} from "#/infrastructure/database/redis/redis-connection.log.js";
+import { OnWorkerEvent, Processor, WorkerHost } from "@nestjs/bullmq";
 import { Logger } from "@nestjs/common";
 import { Job } from "bullmq";
 import {
@@ -14,6 +18,11 @@ export class FileCleanupProcessor extends WorkerHost {
 
   constructor(private readonly fileCleanupService: FileCleanupService) {
     super();
+  }
+
+  @OnWorkerEvent("error")
+  onWorkerError(error: Error) {
+    logRedisConnectFailure(this.logger, redisTargetFromEnv(), error);
   }
 
   async process(job: Job<FileCleanupJob>): Promise<void> {

@@ -1,4 +1,4 @@
-import { FileCleanupModule } from "@/system/file-cleanup/file-cleanup.module.js";
+import { FileCleanupModule } from "#/system/file-cleanup/file-cleanup.module.js";
 import { Module } from "@nestjs/common";
 import { FileRepository } from "./file.repository.js";
 import { FileUploadRepository } from "./file-upload.repository.js";

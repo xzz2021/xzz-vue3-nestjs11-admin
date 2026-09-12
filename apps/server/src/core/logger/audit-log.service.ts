@@ -1,6 +1,6 @@
-import { Prisma } from '@/generated/prisma/client.js';
-import { PgService } from '@/infrastructure/database/prisma/pg.service.js';
-import { lookupIpLocation } from '@/processor/utils/index.js';
+import { Prisma } from '#/generated/prisma/client.js';
+import { PgService } from '#/infrastructure/database/prisma/pg.service.js';
+import { lookupIpLocation } from '#/processor/utils/index.js';
 import type { LoggerService } from '@nestjs/common';
 import { Inject, Injectable } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';

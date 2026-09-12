@@ -1,19 +1,19 @@
-import { AuditAction } from '@/core/logger/audit-action.js';
-import { AuditLogService } from '@/core/logger/audit-log.service.js';
-import { Prisma } from '@/generated/prisma/client.js';
-import { RbacPermissionCacheService } from '@/processor/rbac/index.js';
+import { AuditAction } from '#/core/logger/audit-action.js';
+import { AuditLogService } from '#/core/logger/audit-log.service.js';
+import { Prisma } from '#/generated/prisma/client.js';
+import { RbacPermissionCacheService } from '#/processor/rbac/index.js';
 import {
   formatDateToYMDHMS,
   hashPayPassword,
   verifyPayPassword,
-} from '@/processor/utils/index.js';
-import { SessionRevocationService } from '@/system/auth/session-revocation.service.js';
-import { FileCleanupService } from '@/system/file-cleanup/file-cleanup.service.js';
+} from '#/processor/utils/index.js';
+import { SessionRevocationService } from '#/system/auth/session-revocation.service.js';
+import { FileCleanupService } from '#/system/file-cleanup/file-cleanup.service.js';
 import {
   getStaticFileRoot,
   sanitizePathSegment,
   tryResolvePathInsideRoot,
-} from '@/system/staticfile/multer.config.js';
+} from '#/system/staticfile/multer.config.js';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {

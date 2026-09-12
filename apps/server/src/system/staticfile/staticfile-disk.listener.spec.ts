@@ -1,4 +1,4 @@
-import { DiskCleanupEventBus } from "@/system/file-cleanup/disk-cleanup.events.js";
+import { DiskCleanupEventBus } from "#/system/file-cleanup/disk-cleanup.events.js";
 import type { StaticfileService } from "./staticfile.service.js";
 import { StaticfileDiskListener } from "./staticfile-disk.listener.js";
 

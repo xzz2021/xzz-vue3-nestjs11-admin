@@ -1,4 +1,4 @@
-import type { AuthorizedJwtRequest } from "@/processor/guard/permission.js";
+import type { AuthorizedJwtRequest } from "#/processor/guard/permission.js";
 import type { Response } from "express";
 import { EventEmitter } from "node:events";
 import { PassThrough } from "node:stream";

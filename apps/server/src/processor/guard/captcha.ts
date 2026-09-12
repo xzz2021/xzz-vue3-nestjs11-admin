@@ -3,7 +3,7 @@ import {
   CAPTCHA_ID_COOKIE,
   CAPTCHA_TEXT_COOKIE,
   CaptchaService,
-} from '@/system/captcha/captcha.service.js';
+} from '#/system/captcha/captcha.service.js';
 import {
   BadRequestException,
   CanActivate,

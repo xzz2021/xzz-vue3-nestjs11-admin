@@ -1,7 +1,7 @@
-import { PgService } from '@/infrastructure/database/prisma/pg.service.js';
-import { lookupIpLocation } from '@/processor/utils/index.js';
-import { RtTokenService } from '@/system/auth/rt.token.service.js';
-import { TokenService } from '@/system/auth/token.service.js';
+import { PgService } from '#/infrastructure/database/prisma/pg.service.js';
+import { lookupIpLocation } from '#/processor/utils/index.js';
+import { RtTokenService } from '#/system/auth/rt.token.service.js';
+import { TokenService } from '#/system/auth/token.service.js';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import type { Redis } from 'ioredis';

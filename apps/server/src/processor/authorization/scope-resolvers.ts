@@ -1,5 +1,5 @@
-import { DataScope } from '@/generated/prisma/enums.js';
-import type { DepartmentRepository } from '@/system/department/department.repository.js';
+import { DataScope } from '#/generated/prisma/enums.js';
+import type { DepartmentRepository } from '#/system/department/department.repository.js';
 import type {
   ScopeResolutionInput,
   ScopeResolver,

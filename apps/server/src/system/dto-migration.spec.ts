@@ -1,6 +1,6 @@
-import { DeleteLogDto, QueryLogParams } from "@/core/logger/logger.dto.js";
-import { CreatePermissionDto } from "@/system/permission/dto/permission.dto.js";
-import { DeleteFileDto } from "@/system/staticfile/file.dto.js";
+import { DeleteLogDto, QueryLogParams } from "#/core/logger/logger.dto.js";
+import { CreatePermissionDto } from "#/system/permission/dto/permission.dto.js";
+import { DeleteFileDto } from "#/system/staticfile/file.dto.js";
 import {
   DepartmentSeedArrayDto,
   UpdateDepartmentDto,

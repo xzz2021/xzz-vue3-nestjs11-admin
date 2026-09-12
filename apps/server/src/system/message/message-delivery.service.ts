@@ -1,5 +1,5 @@
-import { MessageType, NoticeLevel, Prisma } from '@/generated/prisma/client.js';
-import { isRichTextEmpty, sanitizeRichText } from '@/processor/utils/index.js';
+import { MessageType, NoticeLevel, Prisma } from '#/generated/prisma/client.js';
+import { isRichTextEmpty, sanitizeRichText } from '#/processor/utils/index.js';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { InjectQueue } from '@nestjs/bullmq';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';

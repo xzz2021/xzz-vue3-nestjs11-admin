@@ -1,4 +1,4 @@
-import { MessageType, NoticeLevel } from "@/prisma/generated/prisma/client.js";
+import { MessageType, NoticeLevel } from "#/prisma/generated/prisma/client.js";
 import type { RedisService } from "@liaoliaots/nestjs-redis";
 import { BadRequestException } from "@nestjs/common";
 import type { Queue } from "bullmq";

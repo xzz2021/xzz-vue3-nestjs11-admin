@@ -1,9 +1,9 @@
-import { PgService } from '@/infrastructure/database/prisma/pg.service.js';
-import { uniqueBy } from '@/processor/utils/array.js';
+import { PgService } from '#/infrastructure/database/prisma/pg.service.js';
+import { uniqueBy } from '#/processor/utils/array.js';
 import {
   sqlBatchUpdateDictionaryItems,
   sqlBatchUpdateDictionaryTypes,
-} from '@/processor/utils/sql-batch.js';
+} from '#/processor/utils/sql-batch.js';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   DictionarySeedArrayDto,

@@ -1,4 +1,4 @@
-import { UserModel } from '@/generated/zod/user.js';
+import { UserModel } from '#/generated/zod/user.js';
 import { z } from 'zod';
 import { createZodDto } from 'nestjs-zod';
 

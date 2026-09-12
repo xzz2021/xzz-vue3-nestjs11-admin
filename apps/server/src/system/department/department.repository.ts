@@ -1,6 +1,6 @@
-import { Prisma } from '@/generated/prisma/client.js';
-import { PgService } from '@/infrastructure/database/prisma/pg.service.js';
-import { sqlReplaceDescendantPaths } from '@/processor/utils/sql-batch.js';
+import { Prisma } from '#/generated/prisma/client.js';
+import { PgService } from '#/infrastructure/database/prisma/pg.service.js';
+import { sqlReplaceDescendantPaths } from '#/processor/utils/sql-batch.js';
 import { Injectable } from '@nestjs/common';
 
 type Db = PgService | Prisma.TransactionClient;

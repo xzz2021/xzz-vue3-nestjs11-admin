@@ -1,5 +1,5 @@
-import { BackupStatus, BackupTrigger } from "@/prisma/generated/prisma/client.js";
-import type { PgService } from "@/prisma/pg.service.js";
+import { BackupStatus, BackupTrigger } from "#/prisma/generated/prisma/client.js";
+import type { PgService } from "#/prisma/pg.service.js";
 import { DbBackupRepository } from "./db-backup.repository.js";
 
 describe("DbBackupRepository", () => {

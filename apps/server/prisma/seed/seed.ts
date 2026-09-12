@@ -4,10 +4,10 @@
 
 */
 
-import { prisma, Prisma } from "@/infrastructure/database/prisma/pg.lib";
-import { createSeedAdmin } from "./seed-admin";
-import { _department, _menu, _permission, _role } from "./data";
-import type { DepartmentModel } from "@/generated/prisma/models";
+import { prisma, Prisma } from '#/infrastructure/database/prisma/pg.lib.js';
+import { createSeedAdmin } from './seed-admin.js';
+import { _department, _menu, _permission, _role } from './data.js';
+import type { DepartmentModel } from '#/generated/prisma/models.js';
 async function create_menus_batch(
   menu_data: any[],
   tx: Prisma.TransactionClient,
@@ -45,11 +45,11 @@ async function create_users(
   // 1. 查出超管角色id 2. 创建用户并关联角色
   const super_admin_role = await tx.role.findFirst({
     where: {
-      code: "super_admin",
+      code: 'super_admin',
     },
   });
   if (!super_admin_role) {
-    throw new Error("Super admin role not found");
+    throw new Error('Super admin role not found');
   }
   await tx.user.create({
     data: {
@@ -107,10 +107,10 @@ async function create_departments_batch(
       data: {
         ...department_fields,
         parent: parent ? { connect: { id: parent.id } } : undefined,
-        path: "",
+        path: '',
       },
     });
-    const path = parent ? `${parent.path}/${department.id}` : "";
+    const path = parent ? `${parent.path}/${department.id}` : '';
     await tx.department.update({
       where: { id: department.id },
       data: { path },
@@ -134,16 +134,16 @@ async function seedInitialData() {
         return;
       }
       await create_menus(_menu, tx);
-      console.log("🌱 Seeding menus data success...");
+      console.log('🌱 Seeding menus data success...');
       await create_roles(_role, tx);
-      console.log("🌱 Seeding roles data success...");
+      console.log('🌱 Seeding roles data success...');
       await create_departments_batch(_department, tx);
-      console.log("🌱 Seeding departments data success...");
+      console.log('🌱 Seeding departments data success...');
       await create_permissions(_permission, tx);
-      console.log("🌱 Seeding permissions data success...");
+      console.log('🌱 Seeding permissions data success...');
       const seedAdmin = await createSeedAdmin(process.env);
       await create_users(seedAdmin, tx);
-      console.log("✅ Seeding finished.");
+      console.log('✅ Seeding finished.');
     },
     { timeout: 30_000 },
   );

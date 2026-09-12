@@ -1,5 +1,5 @@
-import { DataScope } from "@/prisma/generated/prisma/enums.js";
-import type { PgService } from "@/prisma/pg.service.js";
+import { DataScope } from "#/prisma/generated/prisma/enums.js";
+import type { PgService } from "#/prisma/pg.service.js";
 import { RoleRepository } from "./role.repository.js";
 
 describe("RoleRepository permission synchronization", () => {

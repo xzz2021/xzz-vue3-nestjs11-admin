@@ -1,6 +1,6 @@
-import { PgService } from '@/infrastructure/database/prisma/pg.service.js';
-import { RbacPermissionCacheService } from '@/processor/rbac/index.js';
-import { RoleRepository } from '@/system/role/role.repository.js';
+import { PgService } from '#/infrastructure/database/prisma/pg.service.js';
+import { RbacPermissionCacheService } from '#/processor/rbac/index.js';
+import { RoleRepository } from '#/system/role/role.repository.js';
 import { Injectable } from '@nestjs/common';
 import {
   CreatePermissionDto,

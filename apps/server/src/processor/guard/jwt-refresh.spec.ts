@@ -1,4 +1,4 @@
-import type { RtTokenService } from "@/system/auth/rt.token.service";
+import type { RtTokenService } from "#/system/auth/rt.token.service";
 import type { ExecutionContext } from "@nestjs/common";
 import { UnauthorizedException } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";

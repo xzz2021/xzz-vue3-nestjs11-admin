@@ -1,5 +1,5 @@
-import { ErrorEnum } from "@/processor/constants/error-code.js";
-import { DANGEROUS_FILENAME_RE } from "@/processor/constants/filename.js";
+import { ErrorEnum } from "#/processor/constants/error-code.js";
+import { DANGEROUS_FILENAME_RE } from "#/processor/constants/filename.js";
 import { throwOssError } from "./oss.exception.js";
 
 const MAX_SEGMENT_CHARS = 255;

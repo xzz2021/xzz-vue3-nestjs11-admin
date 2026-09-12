@@ -1,4 +1,4 @@
-import { DictionaryTypeModel } from '@/generated/zod/dictionarytype.js';
+import { DictionaryTypeModel } from '#/generated/zod/dictionarytype.js';
 import z from 'zod';
 import { createZodDto } from 'nestjs-zod';
 import { DictionaryItemSchema } from './entry.dto.js';

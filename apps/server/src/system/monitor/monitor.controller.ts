@@ -1,4 +1,4 @@
-import { RequiredPermission } from "@/processor/decorator/index.js";
+import { RequiredPermission } from "#/processor/decorator/index.js";
 import { Controller, Get } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { MonitorService } from "./monitor.service.js";

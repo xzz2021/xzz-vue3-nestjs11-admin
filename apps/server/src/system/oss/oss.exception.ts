@@ -1,4 +1,4 @@
-import { ErrorEnum } from "@/processor/constants/error-code.js";
+import { ErrorEnum } from "#/processor/constants/error-code.js";
 import { HttpException, HttpStatus } from "@nestjs/common";
 
 const STATUS_BY_CODE: Record<string, number> = {

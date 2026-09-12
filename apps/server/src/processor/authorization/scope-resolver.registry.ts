@@ -1,5 +1,5 @@
-import { DataScope } from '@/generated/prisma/enums.js';
-import { DepartmentRepository } from '@/system/department/department.repository.js';
+import { DataScope } from '#/generated/prisma/enums.js';
+import { DepartmentRepository } from '#/system/department/department.repository.js';
 import { Injectable } from '@nestjs/common';
 import type {
   ScopeResolutionInput,

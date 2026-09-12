@@ -1,9 +1,14 @@
 import {
+  createQuietRedis,
+  logRedisConnectFailure,
+  redisTarget,
+} from '#/infrastructure/database/redis/redis-connection.log.js';
+import {
   buildRedisOptions,
   type AppRedisConfig,
-} from '@/infrastructure/database/redis/redis-options.js';
-import { Public } from '@/processor/decorator/index.js';
-import { TokenService } from '@/system/auth/token.service.js';
+} from '#/infrastructure/database/redis/redis-options.js';
+import { Public } from '#/processor/decorator/index.js';
+import { TokenService } from '#/system/auth/token.service.js';
 import { Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -16,7 +21,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Redis } from 'ioredis';
+import type { Redis } from 'ioredis';
 import type { IncomingMessage } from 'node:http';
 import type { Server } from 'ws';
 import WebSocket from 'ws';
@@ -56,35 +61,47 @@ export class MessageGateway
   ) {}
 
   async onModuleInit() {
-    try {
-      //  Redis 协议 + BullMQ 约束 决定了不能全挤在一条连接上。所以需要单独连接一个 ioredis 实例。
-      const redisCfg = this.configService.get<AppRedisConfig>('redis');
-      // Pub/Sub 须独立连接；无密码时不传 password，避免重复 AUTH WARN
-      this.subscriber = new Redis(
-        buildRedisOptions(redisCfg, {
-          enableOfflineQueue: true,
-          maxRetriesPerRequest: null,
-          lazyConnect: false,
-        }),
-      );
-      await this.subscriber.subscribe(MESSAGE_PUSH_CHANNEL);
-      this.subscriber.on('message', (channel, raw) => {
-        if (channel !== MESSAGE_PUSH_CHANNEL) return;
-        try {
-          const payload = JSON.parse(raw) as MessagePushPayload;
-          this.pushToUser(payload);
-        } catch (error) {
-          this.logger.debug(
-            `解析推送消息失败: ${error instanceof Error ? error.message : String(error)}`,
-          );
-        }
-      });
-      this.logger.log(`已订阅 Redis 频道 ${MESSAGE_PUSH_CHANNEL}`);
-    } catch (error) {
-      this.logger.error(
-        `消息推送订阅失败: ${error instanceof Error ? error.message : String(error)}`,
-      );
+    const redisCfg = this.configService.get<AppRedisConfig>('redis');
+    const target = redisTarget(redisCfg?.host, redisCfg?.port);
+    // Pub/Sub 须独立连接；不在启动阶段 await subscribe，避免 Redis 未启动时卡住整个进程
+    const subscriber = createQuietRedis(
+      buildRedisOptions(redisCfg, {
+        enableOfflineQueue: true,
+        maxRetriesPerRequest: null,
+        lazyConnect: false,
+      }),
+      this.logger,
+      target,
+    );
+    this.subscriber = subscriber;
+    subscriber.on('message', (channel, raw) => {
+      if (channel !== MESSAGE_PUSH_CHANNEL) return;
+      try {
+        const payload = JSON.parse(raw) as MessagePushPayload;
+        this.pushToUser(payload);
+      } catch (error) {
+        this.logger.debug(
+          `解析推送消息失败: ${error instanceof Error ? error.message : String(error)}`,
+        );
+      }
+    });
+
+    const subscribe = async () => {
+      try {
+        await subscriber.subscribe(MESSAGE_PUSH_CHANNEL);
+        this.logger.log(`已订阅 Redis 频道 ${MESSAGE_PUSH_CHANNEL}`);
+      } catch (error) {
+        logRedisConnectFailure(this.logger, target, error);
+      }
+    };
+
+    if (subscriber.status === 'ready') {
+      void subscribe();
+      return;
     }
+    subscriber.once('ready', () => {
+      void subscribe();
+    });
   }
 
   async onModuleDestroy() {

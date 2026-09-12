@@ -1,4 +1,4 @@
-import { FileCleanupService } from '@/system/file-cleanup/file-cleanup.service.js';
+import { FileCleanupService } from '#/system/file-cleanup/file-cleanup.service.js';
 import {
   BadRequestException,
   Injectable,

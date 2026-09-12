@@ -1,4 +1,4 @@
-import { PERMISSION_KEY } from "@/processor/decorator/index.js";
+import { PERMISSION_KEY } from "#/processor/decorator/index.js";
 import { UserController } from "./user.controller.js";
 
 jest.mock("./user.service", () => ({

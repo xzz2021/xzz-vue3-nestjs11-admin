@@ -5,10 +5,10 @@ import { AuthService } from "./auth.service.js";
 import { LockoutService } from "./lockout.service.js";
 import { JwtRefreshStrategy } from "./jwt.refresh.strategy.js";
 import { JwtStrategy } from "./jwt.strategy.js";
-import { CaptchaModule } from "@/system/captcha/captcha.module.js";
-import { SessionModule } from "@/system/session/session.module.js";
-import { UserPersistenceModule } from "@/system/user/user-persistence.module.js";
-import { JwtRefreshAuthGuard } from "@/processor/guard/index.js";
+import { CaptchaModule } from "#/system/captcha/captcha.module.js";
+import { SessionModule } from "#/system/session/session.module.js";
+import { UserPersistenceModule } from "#/system/user/user-persistence.module.js";
+import { JwtRefreshAuthGuard } from "#/processor/guard/index.js";
 
 @Module({
   imports: [

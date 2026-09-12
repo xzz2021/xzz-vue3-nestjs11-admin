@@ -1,4 +1,4 @@
-import { MessageModule } from "@/system/message/message.module.js";
+import { MessageModule } from "#/system/message/message.module.js";
 import { Module } from "@nestjs/common";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { JwtModule } from "@nestjs/jwt";

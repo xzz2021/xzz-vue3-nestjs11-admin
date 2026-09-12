@@ -1,7 +1,7 @@
 import {
   SessionEventBus,
   SESSION_EVENTS,
-} from "@/system/session/session.events.js";
+} from "#/system/session/session.events.js";
 import { BadRequestException, Injectable } from "@nestjs/common";
 
 import { RtTokenService } from "./rt.token.service.js";

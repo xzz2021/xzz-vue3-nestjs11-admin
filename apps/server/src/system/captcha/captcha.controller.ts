@@ -1,7 +1,7 @@
 import { Controller, Get, Res } from "@nestjs/common";
 import { CaptchaService } from "./captcha.service.js";
 import { ApiTags } from "@nestjs/swagger";
-import { Public } from "@/processor/decorator/index.js";
+import { Public } from "#/processor/decorator/index.js";
 import { Throttle } from "@nestjs/throttler";
 import type { Response } from "express";
 @Controller("captcha")

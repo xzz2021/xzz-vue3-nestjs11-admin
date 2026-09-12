@@ -1,5 +1,5 @@
-import { RequiredPermission, User } from "@/processor/decorator/index.js";
-import type { JwtUser } from "@/system/auth/dto/auth.dto.js";
+import { RequiredPermission, User } from "#/processor/decorator/index.js";
+import type { JwtUser } from "#/system/auth/dto/auth.dto.js";
 import { Body, Controller, Get, Post, Query } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import {

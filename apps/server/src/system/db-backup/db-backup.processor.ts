@@ -1,8 +1,12 @@
-import { Processor, WorkerHost } from '@nestjs/bullmq';
+import {
+  logRedisConnectFailure,
+  redisTargetFromEnv,
+} from '#/infrastructure/database/redis/redis-connection.log.js';
+import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 
-import { BackupTrigger } from '@/generated/prisma/client.js';
+import { BackupTrigger } from '#/generated/prisma/client.js';
 
 import {
   DB_BACKUP_JOB_RUN,
@@ -18,6 +22,11 @@ export class DbBackupProcessor extends WorkerHost {
 
   constructor(private readonly dbBackupService: DbBackupService) {
     super();
+  }
+
+  @OnWorkerEvent('error')
+  onWorkerError(error: Error) {
+    logRedisConnectFailure(this.logger, redisTargetFromEnv(), error);
   }
 
   async process(

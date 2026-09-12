@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { ZodValidationException } from 'nestjs-zod';
-import { formatZodErrorMessage } from '@/processor/pipe/zod-error.util.js';
+import { formatZodErrorMessage } from '#/processor/pipe/zod-error.util.js';
 
 export interface ParsedException {
   status: number;

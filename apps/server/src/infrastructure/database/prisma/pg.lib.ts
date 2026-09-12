@@ -3,7 +3,7 @@ import {
   NoticeLevel,
   Prisma,
   PrismaClient,
-} from '@/generated/prisma/client.js';
+} from '#/generated/prisma/client.js';
 import 'dotenv/config';
 
 const connectionString = `${process.env.PG_DATABASE_URL}`;

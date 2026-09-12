@@ -1,4 +1,4 @@
-import { CustomerStatus } from "@/prisma/generated/prisma/enums.js";
+import { CustomerStatus } from "#/prisma/generated/prisma/enums.js";
 import {
   CreateCustomerSchema,
   CustomerDeleteSuccessEnvelopeSchema,
@@ -10,7 +10,7 @@ import {
   UpdateCustomerSchema,
 } from "./dto/customer.dto.js";
 import { escapeCsvCell, serializeCustomerCsvRow } from "./customer.csv.js";
-import { wrapSuccess } from "@/processor/utils/response.model.js";
+import { wrapSuccess } from "#/processor/utils/response.model.js";
 
 describe("Customer DTO whitelist", () => {
   it("accepts safe decimal inputs at Decimal(18,2) boundaries", () => {

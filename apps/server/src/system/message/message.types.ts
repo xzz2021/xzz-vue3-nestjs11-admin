@@ -1,5 +1,5 @@
-import { NoticeLevel } from '@/generated/prisma/client.js';
-import { MessageType } from '@/generated/prisma/client.js';
+import { NoticeLevel } from '#/generated/prisma/client.js';
+import { MessageType } from '#/generated/prisma/client.js';
 
 export type { MessageType };
 export { NoticeLevel };

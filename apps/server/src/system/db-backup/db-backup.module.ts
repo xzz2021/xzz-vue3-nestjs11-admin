@@ -1,5 +1,6 @@
-import { FileCleanupModule } from "@/system/file-cleanup/file-cleanup.module.js";
-import { MessageModule } from "@/system/message/message.module.js";
+import { bullQueueErrorProvider } from "#/infrastructure/database/redis/bull-error.provider.js";
+import { FileCleanupModule } from "#/system/file-cleanup/file-cleanup.module.js";
+import { MessageModule } from "#/system/message/message.module.js";
 import { BullModule } from "@nestjs/bullmq";
 import { Module } from "@nestjs/common";
 
@@ -28,6 +29,7 @@ import { PgDumpRunner } from "./pg-dump.runner.js";
     DbBackupConfigService,
     DbBackupLifecycleService,
     BackupDiskListener,
+    bullQueueErrorProvider(DB_BACKUP_QUEUE),
   ],
   exports: [DbBackupService],
 })

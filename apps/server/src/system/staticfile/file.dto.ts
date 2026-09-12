@@ -1,4 +1,4 @@
-import { FileModel } from '@/generated/zod/file.js';
+import { FileModel } from '#/generated/zod/file.js';
 import { z } from 'zod';
 import { createZodDto } from 'nestjs-zod';
 

@@ -1,5 +1,5 @@
-import { Prisma } from "@/prisma/generated/prisma/client.js";
-import type { FileCleanupService } from "@/system/file-cleanup/file-cleanup.service.js";
+import { Prisma } from "#/prisma/generated/prisma/client.js";
+import type { FileCleanupService } from "#/system/file-cleanup/file-cleanup.service.js";
 import { BadRequestException, NotFoundException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { createHash } from "crypto";

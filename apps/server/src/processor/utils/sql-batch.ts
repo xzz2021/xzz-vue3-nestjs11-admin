@@ -1,4 +1,4 @@
-import { Prisma } from '@/infrastructure/database/prisma/pg.lib.js';
+import { Prisma } from '#/infrastructure/database/prisma/pg.lib.js';
 
 type SqlPrimitive = string | number | boolean | null;
 

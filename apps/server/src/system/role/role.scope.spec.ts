@@ -1,4 +1,4 @@
-import { DataScope } from "@/prisma/generated/prisma/enums.js";
+import { DataScope } from "#/prisma/generated/prisma/enums.js";
 import { BadRequestException } from "@nestjs/common";
 import type { RoleRepository } from "./role.repository.js";
 import { RoleService } from "./role.service.js";
@@ -26,8 +26,8 @@ describe("RoleService data scopes", () => {
   const audit = { record: jest.fn() };
   const service = new RoleService(
     roles as unknown as RoleRepository,
-    cache as unknown as import("@/processor/rbac/index.js").RbacPermissionCacheService,
-    audit as unknown as import("@/core/logger/audit-log.service.js").AuditLogService,
+    cache as unknown as import("#/processor/rbac/index.js").RbacPermissionCacheService,
+    audit as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
   );
 
   const dto = (

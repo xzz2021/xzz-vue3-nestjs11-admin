@@ -1,5 +1,5 @@
-import type { PgService } from "@/prisma/pg.service.js";
-import type { RbacPermissionCacheService } from "@/processor/rbac/index.js";
+import type { PgService } from "#/prisma/pg.service.js";
+import type { RbacPermissionCacheService } from "#/processor/rbac/index.js";
 import { QueryRoleParams } from "./dto/role.dto.js";
 import { RoleRepository } from "./role.repository.js";
 import { ALWAYS_ACCESSIBLE_MENU_NAMES, RoleService } from "./role.service.js";
@@ -59,7 +59,7 @@ describe("RoleService seed and queries", () => {
     {} as unknown as RbacPermissionCacheService,
     {
       record: jest.fn(),
-    } as unknown as import("@/core/logger/audit-log.service.js").AuditLogService,
+    } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
   );
 
   beforeEach(() => {

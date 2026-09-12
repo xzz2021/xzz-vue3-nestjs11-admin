@@ -1,4 +1,4 @@
-import { MessageType, Prisma } from '@/generated/prisma/client.js';
+import { MessageType, Prisma } from '#/generated/prisma/client.js';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { MessageDeliveryService } from './message-delivery.service.js';
 import { MessageRepository } from './message.repository.js';

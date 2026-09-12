@@ -1,9 +1,17 @@
 import { RedisModule, type RedisModuleOptions } from '@liaoliaots/nestjs-redis';
+import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { buildRedisOptions, type AppRedisConfig } from './redis-options.js';
+import type { Redis } from 'ioredis';
+import { bindRedisLifecycleLogs, redisTarget } from './redis-connection.log.js';
+import {
+  buildRedisOptions,
+  REDIS_RECONNECT_INTERVAL_MS,
+  type AppRedisConfig,
+} from './redis-options.js';
 
-/** 断线后重连间隔（毫秒） */
-export const REDIS_RECONNECT_INTERVAL_MS = 15000;
+export { REDIS_RECONNECT_INTERVAL_MS };
+
+const redisLogger = new Logger('Redis');
 
 // 使用模块方式  可以设置多个实例
 export const REDIS_MODULE = RedisModule.forRootAsync({
@@ -12,7 +20,10 @@ export const REDIS_MODULE = RedisModule.forRootAsync({
   useFactory: (...args: unknown[]): RedisModuleOptions => {
     const configService = args[0] as ConfigService;
     const redis = configService.get<AppRedisConfig>('redis');
+    const target = redisTarget(redis?.host, redis?.port);
     return {
+      readyLog: false,
+      errorLog: false,
       // 可声明多个命名实例
       config: [
         {
@@ -27,6 +38,9 @@ export const REDIS_MODULE = RedisModule.forRootAsync({
             reconnectOnError: (err) =>
               /READONLY/.test(err.message) ? 1 : false,
           }),
+          onClientCreated(client: Redis) {
+            bindRedisLifecycleLogs(client, { logger: redisLogger, target });
+          },
         },
       ],
     };

@@ -8,7 +8,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 
-import { SKIP_THROTTLE_KEY } from '@/processor/decorator/throttle.js';
+import { SKIP_THROTTLE_KEY } from '#/processor/decorator/throttle.js';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { Reflector } from '@nestjs/core';
 import * as crypto from 'crypto';

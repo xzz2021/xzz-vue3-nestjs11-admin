@@ -1,4 +1,4 @@
-import { BackupStatus, BackupTrigger } from '@/generated/prisma/client.js';
+import { BackupStatus, BackupTrigger } from '#/generated/prisma/client.js';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { InjectQueue } from '@nestjs/bullmq';
 import {
@@ -55,9 +55,15 @@ export class DbBackupService implements OnModuleInit {
   }
 
   async onModuleInit(): Promise<void> {
-    await this.failOrphanRunningJobs();
-    await this.lifecycle.reconcile();
-    await this.settings.syncSchedule();
+    try {
+      await this.failOrphanRunningJobs();
+      await this.lifecycle.reconcile();
+      await this.settings.syncSchedule();
+    } catch (error) {
+      this.logger.warn(
+        `备份调度初始化跳过: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
   }
 
   async getConfigPayload(): Promise<BackupConfigPayload> {

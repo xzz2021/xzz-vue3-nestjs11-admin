@@ -1,17 +1,17 @@
-import type { RbacPermissionCacheService } from "@/processor/rbac/index.js";
-import type { SessionRevocationService } from "@/system/auth/session-revocation.service.js";
-import type { FileCleanupService } from "@/system/file-cleanup/file-cleanup.service.js";
-import type { PgService } from "@/prisma/pg.service.js";
+import type { RbacPermissionCacheService } from "#/processor/rbac/index.js";
+import type { SessionRevocationService } from "#/system/auth/session-revocation.service.js";
+import type { FileCleanupService } from "#/system/file-cleanup/file-cleanup.service.js";
+import type { PgService } from "#/prisma/pg.service.js";
 import { UserRepository } from "./user.repository.js";
 import { UserService } from "./user.service.js";
 
-jest.mock("@/processor/utils", () => ({
+jest.mock("#/processor/utils/index.js", () => ({
   formatDateToYMDHMS: jest.fn(),
   hashPayPassword: jest.fn(() => Promise.resolve("hashed")),
   verifyPayPassword: jest.fn(() => Promise.resolve(true)),
 }));
 
-jest.mock("@/system/staticfile/multer.config", () => ({
+jest.mock("#/system/staticfile/multer.config.js", () => ({
   sanitizePathSegment: (segment: string) =>
     segment.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 64) || "unknown",
   getStaticFileRoot: () => "/static-root",
@@ -43,7 +43,7 @@ describe("UserService session revocation", () => {
       { enqueue: jest.fn() } as unknown as FileCleanupService,
       {
         record: jest.fn(),
-      } as unknown as import("@/core/logger/audit-log.service.js").AuditLogService,
+      } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
     );
 
   beforeEach(() => {
@@ -164,7 +164,7 @@ describe("UserService uploadAvatar", () => {
       { enqueue } as unknown as FileCleanupService,
       {
         record: jest.fn(),
-      } as unknown as import("@/core/logger/audit-log.service.js").AuditLogService,
+      } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
     );
 
   beforeEach(() => {
@@ -270,7 +270,7 @@ describe("UserService role assignment", () => {
       { enqueue: jest.fn() } as unknown as FileCleanupService,
       {
         record: jest.fn(),
-      } as unknown as import("@/core/logger/audit-log.service.js").AuditLogService,
+      } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
     );
 
   beforeEach(() => {
@@ -328,7 +328,7 @@ describe("UserService list queries", () => {
       { enqueue: jest.fn() } as unknown as FileCleanupService,
       {
         record: jest.fn(),
-      } as unknown as import("@/core/logger/audit-log.service.js").AuditLogService,
+      } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
     );
 
   beforeEach(() => {

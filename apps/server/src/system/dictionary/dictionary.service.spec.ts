@@ -1,4 +1,4 @@
-import type { PgService } from "@/prisma/pg.service.js";
+import type { PgService } from "#/prisma/pg.service.js";
 import { DictionaryService } from "./dictionary.service.js";
 
 describe("DictionaryService seed", () => {

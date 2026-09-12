@@ -1,4 +1,4 @@
-import { ErrorEnum } from '@/processor/constants/error-code.js';
+import { ErrorEnum } from '#/processor/constants/error-code.js';
 import {
   AbortMultipartUploadCommand,
   CompleteMultipartUploadCommand,
@@ -375,7 +375,7 @@ export class OssService {
       throwOssError(ErrorEnum.OSS_EXCEE_MAXIMUM_QUANTITY);
     }
 
-    const requireArchiver = createRequire(__filename);
+    const requireArchiver = createRequire(import.meta.url);
     const archiver = requireArchiver('archiver') as (
       format: string,
       opts?: { zlib?: { level: number } },

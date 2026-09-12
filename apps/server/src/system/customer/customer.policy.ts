@@ -1,10 +1,10 @@
-import { Prisma } from '@/generated/prisma/client.js';
+import { Prisma } from '#/generated/prisma/client.js';
 import {
   CustomerStatus,
   type CustomerStatus as CustomerStatusValue,
-} from '@/generated/prisma/enums.js';
-import { AuthorizationContext } from '@/processor/authorization/authorization-context.js';
-import type { ScopeGrant } from '@/processor/authorization/scope.types.js';
+} from '#/generated/prisma/enums.js';
+import { AuthorizationContext } from '#/processor/authorization/authorization-context.js';
+import type { ScopeGrant } from '#/processor/authorization/scope.types.js';
 import {
   createMongoAbility,
   subject,

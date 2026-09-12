@@ -5,7 +5,8 @@ import {
   OnModuleInit,
 } from '@nestjs/common';
 
-import { PrismaClient } from '@/generated/prisma/client.js';
+import { PrismaClient } from '#/generated/prisma/client.js';
+import { formatConnectFailure } from '../connect-error.js';
 import { adapter } from './pg.lib.js';
 
 /** 断线后后台重连间隔（毫秒） */
@@ -21,6 +22,7 @@ export class PgService
   private ready = false;
   private reconnectTimer?: ReturnType<typeof setInterval>;
   private reconnecting = false;
+  private lastError: unknown;
 
   constructor() {
     super({
@@ -41,10 +43,20 @@ export class PgService
       this.ready = true;
       return true;
     } catch (error) {
+      this.lastError = error;
       this.ready = false;
-      const message = error instanceof Error ? error.message : String(error);
-      this.logger.warn(`PostgreSQL 暂不可用: ${message}`);
       return false;
+    }
+  }
+
+  private pgTarget() {
+    try {
+      const url = process.env.PG_DATABASE_URL;
+      if (!url) return 'PostgreSQL';
+      const parsed = new URL(url);
+      return `${parsed.hostname}:${parsed.port || '5432'}`;
+    } catch {
+      return 'PostgreSQL';
     }
   }
 
@@ -58,9 +70,6 @@ export class PgService
   private scheduleReconnect() {
     if (this.reconnectTimer) return;
 
-    this.logger.warn(
-      `PostgreSQL 将每 ${PG_RECONNECT_INTERVAL_MS / 1000}s 自动重试连接...`,
-    );
     this.reconnectTimer = setInterval(() => {
       void this.runReconnectTick();
     }, PG_RECONNECT_INTERVAL_MS);
@@ -110,8 +119,9 @@ export class PgService
     }
 
     this.logger.error(
-      'PostgreSQL 连接失败，请确认数据库已启动。服务将继续运行并在后台重连。',
+      `${formatConnectFailure('PostgreSQL', this.pgTarget(), this.lastError)}。服务继续运行，将每 ${PG_RECONNECT_INTERVAL_MS / 1000}s 自动重试。`,
     );
+
     this.scheduleReconnect();
   }
 

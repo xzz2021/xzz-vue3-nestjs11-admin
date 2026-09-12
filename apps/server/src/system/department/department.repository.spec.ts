@@ -1,4 +1,4 @@
-import type { PgService } from "@/prisma/pg.service.js";
+import type { PgService } from "#/prisma/pg.service.js";
 import { DepartmentRepository } from "./department.repository.js";
 
 describe("DepartmentRepository", () => {

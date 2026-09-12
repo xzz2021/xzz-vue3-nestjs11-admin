@@ -1,5 +1,5 @@
-import { RtTokenService } from '@/system/auth/rt.token.service.js';
-import { TokenService } from '@/system/auth/token.service.js';
+import { RtTokenService } from '#/system/auth/rt.token.service.js';
+import { TokenService } from '#/system/auth/token.service.js';
 import {
   ExecutionContext,
   Injectable,

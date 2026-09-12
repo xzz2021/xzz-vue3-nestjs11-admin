@@ -1,14 +1,14 @@
 import {
   getStaticFileRoot,
   tryResolvePathInsideRoot,
-} from '@/system/staticfile/multer.config.js';
+} from '#/system/staticfile/multer.config.js';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Queue } from 'bullmq';
 import { promises as fs } from 'node:fs';
 import { resolve } from 'node:path';
-import { PgService } from '@/infrastructure/database/prisma/pg.service.js';
+import { PgService } from '#/infrastructure/database/prisma/pg.service.js';
 import { DiskCleanupEventBus } from './disk-cleanup.events.js';
 import {
   FILE_CLEANUP_QUEUE,

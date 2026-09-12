@@ -1,4 +1,4 @@
-import { RequiredPermission, Serialize } from "@/processor/decorator/index.js";
+import { RequiredPermission, Serialize } from "#/processor/decorator/index.js";
 import { Body, Controller, Delete, Get, Post } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { DictionaryService } from "./dictionary.service.js";

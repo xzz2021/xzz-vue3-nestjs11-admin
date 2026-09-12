@@ -4,7 +4,7 @@ import {
   PrismaClientRustPanicError,
   PrismaClientUnknownRequestError,
   PrismaClientValidationError,
-} from '@/generated/prisma/internal/prismaNamespace.js';
+} from '#/generated/prisma/internal/prismaNamespace.js';
 
 export type PrismaErrorResult = {
   msg: string;

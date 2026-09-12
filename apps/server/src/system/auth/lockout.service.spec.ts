@@ -1,6 +1,6 @@
 import type { RedisService } from "@liaoliaots/nestjs-redis";
 import { ForbiddenException } from "@nestjs/common";
-import { RedisKeys } from "@/processor/constants/cache.js";
+import { RedisKeys } from "#/processor/constants/cache.js";
 import { LOGIN_LOCKOUT, LockoutService } from "./lockout.service.js";
 
 class MemoryRedis {

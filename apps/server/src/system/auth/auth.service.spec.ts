@@ -1,5 +1,5 @@
-import { verifyPayPassword } from "@/processor/utils/index.js";
-import type { UserRepository } from "@/system/user/user.repository.js";
+import { verifyPayPassword } from "#/processor/utils/index.js";
+import type { UserRepository } from "#/system/user/user.repository.js";
 import { RedisService } from "@liaoliaots/nestjs-redis";
 import { BadRequestException, ForbiddenException } from "@nestjs/common";
 import type { ConfigService } from "@nestjs/config";
@@ -10,7 +10,7 @@ import type { RtTokenService } from "./rt.token.service.js";
 import type { SessionRevocationService } from "./session-revocation.service.js";
 import type { TokenService } from "./token.service.js";
 
-jest.mock("@/processor/utils", () => ({
+jest.mock("#/processor/utils/index.js", () => ({
   hashPayPassword: jest.fn(),
   verifyPayPassword: jest.fn(),
 }));
@@ -53,7 +53,7 @@ describe("AuthService rtLogin lockout", () => {
       { ensureNotLocked, onFail, onSuccess } as unknown as LockoutService,
       {
         record,
-      } as unknown as import("@/core/logger/audit-log.service.js").AuditLogService,
+      } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
     );
 
   beforeEach(() => {

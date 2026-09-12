@@ -1,7 +1,7 @@
 import {
   ALL_PERMISSIONS,
   SUPER_ADMIN_ROLE,
-} from '@/processor/rbac/rbac-permission.js';
+} from '#/processor/rbac/rbac-permission.js';
 import { Injectable } from '@nestjs/common';
 import { AuthorizationContext } from './authorization-context.js';
 import type { AuthorizationSnapshot } from './authorization-snapshot.js';

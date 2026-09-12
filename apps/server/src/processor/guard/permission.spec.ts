@@ -1,7 +1,7 @@
-import { AuthorizationContext } from "@/processor/authorization/authorization-context";
-import type { AuthorizationService } from "@/processor/authorization/authorization.service";
-import { PERMISSION_KEY } from "@/processor/decorator/permission";
-import { Prisma } from "@/prisma/generated/prisma/client";
+import { AuthorizationContext } from "#/processor/authorization/authorization-context";
+import type { AuthorizationService } from "#/processor/authorization/authorization.service";
+import { PERMISSION_KEY } from "#/processor/decorator/permission";
+import { Prisma } from "#/prisma/generated/prisma/client";
 import {
   ForbiddenException,
   ServiceUnavailableException,
