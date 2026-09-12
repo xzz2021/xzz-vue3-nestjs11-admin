@@ -42,6 +42,7 @@ export const CORE_MODULE: (DynamicModule | StaticfileModule)[] = [
     该拦截是ip级别的，如果走nginx代理  可能要调整guard获取真实ip
   */
   ThrottlerModule.forRootAsync({
+    imports: [AppRedisModule],
     inject: [RedisService],
     useFactory: (redisService: RedisService) => ({
       // 新版  storage  需要写在顶层

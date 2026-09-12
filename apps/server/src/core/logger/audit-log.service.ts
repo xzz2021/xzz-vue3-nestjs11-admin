@@ -1,14 +1,14 @@
-import { Prisma } from "@/prisma/generated/prisma/client";
-import { PgService } from "@/prisma/pg.service";
-import { lookupIpLocation } from "@/processor/utils";
-import type { LoggerService } from "@nestjs/common";
-import { Inject, Injectable } from "@nestjs/common";
-import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
+import { Prisma } from '@/generated/prisma/client.js';
+import { PgService } from '@/infrastructure/database/prisma/pg.service.js';
+import { lookupIpLocation } from '@/processor/utils/index.js';
+import type { LoggerService } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import {
   sanitizeAuditMetadata,
   type AuditRecordInput,
-} from "./audit-log.sanitize";
-import { QueryAuditLogParams } from "./logger.dto";
+} from './audit-log.sanitize.js';
+import { QueryAuditLogParams } from './logger.dto.js';
 
 @Injectable()
 export class AuditLogService {
@@ -39,7 +39,7 @@ export class AuditLogService {
       });
     } catch (error) {
       this.logger.error(
-        "写入领域审计日志失败",
+        '写入领域审计日志失败',
         error instanceof Error ? error.stack : String(error),
         AuditLogService.name,
       );
@@ -85,10 +85,10 @@ export class AuditLogService {
             },
           },
         },
-        orderBy: { createdAt: "desc" },
+        orderBy: { createdAt: 'desc' },
       }),
       this.pgService.auditLog.count({ where }),
     ]);
-    return { list, total, message: "获取操作日志成功" };
+    return { list, total, message: '获取操作日志成功' };
   }
 }

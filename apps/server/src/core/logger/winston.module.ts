@@ -1,5 +1,5 @@
 import { Global, Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
 import { AuditLogService } from './audit-log.service.js';
 import { LoggerController } from './logger.controller.js';
@@ -10,6 +10,7 @@ import { createWinstonOptions } from './winston.config.js';
 @Module({
   imports: [
     WinstonModule.forRootAsync({
+      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const isProduction = config.get<boolean>('isProduction') === true;

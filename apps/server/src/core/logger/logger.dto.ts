@@ -1,18 +1,18 @@
-import { AuditLogModel, UserOperationLogModel } from "@prisma/generated/zod";
-import { createZodDto } from "nestjs-zod";
-import { z } from "zod";
+import { AuditLogModel, UserOperationLogModel } from '@/generated/zod/index.js';
+import { createZodDto } from 'nestjs-zod';
+import { z } from 'zod';
 
 const queryBooleanSchema = z.preprocess((val: unknown) => {
-  if (val === undefined || val === "") return undefined;
-  if (val === true || val === "true") return true;
-  if (val === false || val === "false") return false;
+  if (val === undefined || val === '') return undefined;
+  if (val === true || val === 'true') return true;
+  if (val === false || val === 'false') return false;
   return val;
 }, z.boolean().optional());
 
 const dateRangeSchema = z.preprocess(
   (val: unknown) => {
-    if (val === undefined || val === "") return undefined;
-    if (typeof val !== "string") return val;
+    if (val === undefined || val === '') return undefined;
+    if (typeof val !== 'string') return val;
     try {
       return JSON.parse(val);
     } catch {
@@ -43,7 +43,7 @@ const QueryLogParamsSchema = z.object({
     .min(1)
     .optional()
     .default(1)
-    .meta({ description: "页码", example: 1 }),
+    .meta({ description: '页码', example: 1 }),
   pageSize: z.coerce
     .number()
     .int()
@@ -51,11 +51,11 @@ const QueryLogParamsSchema = z.object({
     .max(100)
     .optional()
     .default(10)
-    .meta({ description: "每页条数", example: 10 }),
-  isSuccess: queryBooleanSchema.meta({ description: "状态" }),
-  method: z.string().optional().meta({ description: "方法" }),
-  requestUrl: z.string().optional().meta({ description: "请求URL" }),
-  dateRange: dateRangeSchema.meta({ description: "日期范围" }),
+    .meta({ description: '每页条数', example: 10 }),
+  isSuccess: queryBooleanSchema.meta({ description: '状态' }),
+  method: z.string().optional().meta({ description: '方法' }),
+  requestUrl: z.string().optional().meta({ description: '请求URL' }),
+  dateRange: dateRangeSchema.meta({ description: '日期范围' }),
 });
 export class QueryLogParams extends createZodDto(QueryLogParamsSchema) {}
 
@@ -64,7 +64,7 @@ const DeleteLogSchema = z.object({
     .array(z.number().int())
     .nonempty()
     .transform((val) => [...new Set(val)])
-    .meta({ description: "日志ID数组", example: [1, 2, 3] }),
+    .meta({ description: '日志ID数组', example: [1, 2, 3] }),
 });
 export class DeleteLogDto extends createZodDto(DeleteLogSchema) {}
 
@@ -80,7 +80,7 @@ const QueryAuditLogParamsSchema = z.object({
     .min(1)
     .optional()
     .default(1)
-    .meta({ description: "页码", example: 1 }),
+    .meta({ description: '页码', example: 1 }),
   pageSize: z.coerce
     .number()
     .int()
@@ -88,30 +88,30 @@ const QueryAuditLogParamsSchema = z.object({
     .max(100)
     .optional()
     .default(10)
-    .meta({ description: "每页条数", example: 10 }),
+    .meta({ description: '每页条数', example: 10 }),
   action: z
     .string()
     .min(1)
     .max(80)
     .optional()
-    .meta({ description: "领域动作", example: "user.update" }),
+    .meta({ description: '领域动作', example: 'user.update' }),
   resource: z
     .string()
     .min(1)
     .max(100)
     .optional()
-    .meta({ description: "聚合根类型", example: "User" }),
+    .meta({ description: '聚合根类型', example: 'User' }),
   resourceId: z
     .string()
     .min(1)
     .max(64)
     .optional()
-    .meta({ description: "聚合根 ID" }),
+    .meta({ description: '聚合根 ID' }),
   success: queryBooleanSchema.meta({
-    description: "业务是否成功",
+    description: '业务是否成功',
     example: true,
   }),
-  dateRange: dateRangeSchema.meta({ description: "日期范围" }),
+  dateRange: dateRangeSchema.meta({ description: '日期范围' }),
 });
 export class QueryAuditLogParams extends createZodDto(
   QueryAuditLogParamsSchema,

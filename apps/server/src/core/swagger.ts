@@ -2,7 +2,7 @@ import { INestApplication, Logger } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { cleanupOpenApiDoc } from "nestjs-zod";
 
-import auth from "basic-auth";
+import { parse } from "basic-auth";
 import { timingSafeEqual } from "crypto";
 import { NextFunction, Request, Response } from "express";
 
@@ -20,24 +20,12 @@ function safeEqual(actual: string, expected: string): boolean {
   );
 }
 
-function isBasicCredentials(
-  value: unknown,
-): value is { name: string; pass: string } {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "name" in value &&
-    typeof value.name === "string" &&
-    "pass" in value &&
-    typeof value.pass === "string"
-  );
-}
-
 function swaggerAuth(username: string, password: string) {
   return (req: Request, res: Response, next: NextFunction) => {
-    const credentials: unknown = auth(req);
+    const header = req.headers.authorization;
+    const credentials = typeof header === "string" ? parse(header) : undefined;
     if (
-      !isBasicCredentials(credentials) ||
+      !credentials ||
       !safeEqual(credentials.name, username) ||
       !safeEqual(credentials.pass, password)
     ) {
