@@ -1,0 +1,33 @@
+import { PERMISSION_KEY } from "@/processor/decorator/index.js";
+import { UserController } from "./user.controller.js";
+
+jest.mock("./user.service", () => ({
+  UserService: class UserService {},
+}));
+
+describe("UserController permission boundary", () => {
+  it.each([
+    ["user:view", "findBy"],
+    ["user:update", "resetPassword"],
+    ["user:add", "addUser"],
+    ["user:update", "update"],
+    ["user:delete", "delete"],
+    ["user:view", "allList"],
+  ] as const)("requires %s on %s", (permission, methodName) => {
+    expect(
+      Reflect.getMetadata(PERMISSION_KEY, UserController.prototype[methodName]),
+    ).toBe(permission);
+  });
+
+  it.each([
+    "detailInfo",
+    "updatePersonalInfo",
+    "updatePassword",
+    "uploadAvatar",
+    "lookup",
+  ] as const)("does not require management permission for %s", (methodName) => {
+    expect(
+      Reflect.getMetadata(PERMISSION_KEY, UserController.prototype[methodName]),
+    ).toBeUndefined();
+  });
+});

@@ -1,0 +1,23 @@
+export enum RedisKeys {
+  AccessIp = "access_ip",
+  CAPTCHA_IMG_PREFIX = "captcha:img:",
+  AUTH_TOKEN_PREFIX = "auth:token:",
+  AUTH_PERM_PREFIX = "auth:permission:",
+  RBAC_PERMISSIONS_PREFIX = "rbac:permissions:",
+  RBAC_PERM_GEN_PREFIX = "rbac:perm-gen:",
+  RBAC_PERM_LOCK_PREFIX = "rbac:perm-lock:",
+  AUTHORIZATION_SNAPSHOT_PREFIX = "authorization:snapshot:",
+  ORGANIZATION_GENERATION = "authorization:organization-generation",
+  AUTH_PASSWORD_V_PREFIX = "auth:passwordVersion:",
+  AUTH_FAIL_ACCT_PREFIX = "auth:fail:acct:",
+  AUTH_LOCK_ACCT_PREFIX = "auth:lock:acct:",
+  AUTH_LOCK_LEVEL_PREFIX = "auth:lock:level:",
+  ONLINE_USER_PREFIX = "online:user:",
+  ONLINE_SESSION_PREFIX = "online:session:",
+  ONLINE_INDEX = "online:index",
+  TOKEN_BLACKLIST_PREFIX = "token:blacklist:",
+  MONITOR_METRICS = "monitor:metrics",
+  MONITOR_LATEST = "monitor:latest",
+  MONITOR_ERRORS = "monitor:errors",
+}
+export const API_CACHE_PREFIX = "api-cache:";

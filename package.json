@@ -32,7 +32,6 @@
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
-    "husky": "^9.1.7",
-    "prettier": "catalog:"
+    "husky": "^9.1.7"
   }
 }

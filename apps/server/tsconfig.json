@@ -20,7 +20,7 @@
     "strictPropertyInitialization": false,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "types": ["node", "jest"],
+    "types": ["node", "vitest/globals"],
     "paths": {
       "@/*": ["./src/*"] // 将 @ 作为 src 目录的别名
       // "@prisma/*": ["./src/generated/prisma/*"] // 将 @ 作为 src 目录的别名

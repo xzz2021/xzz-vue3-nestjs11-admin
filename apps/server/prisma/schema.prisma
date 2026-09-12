@@ -12,6 +12,7 @@ generator zod {
   provider    = "nestjs-zod-prisma"
   output      = "../src/generated/zod"
   generateDto = true
+  moduleFormat = "esm"
 }
 
 datasource db {

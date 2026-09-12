@@ -3,10 +3,10 @@ import {
   Logger,
   OnModuleDestroy,
   OnModuleInit,
-} from "@nestjs/common";
+} from '@nestjs/common';
 
-import { PrismaClient } from "@/generated/prisma/client";
-import { adapter } from "./pg.lib";
+import { PrismaClient } from '@/generated/prisma/client.js';
+import { adapter } from './pg.lib.js';
 
 /** 断线后后台重连间隔（毫秒） */
 export const PG_RECONNECT_INTERVAL_MS = 5_000;
@@ -72,7 +72,7 @@ export class PgService
     try {
       const ok = await this.tryConnect();
       if (ok) {
-        this.logger.log("PostgreSQL 连接已恢复");
+        this.logger.log('PostgreSQL 连接已恢复');
         this.clearReconnectTimer();
       }
     } finally {
@@ -105,12 +105,12 @@ export class PgService
   async onModuleInit() {
     const ok = await this.tryConnect();
     if (ok) {
-      this.logger.log("PostgreSQL 连接成功");
+      this.logger.log('PostgreSQL 连接成功');
       return;
     }
 
     this.logger.error(
-      "PostgreSQL 连接失败，请确认数据库已启动。服务将继续运行并在后台重连。",
+      'PostgreSQL 连接失败，请确认数据库已启动。服务将继续运行并在后台重连。',
     );
     this.scheduleReconnect();
   }
