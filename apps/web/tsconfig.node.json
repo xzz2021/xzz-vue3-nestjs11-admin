@@ -2,7 +2,7 @@
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
     "target": "es2023",
-    "lib": ["ES2023"],
+    "lib": ["ES2023", "dom"],
     "types": ["node"],
     "skipLibCheck": true,
 
@@ -17,7 +17,24 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    /*  */
+    "useDefineForClassFields": true,
+    /*  "moduleResolution": "NodeNext",*/
+    "strict": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "jsxImportSource": "vue",
+    "rootDir": "./",
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "strictFunctionTypes": false,
+    "experimentalDecorators": true,
+    "noImplicitAny": false
   },
   "include": ["vite.config.ts"]
 }

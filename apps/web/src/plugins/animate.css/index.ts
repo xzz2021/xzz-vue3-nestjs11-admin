@@ -1,0 +1,5 @@
+import 'animate.css/source/_vars.css'
+import 'animate.css/source/_base.css'
+import 'animate.css/source/bouncing_entrances/bounceInLeft.css'
+import 'animate.css/source/bouncing_entrances/bounceInRight.css'
+import 'animate.css/source/fading_entrances/fadeInRight.css'
