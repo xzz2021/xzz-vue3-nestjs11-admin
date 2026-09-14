@@ -52,7 +52,7 @@ export default defineComponent({
       const regexp = /^[0-9]*$/
       const nodes = textArray.map((t) => {
         if (regexp.test(t)) {
-          return unref(keyNodes)[t] || t
+          return unref(keyNodes)[Number(t)] || t
         }
         return t
       })

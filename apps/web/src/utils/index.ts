@@ -81,7 +81,7 @@ export function formatTime(time: Date | number | string, fmt: string) {
   if (!time) return ''
   else {
     const date = new Date(time)
-    const o = {
+    const o: Record<string, number> = {
       'M+': date.getMonth() + 1,
       'd+': date.getDate(),
       'H+': date.getHours(),
@@ -95,7 +95,8 @@ export function formatTime(time: Date | number | string, fmt: string) {
     }
     for (const k in o) {
       if (new RegExp('(' + k + ')').test(fmt)) {
-        fmt = fmt.replace(RegExp.$1, RegExp.$1.length === 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length))
+        const val = o[k]
+        fmt = fmt.replace(RegExp.$1, RegExp.$1.length === 1 ? String(val) : ('00' + val).slice(('' + val).length))
       }
     }
     return fmt

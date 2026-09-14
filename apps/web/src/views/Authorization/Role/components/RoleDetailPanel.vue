@@ -183,13 +183,13 @@ const handleCopyMenuPermission = () => {
             <div v-if="row.permissions?.length" class="permission-tags">
               <div v-for="permission in row.permissions" :key="permission.id" class="permission-display">
                 <ElTag
-                  :type="isPermissionOwned(row, permission) ? 'success' : 'info'"
-                  :effect="isPermissionOwned(row, permission) ? 'light' : 'plain'"
+                  :type="isPermissionOwned(row as RoleMenuTreeNode, permission) ? 'success' : 'info'"
+                  :effect="isPermissionOwned(row as RoleMenuTreeNode, permission) ? 'light' : 'plain'"
                   class="permission-tag"
                 >
                   {{ permission.name }}
                 </ElTag>
-                <template v-if="isPermissionOwned(row, permission) && permission.scopeEnabled">
+                <template v-if="isPermissionOwned(row as RoleMenuTreeNode, permission) && permission.scopeEnabled">
                   <ElTag :type="permission.dataScope ? 'primary' : 'warning'" effect="plain">
                     {{ dataScopeLabel(permission) }}
                   </ElTag>

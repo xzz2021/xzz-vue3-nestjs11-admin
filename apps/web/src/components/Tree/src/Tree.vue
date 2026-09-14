@@ -1,5 +1,5 @@
 <script lang="tsx" setup>
-import { defineProps, defineEmits, ref, type CSSProperties } from 'vue'
+import { ref, type CSSProperties } from 'vue'
 import { ElTree } from 'element-plus'
 
 interface TreeProps {
@@ -33,7 +33,7 @@ const closeTreeMenu = () => {
 }
 
 // 右键菜单事件处理函数
-const openTreeMenu = (event: MouseEvent, data: any, _node: any, _target: HTMLElement) => {
+const openTreeMenu = (event: Event, data: any) => {
   contextNode.value = data
   if (!treeContainer.value) return
 

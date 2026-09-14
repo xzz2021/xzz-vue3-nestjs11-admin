@@ -21,7 +21,7 @@ const { maxHeight, minWidth, setupDrag } = useResize({
 })
 
 const vResize = {
-  mounted(el) {
+  mounted(el: HTMLElement) {
     const observer = new MutationObserver(() => {
       const elDialog = el.querySelector('.el-dialog')
 
@@ -40,7 +40,7 @@ const attrs = useAttrs()
 const slots = useSlots()
 const getBindValue = computed(() => {
   const delArr: string[] = ['maxHeight', 'width']
-  const obj = Object.assign({}, { ...unref(attrs), ...props })
+  const obj: Recordable = Object.assign({}, { ...unref(attrs), ...props })
   for (const key in obj) {
     if (delArr.indexOf(key) !== -1) {
       delete obj[key]

@@ -17,7 +17,7 @@ import type {
   DatePickerProps,
   FormItemProps as ElFormItemProps,
   FormProps as ElFormProps,
-  ISelectProps,
+  SelectProps as ISelectProps,
   UploadProps
 } from 'element-plus'
 import type { IEditorConfig } from '@wangeditor/editor'
@@ -370,7 +370,7 @@ export interface DatePickerComponentProps extends Partial<DatePickerProps> {
     blur?: (event: FocusEvent) => void
     focus?: (event: FocusEvent) => void
     calendarChange?: (val: [Date, Date]) => void
-    panelChange?: (date, mode, view) => void
+    panelChange?: (date: Date | Date[], mode: string, view: unknown) => void
     visibleChange?: (visibility: boolean) => void
   }
   slots?: {

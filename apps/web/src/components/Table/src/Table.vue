@@ -222,7 +222,7 @@ export default defineComponent({
     })
 
     const setProps = (props: TableProps = {}) => {
-      mergeProps.value = Object.assign(unref(mergeProps), props)
+      mergeProps.value = Object.assign({}, unref(mergeProps) as Recordable, props as Recordable) as TableProps
       outsideProps.value = { ...props } as any
     }
 
@@ -337,7 +337,7 @@ export default defineComponent({
 
         const children = v.children
 
-        const slots = {
+        const slots: Recordable = {
           default: (...args: any[]) => {
             const data = args[0]
             let isPreview = false
@@ -442,7 +442,7 @@ export default defineComponent({
 
           const children = v.children
 
-          const slots = {
+          const slots: Recordable = {
             default: (...args: any[]) => {
               const data = args[0]
 
@@ -481,7 +481,7 @@ export default defineComponent({
     }
 
     return () => {
-      const tableSlots = {}
+      const tableSlots: Recordable = {}
       if (getSlot(slots, 'empty')) {
         tableSlots['empty'] = (...args: any[]) => getSlot(slots, 'empty', args)
       }
@@ -495,7 +495,7 @@ export default defineComponent({
             <div class="flex flex-wrap">
               {unref(getProps)?.data?.length ? (
                 unref(getProps)?.data.map((item) => {
-                  const cardSlots = {
+                  const cardSlots: Recordable = {
                     default: () => {
                       return getSlot(slots, 'content', item)
                     }

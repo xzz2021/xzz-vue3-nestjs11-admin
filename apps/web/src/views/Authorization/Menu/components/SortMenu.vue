@@ -37,7 +37,7 @@ const treeData = ref<MenuItem[]>([])
 const updateData = ref<MenuSortItem[]>([])
 
 const treeProps = {
-  label: (data: MenuItem) => t(data.title),
+  label: (data: Record<string, any>) => t(data.title),
   children: 'children'
 }
 

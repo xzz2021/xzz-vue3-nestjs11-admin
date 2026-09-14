@@ -41,7 +41,7 @@ export default defineComponent({
   setup(props, { attrs }) {
     const getBindValue = computed((): any => {
       const delArr: string[] = ['title', 'message', 'collapse', 'schema', 'data', 'class']
-      const obj = { ...attrs, ...props }
+      const obj: Recordable = { ...attrs, ...props }
       for (const key in obj) {
         if (delArr.indexOf(key) !== -1) {
           delete obj[key]
@@ -55,7 +55,7 @@ export default defineComponent({
 
     const getBindItemValue = (item: DescriptionsSchema) => {
       const delArr: string[] = ['field']
-      const obj = { ...item }
+      const obj: Recordable = { ...item }
       for (const key in obj) {
         if (delArr.indexOf(key) !== -1) {
           delete obj[key]

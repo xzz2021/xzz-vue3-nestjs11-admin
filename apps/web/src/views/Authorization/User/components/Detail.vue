@@ -31,7 +31,7 @@ const detailSchema = computed<DescriptionsSchema[]>(() => [
         if (!roles.length) return null
         return (
           <>
-            {roles.map((role) => (
+            {roles.map((role: { id: string; name: string }) => (
               <ElTag key={role.id} class="mr-4px mb-4px">
                 {role.name}
               </ElTag>

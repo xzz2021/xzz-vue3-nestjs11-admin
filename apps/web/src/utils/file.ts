@@ -218,7 +218,7 @@ export async function downloadFile({
   }
 }
 
-export const formatDataFn = (data: any[]) => {
+export const formatDataFn = (data: any[]): any[] => {
   return data.map((item) => {
     const { id, children, permissions, parentId, meta, ...rest } = item
     if (meta) {

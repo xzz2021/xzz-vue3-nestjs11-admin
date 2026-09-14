@@ -137,7 +137,7 @@ const filterModel = async () => {
   const model = await getFormData()
   if (unref(getProps).removeNoValueItem) {
     // 使用reduce过滤空值，并返回一个新对象
-    return Object.keys(model).reduce((prev, next) => {
+    return Object.keys(model).reduce<Recordable>((prev, next) => {
       const value = model[next]
       if (!isEmptyVal(value)) {
         if (isObject(value)) {

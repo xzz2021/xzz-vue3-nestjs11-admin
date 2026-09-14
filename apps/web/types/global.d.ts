@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'vue'
-import type { RawAxiosRequestHeaders } from 'axios'
+import type { AxiosProgressEvent, RawAxiosRequestHeaders } from 'axios'
 declare global {
   declare interface Fn<T = any> {
     (...arg: T[]): T
@@ -42,7 +42,7 @@ declare global {
     responseType?: AxiosResponseType
     withCredentials?: boolean
     timeout?: number
-    onUploadProgress?: (event: { loaded: number; total?: number }) => void
+    onUploadProgress?: (event: AxiosProgressEvent) => void
     skipErrorToast?: boolean
   }
 

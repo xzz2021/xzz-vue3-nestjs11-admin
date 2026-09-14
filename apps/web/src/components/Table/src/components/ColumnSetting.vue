@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ElDrawer, ElCheckbox, ElCheckboxGroup, ElText, ElRadioButton, ElRadioGroup } from 'element-plus'
+import { ElDrawer, ElCheckbox, ElCheckboxGroup, ElText, ElRadioButton, ElRadioGroup, type CheckboxValueType } from 'element-plus'
 import type { TableColumn } from '../types'
 import { type PropType, ref, watch, unref } from 'vue'
 import { cloneDeep } from 'lodash-es'
@@ -15,7 +15,9 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['confirm'])
+const emit = defineEmits<{
+  confirm: [columns: TableColumn[]]
+}>()
 
 const oldColumns = ref<TableColumn[]>()
 
@@ -29,12 +31,12 @@ const checkColumns = ref<string[]>([])
 
 const checkAll = ref(false)
 const isIndeterminate = ref(true)
-const handleCheckAllChange = (val: boolean) => {
-  checkColumns.value = val ? unref(defaultCheckColumns) : []
+const handleCheckAllChange = (val: CheckboxValueType) => {
+  checkColumns.value = val === true ? unref(defaultCheckColumns) : []
   isIndeterminate.value = false
 }
 
-const handleCheckedColumnsChange = (value: string[]) => {
+const handleCheckedColumnsChange = (value: CheckboxValueType[]) => {
   const checkedCount = value.length
   checkAll.value = checkedCount === unref(defaultCheckColumns)?.length
   isIndeterminate.value = checkedCount > 0 && checkedCount < unref(defaultCheckColumns)?.length

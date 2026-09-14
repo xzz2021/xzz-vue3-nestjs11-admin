@@ -138,7 +138,7 @@ onMounted(() => {
         clearable
         node-key="value"
         :data="departmentOptions"
-        :props="{ value: 'value', label: 'label', children: 'children', disabled: 'disabled' }"
+        :props="{ label: 'label', children: 'children', disabled: 'disabled' }"
         :loading="departmentStore.loading"
         :placeholder="t('role.customDepartmentPlaceholder')"
       />

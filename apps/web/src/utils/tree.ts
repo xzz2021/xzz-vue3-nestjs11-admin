@@ -203,7 +203,7 @@ function deepClone<T>(obj: T): T {
 export const formatToTree = <T extends { id: number; parentId: number | null; sort: number | null }>(
   array2: T[],
   parentId: number | null = null,
-  parentKey = 'parentId'
+  parentKey: keyof T = 'parentId'
 ): (T & { children: T[] })[] => {
   // const array = JSON.parse(JSON.stringify(array2))
   // const array = structuredClone(array2) //  优化方案  ???????
@@ -214,7 +214,7 @@ export const formatToTree = <T extends { id: number; parentId: number | null; so
   return (
     array
       // Filter items that either match parentId or have non-existent parentId
-      .filter((item) => item[parentKey] === parentId || (parentId === null && !parentExists(item[parentKey])))
+      .filter((item) => item[parentKey] === parentId || (parentId === null && !parentExists(item[parentKey] as number | null)))
       .map((item) => ({
         ...item,
         children: formatToTree(array, item.id, parentKey)

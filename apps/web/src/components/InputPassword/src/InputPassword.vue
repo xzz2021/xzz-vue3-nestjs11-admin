@@ -3,9 +3,10 @@ import { ref, unref, computed, watch } from 'vue'
 import { ElInput } from 'element-plus'
 import { propTypes } from '@/utils/propTypes'
 import { useConfigGlobal } from '@/hooks/web/useConfigGlobal'
-import { zxcvbn } from '@zxcvbn-ts/core'
-import type { ZxcvbnResult } from '@zxcvbn-ts/core'
+import { ZxcvbnFactory } from '@zxcvbn-ts/core'
 import { useDesign } from '@/hooks/web/useDesign'
+
+const zxcvbn = new ZxcvbnFactory()
 
 const { getPrefixCls } = useDesign()
 
@@ -46,7 +47,7 @@ watch(
 // 获取密码强度
 const getPasswordStrength = computed(() => {
   const value = unref(valueRef)
-  const zxcvbnRef = zxcvbn(unref(valueRef)) as ZxcvbnResult
+  const zxcvbnRef = zxcvbn.check(unref(valueRef))
   return value ? zxcvbnRef.score : -1
 })
 </script>

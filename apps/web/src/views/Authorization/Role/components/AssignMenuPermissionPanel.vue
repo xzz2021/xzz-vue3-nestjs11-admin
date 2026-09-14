@@ -154,7 +154,7 @@ const selectedPermissionCount = computed(() => {
   permissionChangeTick.value
   let count = 0
   eachTree(props.menuTree, (node) => {
-    node.permissions.forEach((permission) => {
+    node.permissions.forEach((permission: RoleMenuPermissionItem) => {
       if (permission.enabled && permission.checked) count++
     })
   })
@@ -246,7 +246,7 @@ const toggleAllMenuPermissions = () => {
   const checked = !isAllMenuPermissionChecked.value
   eachTree(props.menuTree, (node: RoleMenuTreeNode) => {
     node.checked = checked
-    node.permissions.forEach((permission) => {
+    node.permissions.forEach((permission: RoleMenuPermissionItem) => {
       if (!permission.enabled) return
       if (checked) {
         permission.checked = true

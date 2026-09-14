@@ -78,10 +78,10 @@ const permissionTypeLabel = (type: PermissionType) => {
       </ElTableColumn>
       <ElTableColumn :label="t('userDemo.action')" width="140">
         <template #default="{ row }">
-          <ElButton size="small" type="primary" @click="emit('edit', row)">
+          <ElButton size="small" type="primary" @click="emit('edit', row as MenuPermission)">
             {{ t('common.edit') }}
           </ElButton>
-          <ElPopconfirm :title="t('menu.confirmDeletePermission')" @confirm="emit('delete', row)">
+          <ElPopconfirm :title="t('menu.confirmDeletePermission')" @confirm="emit('delete', row as MenuPermission)">
             <template #reference>
               <ElButton size="small" type="danger">{{ t('exampleDemo.del') }}</ElButton>
             </template>

@@ -229,7 +229,7 @@ const scrollbarRef = ref<ComponentRef<typeof ElScrollbar>>()
 // 保存滚动位置
 const scrollLeftNumber = ref(0)
 
-const scroll = ({ scrollLeft }) => {
+const scroll = ({ scrollLeft }: { scrollLeft: number }) => {
   scrollLeftNumber.value = scrollLeft as number
 }
 

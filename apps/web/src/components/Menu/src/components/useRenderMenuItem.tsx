@@ -1,5 +1,5 @@
 import { ElSubMenu, ElMenuItem } from 'element-plus'
-import { unref } from 'vue'
+import { unref, type ComputedRef } from 'vue'
 import type { RouteMeta } from 'vue-router'
 import { hasOneShowingChild } from '../helper'
 import { isUrl } from '@/utils/is'
@@ -18,7 +18,7 @@ const resolveMenuIndex = (meta: RouteMeta, fallbackPath: string) => {
   return resolveExternalLink(meta.link) || fallbackPath
 }
 
-export const useRenderMenuItem = (menuMode) =>
+export const useRenderMenuItem = (menuMode: ComputedRef<'vertical' | 'horizontal'>) =>
   // allRouters: AppRouteRecordRaw[] = [],
   {
     const renderMenuItem = (routers: AppRouteRecordRaw[], parentPath = '/') => {

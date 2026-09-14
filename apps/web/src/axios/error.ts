@@ -13,7 +13,7 @@ export const showAxiosError = (msg: string) => {
   ElMessage({
     message: msg.length > 150 ? msg.slice(0, 150) : msg,
     grouping: true,
-    type: 'error',
+    type: 'error'
   })
 }
 
@@ -41,6 +41,8 @@ export const getAxiosErrorMessage = (error: AxiosError<unknown>): string => {
   switch (status) {
     case 503:
       return '服务暂时不可用，请稍后重试'
+    case 502:
+      return '网关错误，请稍后重试'
     case 500:
       return '请检查网络或后端服务是否开启'
     case 404:

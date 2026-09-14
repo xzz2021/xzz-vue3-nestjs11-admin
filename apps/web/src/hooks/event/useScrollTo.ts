@@ -3,7 +3,7 @@ import { ref, unref } from 'vue'
 export interface ScrollToParams {
   el: HTMLElement
   to: number
-  position: string
+  position: 'scrollLeft' | 'scrollTop'
   duration?: number
   callback?: () => void
 }
@@ -16,7 +16,7 @@ const easeInOutQuad = (t: number, b: number, c: number, d: number) => {
   t--
   return (-c / 2) * (t * (t - 2) - 1) + b
 }
-const move = (el: HTMLElement, position: string, amount: number) => {
+const move = (el: HTMLElement, position: ScrollToParams['position'], amount: number) => {
   el[position] = amount
 }
 

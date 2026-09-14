@@ -21,6 +21,7 @@ import { initModel, setComponentProps, setGridProp, setItemComponentSlots, setTe
 import { componentMap } from './helper/componentMap'
 import {
   type CheckboxGroupComponentProps,
+  type ComponentName,
   ComponentNameEnum,
   type FormProps,
   type FormSchema,
@@ -102,10 +103,10 @@ export default defineComponent({
     })
 
     // 存储表单实例
-    const formComponents = ref({})
+    const formComponents = ref<Recordable>({})
 
     // 存储form-item实例
-    const formItemComponents = ref({})
+    const formItemComponents = ref<Recordable>({})
 
     // 表单数据
     const formModel = ref<Recordable>(props.model)
@@ -278,7 +279,7 @@ export default defineComponent({
           if (item?.formItemProps?.slots?.default) {
             return item?.formItemProps?.slots?.default(formModel.value)
           } else {
-            const Com = componentMap[item.component as string] as ReturnType<typeof defineComponent>
+            const Com = componentMap[item.component as ComponentName] as ReturnType<typeof defineComponent>
 
             const { autoSetPlaceholder } = unref(getProps)
 
@@ -297,7 +298,7 @@ export default defineComponent({
 
             // 虚拟列表
             if (item.component === ComponentNameEnum.SELECT_V2 && componentSlots.default) {
-              slotsMap.default = ({ item }) => {
+              slotsMap.default = ({ item }: { item: unknown }) => {
                 return componentSlots.default(item)
               }
             }
@@ -397,7 +398,7 @@ export default defineComponent({
     const getFormBindValue = () => {
       // 避免在标签上出现多余的属性
       const delKeys = ['schema', 'isCol', 'autoSetPlaceholder', 'isCustom', 'model']
-      const props = { ...unref(getProps) }
+      const props: Recordable = { ...unref(getProps) }
       for (const key in props) {
         if (delKeys.indexOf(key) !== -1) {
           delete props[key]

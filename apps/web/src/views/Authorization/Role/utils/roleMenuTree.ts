@@ -1,5 +1,6 @@
 import type { DepartmentItem } from '@/api/department/types'
 import type { DataScope, RoleAuthorizationMenu, RoleAuthorizationPermission, RoleSubmitPayload } from '@/api/role/type'
+import type { TreeNodeData } from 'element-plus/es/components/tree/src/tree.type'
 
 export interface RoleFormModel {
   id?: string
@@ -28,9 +29,10 @@ export const DATA_SCOPE_I18N: Record<DataScope, string> = {
   CUSTOM_DEFINE: 'role.dataScopeCustom'
 }
 
-export const filterRoleMenuNode = (value: string, data: RoleMenuTreeNode) => {
+export const filterRoleMenuNode = (value: string, data: TreeNodeData) => {
   if (!value) return true
-  return data.title?.toLowerCase().includes(value.toLowerCase())
+  const title = String((data as RoleMenuTreeNode).title || '')
+  return title.toLowerCase().includes(value.toLowerCase())
 }
 
 export const findFirstMenuNode = (tree: RoleMenuTreeNode[]): RoleMenuTreeNode | undefined => {
