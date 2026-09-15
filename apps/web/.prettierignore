@@ -1,9 +1,8 @@
-/node_modules/**
-/dist/
-/dist*
-/public/*
-/docs/*
-/src/types/env.d.ts
-/docs/**/*
-/plop/**/*
+node_modules
+dist
+dist-*
+public
+stats.html
+types/auto-imports.d.ts
+types/auto-components.d.ts
 CHANGELOG

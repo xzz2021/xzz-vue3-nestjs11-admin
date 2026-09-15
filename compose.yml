@@ -2,7 +2,7 @@ services:
   admin:
     build:
       context: .
-      dockerfile: apps/admin/Dockerfile
+      dockerfile: apps/web/Dockerfile
     container_name: app-admin
     restart: always
     depends_on:

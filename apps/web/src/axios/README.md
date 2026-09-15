@@ -178,7 +178,7 @@ HTTP 层不再全局节流，也不会因为一秒内请求指纹相同而主动
 ## 验证命令
 
 ```bash
-pnpm --filter admin typecheck
-pnpm --filter admin exec eslint "src/axios/**/*.ts"
-pnpm --filter admin build:pro
+pnpm --filter web typecheck
+pnpm --filter web exec eslint "src/axios/**/*.ts"
+pnpm --filter web build:pro
 ```

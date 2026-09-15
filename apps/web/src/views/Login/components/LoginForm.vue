@@ -232,13 +232,11 @@ const toRegister = () => {
 }
 
 const toWechat = () => {
-  return ElMessage.warning('需要设置微信开放平台appid才能使用!')
-  emit('to-wechat')
+  ElMessage.warning('需要设置微信开放平台appid才能使用!')
 }
 
 const toSms = () => {
-  return ElMessage.warning('体验模式,暂不开放!')
-  emit('to-sms')
+  ElMessage.warning('体验模式,暂不开放!')
 }
 
 const signIn = async () => {

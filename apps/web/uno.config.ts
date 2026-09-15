@@ -1,23 +1,22 @@
-import transformerVariantGroup from '@unocss/transformer-variant-group'
-import { defineConfig, toEscapedSelector as e, presetIcons, presetUno } from 'unocss'
+import { defineConfig, toEscapedSelector as e, presetIcons, presetUno, transformerVariantGroup } from 'unocss';
 
 export default defineConfig({
   rules: [
     [
       /^overflow-ellipsis$/,
       ([], { rawSelector }) => {
-        const selector = e(rawSelector)
+        const selector = e(rawSelector);
         return `
 ${selector} {
   text-overflow: ellipsis;
 }
-`
+`;
       }
     ],
     [
       /^custom-hover$/,
       ([], { rawSelector }) => {
-        const selector = e(rawSelector)
+        const selector = e(rawSelector);
         return `
 ${selector} {
   display: flex;
@@ -33,13 +32,13 @@ ${selector}:hover {
 .dark ${selector}:hover {
   background-color: var(--el-bg-color-overlay);
 }
-`
+`;
       }
     ],
     [
       /^layout-border__left$/,
       ([], { rawSelector }) => {
-        const selector = e(rawSelector)
+        const selector = e(rawSelector);
         return `
 ${selector}:before {
   content: "";
@@ -51,13 +50,13 @@ ${selector}:before {
   background-color: var(--el-border-color);
   z-index: 3;
 }
-`
+`;
       }
     ],
     [
       /^layout-border__right$/,
       ([], { rawSelector }) => {
-        const selector = e(rawSelector)
+        const selector = e(rawSelector);
         return `
 ${selector}:after {
   content: "";
@@ -69,13 +68,13 @@ ${selector}:after {
   background-color: var(--el-border-color);
   z-index: 3;
 }
-`
+`;
       }
     ],
     [
       /^layout-border__top$/,
       ([], { rawSelector }) => {
-        const selector = e(rawSelector)
+        const selector = e(rawSelector);
         return `
 ${selector}:before {
   content: "";
@@ -87,13 +86,13 @@ ${selector}:before {
   background-color: var(--el-border-color);
   z-index: 3;
 }
-`
+`;
       }
     ],
     [
       /^layout-border__bottom$/,
       ([], { rawSelector }) => {
-        const selector = e(rawSelector)
+        const selector = e(rawSelector);
         return `
 ${selector}:after {
   content: "";
@@ -105,7 +104,7 @@ ${selector}:after {
   background-color: var(--el-border-color);
   z-index: 3;
 }
-`
+`;
       }
     ]
   ],
@@ -126,4 +125,4 @@ ${selector}:after {
       include: [/\.(vue|[jt]sx|html)($|\?)/]
     }
   }
-})
+});

@@ -1,7 +1,7 @@
 **/node_modules
 **/dist
-!apps/admin/dist-pro
-!apps/admin/dist-pro/**
+!apps/web/dist-pro
+!apps/web/dist-pro/**
 server/public/
 .git
 .vscode
@@ -11,7 +11,8 @@ server/public/
 **/.env
 **/.env.*
 !**/.env.example
-!apps/admin/.env.pro
+!apps/web/.env.pro
+!apps/web/.env.base
 **/coverage
 **/test
 **/*.md

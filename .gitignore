@@ -5,13 +5,13 @@ node_modules/
 
 .env
 !.env.example
-!apps/admin/.env.pro
+!apps/web/.env.pro
 
 *.log
-admin/dist/
-admin/dist-pro/
-admin/node_modules/
+apps/web/dist/
+apps/web/dist-*/
+apps/web/node_modules/
 
-server/node_modules/
+apps/server/node_modules/
 
 # apps/server/src/prisma/generated/

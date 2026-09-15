@@ -1,56 +1,56 @@
 <script setup lang="ts">
-import { getOssListApi } from '@/api/oss'
-import type { OssFolderItem } from '@/api/oss/types'
-import { BaseButton } from '@/components/Button'
-import { useI18n } from '@/hooks/web/useI18n'
-import { breadcrumbSegments } from '@/utils/dangerousFilename'
-import { ElDialog, ElMessage } from 'element-plus'
-import { computed, ref, watch } from 'vue'
+import { getOssListApi } from '@/api/oss';
+import type { OssFolderItem } from '@/api/oss/types';
+import { BaseButton } from '@/components/Button';
+import { useI18n } from '@/hooks/web/useI18n';
+import { breadcrumbSegments } from '@/utils/dangerousFilename';
+import { ElDialog, ElMessage } from 'element-plus';
+import { computed, ref, watch } from 'vue';
 
 const props = defineProps<{
-  modelValue: boolean
-  currentPrefix: string
-}>()
+  modelValue: boolean;
+  currentPrefix: string;
+}>();
 
 const emit = defineEmits<{
-  'update:modelValue': [value: boolean]
-  confirm: [destinationPrefix: string]
-}>()
+  'update:modelValue': [value: boolean];
+  confirm: [destinationPrefix: string];
+}>();
 
-const { t } = useI18n()
-const browsing = ref('')
-const folders = ref<OssFolderItem[]>([])
-const loading = ref(false)
+const { t } = useI18n();
+const browsing = ref('');
+const folders = ref<OssFolderItem[]>([]);
+const loading = ref(false);
 
-const crumbs = computed(() => breadcrumbSegments(browsing.value))
+const crumbs = computed(() => breadcrumbSegments(browsing.value));
 
 const load = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const res = await getOssListApi({ prefix: browsing.value })
-    folders.value = res.data.folders
+    const res = await getOssListApi({ prefix: browsing.value });
+    folders.value = res.data.folders;
   } catch {
-    ElMessage.error(t('oss.loadFailed'))
+    ElMessage.error(t('oss.loadFailed'));
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 watch(
   () => props.modelValue,
   (open) => {
     if (open) {
-      browsing.value = props.currentPrefix
-      void load()
+      browsing.value = props.currentPrefix;
+      void load();
     }
   }
-)
+);
 
-const close = () => emit('update:modelValue', false)
+const close = () => emit('update:modelValue', false);
 
 const confirm = () => {
-  emit('confirm', browsing.value)
-}
+  emit('confirm', browsing.value);
+};
 </script>
 
 <template>
@@ -59,8 +59,10 @@ const confirm = () => {
       <span
         class="cursor-pointer"
         @click="
-          browsing = ''
-          load()
+          () => {
+            browsing = '';
+            load();
+          }
         "
         >{{ t('oss.root') }}</span
       >
@@ -69,8 +71,8 @@ const confirm = () => {
         <span
           class="cursor-pointer"
           @click="
-            browsing = item.prefix
-            load()
+            browsing = item.prefix;
+            load();
           "
           >{{ item.name }}</span
         >
@@ -82,8 +84,8 @@ const confirm = () => {
         :key="folder.prefix"
         class="py-6px cursor-pointer hover:bg-[var(--el-fill-color-light)] px-8px rounded-4px"
         @click="
-          browsing = folder.prefix
-          load()
+          browsing = folder.prefix;
+          load();
         "
       >
         {{ folder.name }}

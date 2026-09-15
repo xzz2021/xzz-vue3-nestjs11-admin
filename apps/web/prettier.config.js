@@ -1,4 +1,5 @@
-module.exports = {
+/** @type {import('prettier').Config} */
+export default {
   printWidth: 120,
   tabWidth: 2,
   useTabs: false,
@@ -10,10 +11,7 @@ module.exports = {
   trailingComma: 'none',
   jsxSingleQuote: false,
   arrowParens: 'always',
-  insertPragma: false,
-  requirePragma: false,
   proseWrap: 'never',
   htmlWhitespaceSensitivity: 'strict',
-  endOfLine: 'auto',
-  rangeStart: 0
-}
+  endOfLine: 'auto'
+};

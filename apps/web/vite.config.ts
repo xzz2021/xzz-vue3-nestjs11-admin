@@ -1,25 +1,25 @@
-import { resolve } from 'node:path'
-import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
-import vue from '@vitejs/plugin-vue'
-import vueJsx from '@vitejs/plugin-vue-jsx'
-import { visualizer } from 'rollup-plugin-visualizer'
-import UnoCSS from 'unocss/vite'
-import AutoImport from 'unplugin-auto-import/vite'
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
-import Components from 'unplugin-vue-components/vite'
-import { defineConfig, loadEnv, type ConfigEnv, type PluginOption } from 'vite'
-import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+import { resolve } from 'node:path';
+import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
+import vue from '@vitejs/plugin-vue';
+import vueJsx from '@vitejs/plugin-vue-jsx';
+import { visualizer } from 'rollup-plugin-visualizer';
+import UnoCSS from 'unocss/vite';
+import AutoImport from 'unplugin-auto-import/vite';
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
+import Components from 'unplugin-vue-components/vite';
+import { defineConfig, loadEnv, type ConfigEnv, type PluginOption } from 'vite';
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
 
-const root = process.cwd()
-const srcDir = resolve(root, 'src')
+const root = process.cwd();
+const srcDir = resolve(root, 'src');
 
 export default defineConfig(({ command, mode }: ConfigEnv) => {
-  const env = loadEnv(mode, root)
-  const isBuild = command === 'build'
-  const dropConsole = env.VITE_DROP_CONSOLE === 'true'
-  const dropDebugger = env.VITE_DROP_DEBUGGER === 'true'
-  const elementPlusImportStyle = env.VITE_USE_ALL_ELEMENT_PLUS_STYLE === 'false' ? 'css' : false
-  const lessVariables = resolve(root, 'src/styles/variables.module.less').replaceAll('\\', '/')
+  const env = loadEnv(mode, root);
+  const isBuild = command === 'build';
+  const dropConsole = env.VITE_DROP_CONSOLE === 'true';
+  const dropDebugger = env.VITE_DROP_DEBUGGER === 'true';
+  const elementPlusImportStyle = env.VITE_USE_ALL_ELEMENT_PLUS_STYLE === 'false' ? 'css' : false;
+  const lessVariables = resolve(root, 'src/styles/variables.less').replaceAll('\\', '/');
 
   const plugins: PluginOption[] = [
     UnoCSS(),
@@ -46,10 +46,10 @@ export default defineConfig(({ command, mode }: ConfigEnv) => {
       symbolId: 'icon-[dir]-[name]',
       svgoOptions: true
     })
-  ]
+  ];
 
   if (isBuild && env.VITE_USE_BUNDLE_ANALYZER === 'true') {
-    plugins.push(visualizer({ filename: 'stats.html', gzipSize: true }) as PluginOption)
+    plugins.push(visualizer({ filename: 'stats.html', gzipSize: true }) as PluginOption);
   }
 
   return {
@@ -58,8 +58,13 @@ export default defineConfig(({ command, mode }: ConfigEnv) => {
     css: {
       preprocessorOptions: {
         less: {
-          additionalData: `@import "${lessVariables}";`,
-          javascriptEnabled: true
+          additionalData: (content: string, filename: string) => {
+            const normalized = filename.replaceAll('\\', '/')
+            if (normalized.endsWith('/src/styles/variables.less') || normalized.endsWith('/src/styles/variables.module.less')) {
+              return content
+            }
+            return `@import "${lessVariables}";\n${content}`
+          }
         }
       }
     },
@@ -112,7 +117,7 @@ export default defineConfig(({ command, mode }: ConfigEnv) => {
         overlay: false
       },
       watch: {
-        ignored: ['**/dist/**', '**/dist-pro/**', '**/dist-dev/**']
+        ignored: ['**/dist/**', '**/dist-pro/**', '**/dist-dev/**', '**/dist-test/**']
       }
     },
     optimizeDeps: {
@@ -133,8 +138,9 @@ export default defineConfig(({ command, mode }: ConfigEnv) => {
         'vue-json-pretty',
         '@zxcvbn-ts/core',
         'dayjs',
-        'cropperjs'
+        'cropperjs',
+        'qrcode'
       ]
     }
-  }
-})
+  };
+});

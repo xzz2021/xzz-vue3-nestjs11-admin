@@ -16,16 +16,3 @@ declare module '@wangeditor/editor-for-vue' {
   export const Editor: DefineComponent<Record<string, any>, Record<string, any>, any>
   export const Toolbar: DefineComponent<Record<string, any>, Record<string, any>, any>
 }
-
-declare module '*.vue' {
-  import { DefineComponent } from 'vue'
-
-  const component: DefineComponent<{}, {}, any>
-  export default component
-}
-
-declare global {
-  interface ImportMeta {
-    readonly env: ImportMetaEnv
-  }
-}
