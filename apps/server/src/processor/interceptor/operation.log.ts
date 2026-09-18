@@ -54,11 +54,15 @@ export class OperationLogInterceptor implements NestInterceptor {
   }
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    if (context.getType() !== 'http') {
+      return next.handle();
+    }
+
     const start = Date.now();
     const ctx = context.switchToHttp();
     const request = ctx.getRequest<RequestWithUser>();
     const { method, url, ip, headers, user } = request;
-    const userAgent = (headers['user-agent'] as string) ?? '';
+    const userAgent = (headers?.['user-agent'] as string) ?? '';
     const userId = user?.id ?? null;
 
     if (this.shouldSkipLog(url)) {
