@@ -5,6 +5,17 @@ import { useDebounceFn } from '@vueuse/core'
 import Cropper from 'cropperjs'
 import { ElDivider, ElMessage, ElTooltip, ElUpload, type UploadFile } from 'element-plus'
 import { computed, onBeforeUnmount, onMounted, ref, unref, watch } from 'vue'
+import {
+  clientRectToCanvasRect,
+  getCoverMoveDelta,
+  getCoverZoomDelta,
+  isRectInside,
+  type CropRect
+} from './cropper-bounds'
+
+interface TransformEventDetail {
+  matrix: number[]
+}
 
 const CROPPER_TEMPLATE = `
 <cropper-canvas background>
@@ -72,6 +83,58 @@ const getCropperImage = () => unref(cropperRef)?.getCropperImage() ?? null
 const getCropperSelection = () => unref(cropperRef)?.getCropperSelection() ?? null
 const getCropperCanvas = () => unref(cropperRef)?.getCropperCanvas() ?? null
 
+let skipBoundaryCheck = false
+
+const withoutBoundaryCheck = (fn: () => void) => {
+  skipBoundaryCheck = true
+  try {
+    fn()
+  } finally {
+    skipBoundaryCheck = false
+  }
+}
+
+const getSelectionRect = (): CropRect | null => {
+  const selection = getCropperSelection()
+  if (!selection) return null
+  return {
+    x: selection.x,
+    y: selection.y,
+    width: selection.width,
+    height: selection.height
+  }
+}
+
+const getImageCanvasRect = (imageRect?: DOMRect): CropRect | null => {
+  const canvas = getCropperCanvas()
+  const image = getCropperImage()
+  if (!canvas || !image) return null
+  return clientRectToCanvasRect(imageRect ?? image.getBoundingClientRect(), canvas.getBoundingClientRect())
+}
+
+const coverSelection = () => {
+  const image = getCropperImage()
+  const selection = getCropperSelection()
+  if (!image || !selection) return
+
+  withoutBoundaryCheck(() => {
+    const zoomDelta = getCoverZoomDelta(image.getBoundingClientRect(), selection.getBoundingClientRect())
+    if (zoomDelta > 0) image.$zoom(zoomDelta)
+
+    const move = getCoverMoveDelta(image.getBoundingClientRect(), selection.getBoundingClientRect())
+    if (move.x || move.y) image.$move(move.x, move.y)
+  })
+}
+
+const applyInitialLayout = () => {
+  withoutBoundaryCheck(() => {
+    getCropperImage()?.$center('contain')
+    resetCropBox()
+  })
+  coverSelection()
+  getBase64()
+}
+
 const getCroppedCanvas = async () => {
   const selection = getCropperSelection()
   if (!selection) return null
@@ -107,18 +170,53 @@ const onCropChange = () => {
   getBase64()
 }
 
+const onImageTransform = (event: Event) => {
+  if (!skipBoundaryCheck) {
+    const canvas = getCropperCanvas()
+    const image = getCropperImage()
+    const matrix = (event as CustomEvent<TransformEventDetail>).detail?.matrix
+    if (canvas && image && matrix) {
+      const clone = image.cloneNode() as typeof image
+      clone.style.transform = `matrix(${matrix.join(', ')})`
+      clone.style.opacity = '0'
+      canvas.appendChild(clone)
+      const nextRect = clone.getBoundingClientRect()
+      canvas.removeChild(clone)
+      const maxSelection = getImageCanvasRect(nextRect)
+      const selection = getSelectionRect()
+      if (maxSelection && selection && !isRectInside(selection, maxSelection)) {
+        event.preventDefault()
+        return
+      }
+    }
+  }
+  onCropChange()
+}
+
+const onSelectionChange = (event: Event) => {
+  if (!skipBoundaryCheck) {
+    const maxSelection = getImageCanvasRect()
+    const next = (event as CustomEvent<CropRect>).detail
+    if (maxSelection && next && !isRectInside(next, maxSelection)) {
+      event.preventDefault()
+      return
+    }
+  }
+  onCropChange()
+}
+
 const unbindCropperEvents = () => {
   getCropperCanvas()?.removeEventListener('action', onCropChange)
   getCropperCanvas()?.removeEventListener('actionend', onCropChange)
-  getCropperSelection()?.removeEventListener('change', onCropChange)
-  getCropperImage()?.removeEventListener('transform', onCropChange)
+  getCropperSelection()?.removeEventListener('change', onSelectionChange)
+  getCropperImage()?.removeEventListener('transform', onImageTransform)
 }
 
 const bindCropperEvents = () => {
   getCropperCanvas()?.addEventListener('action', onCropChange)
   getCropperCanvas()?.addEventListener('actionend', onCropChange)
-  getCropperSelection()?.addEventListener('change', onCropChange)
-  getCropperImage()?.addEventListener('transform', onCropChange)
+  getCropperSelection()?.addEventListener('change', onSelectionChange)
+  getCropperImage()?.addEventListener('transform', onImageTransform)
 }
 
 const replaceImage = (url: string) => {
@@ -127,8 +225,7 @@ const replaceImage = (url: string) => {
   image.crossorigin = 'anonymous'
   image.src = url
   image.$ready(() => {
-    image.$center('contain')
-    resetCropBox()
+    applyInitialLayout()
   })
 }
 
@@ -147,8 +244,7 @@ const initCropper = (src = props.imageUrl) => {
 
   bindCropperEvents()
   getCropperImage()?.$ready(() => {
-    getCropperImage()?.$center('contain')
-    resetCropBox()
+    applyInitialLayout()
   })
 }
 
@@ -189,23 +285,33 @@ const uploadChange = (uploadFile: UploadFile) => {
 }
 
 const reset = () => {
-  getCropperImage()?.$resetTransform()
-  getCropperImage()?.$center('contain')
-  getCropperSelection()?.$reset()
-  resetCropBox()
+  withoutBoundaryCheck(() => {
+    getCropperImage()?.$resetTransform()
+    getCropperImage()?.$center('contain')
+    getCropperSelection()?.$reset()
+    resetCropBox()
+  })
+  coverSelection()
+  getBase64()
 }
 
 const rotate = (deg: number) => {
-  getCropperImage()?.$rotate(`${deg}deg`)
+  withoutBoundaryCheck(() => {
+    getCropperImage()?.$rotate(`${deg}deg`)
+  })
+  coverSelection()
   getBase64()
 }
 
 const scale = (type: 'scaleX' | 'scaleY') => {
-  if (type === 'scaleX') {
-    getCropperImage()?.$scale(-1, 1)
-  } else {
-    getCropperImage()?.$scale(1, -1)
-  }
+  withoutBoundaryCheck(() => {
+    if (type === 'scaleX') {
+      getCropperImage()?.$scale(-1, 1)
+    } else {
+      getCropperImage()?.$scale(1, -1)
+    }
+  })
+  coverSelection()
   getBase64()
 }
 
