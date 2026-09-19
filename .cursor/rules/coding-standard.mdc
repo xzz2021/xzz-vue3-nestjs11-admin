@@ -1,0 +1,66 @@
+---
+description: Coding standards
+alwaysApply: false
+---
+
+代码规范：
+
+## TypeScript
+
+必须：
+
+- 开启 strict 模式
+- 明确类型
+- 优先 interface/type
+
+禁止：
+
+- 重复代码
+- 巨型函数
+- 隐式依赖
+
+## NestJS
+
+遵循：
+
+Controller:
+
+- 只处理 HTTP 层逻辑
+
+Service:
+
+- 业务逻辑
+
+Repository:
+
+- 数据访问
+
+DTO:
+
+- 请求校验
+
+Guard:
+
+- 权限认证
+
+必须：
+
+- 使用 Dependency Injection
+- 使用 Exception Filter
+- 使用统一 Response DTO
+
+## Prisma
+
+要求：
+
+- Schema 清晰
+- 避免 N+1 查询
+- 使用 transaction 处理复杂业务
+
+## Redis
+
+要求：
+
+- 明确 key 设计
+- 设置 TTL
+- 防止缓存击穿

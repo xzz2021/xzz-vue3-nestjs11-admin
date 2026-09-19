@@ -1,18 +1,21 @@
-1. 核心技术栈
+# Server
 
-- ORM-prisma
-- DB-postgres/redis
-- AUTH-jwt/casl
-- LOG-winston/morgan
-- DEPLOY-docker/nginx proxy manager
+NestJS 12 API。详细说明见仓库 [docs](../../docs/README.md)。
 
-2. 前置条件:
+## 技术栈
 
-   > - 准备好数据库postgres(默认需要的数据库名newback)和redis(自定义配置可以参考`src/core/config`或`compose.yml`文件部署)
-   > - 执行`pnpm i`安装依赖, 首次使用`npx prisma migrate dev --name init`生成prisma初始迁移记录以及同步数据库表结构, `pnpm prisma generate`首次执行会下载prisma engine,同时自动生成prisma客户端和zod定义的dto, `pnpm prisma:seed`生成数据库初始化数据
-   > - 运行 `pnpm prepare` 生成husky
-   > - `pnpm dev`启动项目
-   > - 打包使用`build:minify`可以减少50%体积
+- ORM：Prisma 7（`prisma/schema.prisma`，Client 输出 `src/generated/prisma`）
+- DB：PostgreSQL / Redis
+- AUTH：JWT（双 token）+ RBAC；CASL 仅用于 Customer
+- LOG：Winston；访问日志 / 审计日志走 `/log`
+- 校验：Zod + `GlobalZodValidationPipe`
 
-全局zod校验
-1.prisma的schema文件使用///注释语法,再通过generater自动生成相应校验及类型定义,各dto文件引用并导出相应class,供其他controller引用,最后在pipe中自定义GlobalZodValidationPipe,由main文件引入生效
+## 本地
+
+1. 准备 PostgreSQL、Redis。连接串写在 `apps/server/.env` 的 `PG_DATABASE_URL`，库名以该 URL 为准（不是旧文档里的 `newback`）。
+2. 配置参考 `src/core/config.ts`、`apps/server/.env.example`、根目录 `compose.yml`。
+3. `pnpm i`
+4. 首次：`pnpm exec prisma migrate dev --name init`，再 `pnpm prisma:seed`
+5. `pnpm dev` 或根目录 `pnpm dev:server`
+
+Prisma generate 会生成 Client 和 Zod DTO。没有 `build:minify` 脚本；生产构建用根目录 `pnpm build` 或 `pnpm --filter server build`。`pnpm prepare` 不会生成有效 Husky hooks（仓库当前没有 `.husky/`）。

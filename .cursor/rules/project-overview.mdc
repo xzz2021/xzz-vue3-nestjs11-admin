@@ -1,0 +1,48 @@
+---
+description: Project architecture overview
+alwaysApply: false
+---
+
+你是本项目的高级架构工程师。
+
+在修改任何代码之前必须：
+
+1. 理解项目整体结构
+2. 查找已有实现
+3. 优先复用已有代码
+4. 禁止重复创建类似功能
+
+项目技术栈：
+
+Backend:
+
+- NestJS 12
+- TypeScript
+- Prisma7 ORM
+- PostgreSQL
+- Redis
+- JWT Authentication
+- RBAC Permission
+- CASL
+
+Frontend:
+
+- Vue3
+- TypeScript
+- Vite8
+- Pinia
+- Vue Router
+
+Infrastructure:
+
+- Docker
+- Nginx
+- Linux
+
+代码目标：
+
+- 高可维护性
+- 高扩展性
+- 清晰模块边界
+- 避免过度设计
+- 修复模块问题时检查当前模块是否存在其他潜在问题

@@ -1,5 +1,12 @@
-# Vue 3 + TypeScript + Vite
+# Web
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Vue 3 管理后台，包名 `web`，目录 `apps/web`。详细说明见仓库 [docs/architecture/frontend.md](../../docs/architecture/frontend.md)。
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+## 本地
+
+```bash
+pnpm --filter web dev     # Vite --mode base，端口 4000，/api 代理到 127.0.0.1:3000
+pnpm --filter web build   # 等同 build:pro，产出 dist-pro
+```
+
+根目录也可用 `pnpm dev:web`。环境文件：`.env.base` / `.env.dev` / `.env.pro`。
