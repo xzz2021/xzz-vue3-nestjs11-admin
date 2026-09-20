@@ -5,12 +5,21 @@ import { RoleRepository } from "./role.repository.js";
 describe("RoleRepository permission synchronization", () => {
   const findMany = vi.fn();
   const create = vi.fn();
+  const createManyAndReturn = vi.fn();
   const update = vi.fn();
+  const updateMany = vi.fn();
   const deleteMany = vi.fn();
   const departmentDeleteMany = vi.fn();
   const departmentCreateMany = vi.fn();
   const tx = {
-    rolePermission: { findMany, create, update, deleteMany },
+    rolePermission: {
+      findMany,
+      create,
+      createManyAndReturn,
+      update,
+      updateMany,
+      deleteMany,
+    },
     rolePermissionDepartment: {
       deleteMany: departmentDeleteMany,
       createMany: departmentCreateMany,
@@ -57,15 +66,18 @@ describe("RoleRepository permission synchronization", () => {
 
     expect(create).not.toHaveBeenCalled();
     expect(deleteMany).not.toHaveBeenCalled();
-    expect(update).toHaveBeenCalledWith({
-      where: { id: "legacy_rp_write" },
+    expect(update).not.toHaveBeenCalled();
+    expect(updateMany).toHaveBeenCalledWith({
+      where: { id: { in: ["legacy_rp_write"] } },
       data: { dataScope: DataScope.SELF },
     });
     expect(departmentDeleteMany).toHaveBeenCalledWith({
-      where: { rolePermissionId: "legacy_rp_write" },
+      where: { rolePermissionId: { in: ["legacy_rp_write"] } },
     });
-    expect(update).not.toHaveBeenCalledWith(
-      expect.objectContaining({ where: { id: "legacy_rp_read" } }),
+    expect(updateMany).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: { in: expect.arrayContaining(["legacy_rp_read"]) } },
+      }),
     );
   });
 
@@ -85,6 +97,81 @@ describe("RoleRepository permission synchronization", () => {
       where: { id: { in: ["legacy_rp_removed"] } },
     });
     expect(departmentDeleteMany).not.toHaveBeenCalled();
+  });
+
+  it("batches permission creates, scope updates, and custom department writes", async () => {
+    findMany.mockResolvedValue([
+      {
+        id: "existing-self",
+        permissionId: "permission-self",
+        dataScope: DataScope.ALL,
+        customDepartments: [],
+      },
+      {
+        id: "existing-custom",
+        permissionId: "permission-custom",
+        dataScope: DataScope.CUSTOM_DEFINE,
+        customDepartments: [{ departmentId: "dept-old" }],
+      },
+    ]);
+    createManyAndReturn.mockResolvedValue([
+      { id: "created-1", permissionId: "permission-new" },
+    ]);
+    create.mockResolvedValue({ id: "created-1" });
+
+    await repository.syncRolePermissions(
+      "role-1",
+      [
+        {
+          permissionId: "permission-self",
+          dataScope: DataScope.SELF,
+          departmentIds: [],
+        },
+        {
+          permissionId: "permission-custom",
+          dataScope: DataScope.CUSTOM_DEFINE,
+          departmentIds: ["dept-new"],
+        },
+        {
+          permissionId: "permission-new",
+          dataScope: DataScope.CUSTOM_DEFINE,
+          departmentIds: ["dept-a", "dept-b"],
+        },
+      ],
+      tx,
+    );
+
+    expect(create).not.toHaveBeenCalled();
+    expect(update).not.toHaveBeenCalled();
+    expect(createManyAndReturn).toHaveBeenCalledTimes(1);
+    expect(createManyAndReturn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: [
+          {
+            roleId: "role-1",
+            permissionId: "permission-new",
+            dataScope: DataScope.CUSTOM_DEFINE,
+          },
+        ],
+      }),
+    );
+    expect(updateMany).toHaveBeenCalledTimes(1);
+    expect(updateMany).toHaveBeenCalledWith({
+      where: { id: { in: ["existing-self"] } },
+      data: { dataScope: DataScope.SELF },
+    });
+    expect(departmentDeleteMany).toHaveBeenCalledTimes(1);
+    expect(departmentDeleteMany).toHaveBeenCalledWith({
+      where: { rolePermissionId: { in: ["existing-self", "existing-custom"] } },
+    });
+    expect(departmentCreateMany).toHaveBeenCalledTimes(1);
+    expect(departmentCreateMany).toHaveBeenCalledWith({
+      data: [
+        { rolePermissionId: "existing-custom", departmentId: "dept-new" },
+        { rolePermissionId: "created-1", departmentId: "dept-a" },
+        { rolePermissionId: "created-1", departmentId: "dept-b" },
+      ],
+    });
   });
 });
 

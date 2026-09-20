@@ -295,26 +295,28 @@ export class RoleRepository {
     const currentByPermission = new Map(
       current.map((item) => [item.permissionId, item]),
     );
+    const toCreate: RolePermissionSyncInput[] = [];
+    const scopeUpdates = new Map<
+      RolePermissionSyncInput['dataScope'],
+      string[]
+    >();
+    const departmentResetIds: string[] = [];
+    const departmentCreates: Array<{
+      rolePermissionId: string;
+      departmentId: string;
+    }> = [];
+
     for (const input of inputs) {
       const existing = currentByPermission.get(input.permissionId);
       if (!existing) {
-        const created = await tx.rolePermission.create({
-          data: {
-            roleId,
-            permissionId: input.permissionId,
-            dataScope: input.dataScope,
-          },
-          select: { id: true },
-        });
-        if (input.departmentIds.length) {
-          await tx.rolePermissionDepartment.createMany({
-            data: input.departmentIds.map((departmentId) => ({
-              rolePermissionId: created.id,
-              departmentId,
-            })),
-          });
-        }
+        toCreate.push(input);
         continue;
+      }
+
+      if (existing.dataScope !== input.dataScope) {
+        const ids = scopeUpdates.get(input.dataScope) ?? [];
+        ids.push(existing.id);
+        scopeUpdates.set(input.dataScope, ids);
       }
 
       const currentDepartments = existing.customDepartments
@@ -326,25 +328,56 @@ export class RoleRepository {
         currentDepartments.some(
           (departmentId, index) => departmentId !== nextDepartments[index],
         );
-      if (existing.dataScope !== input.dataScope) {
-        await tx.rolePermission.update({
-          where: { id: existing.id },
-          data: { dataScope: input.dataScope },
-        });
-      }
       if (departmentsChanged || input.dataScope !== 'CUSTOM_DEFINE') {
-        await tx.rolePermissionDepartment.deleteMany({
-          where: { rolePermissionId: existing.id },
-        });
+        departmentResetIds.push(existing.id);
         if (input.dataScope === 'CUSTOM_DEFINE' && input.departmentIds.length) {
-          await tx.rolePermissionDepartment.createMany({
-            data: input.departmentIds.map((departmentId) => ({
+          for (const departmentId of input.departmentIds) {
+            departmentCreates.push({
               rolePermissionId: existing.id,
               departmentId,
-            })),
-          });
+            });
+          }
         }
       }
+    }
+
+    for (const [dataScope, ids] of scopeUpdates) {
+      await tx.rolePermission.updateMany({
+        where: { id: { in: ids } },
+        data: { dataScope },
+      });
+    }
+
+    if (toCreate.length) {
+      const created = await tx.rolePermission.createManyAndReturn({
+        data: toCreate.map((input) => ({
+          roleId,
+          permissionId: input.permissionId,
+          dataScope: input.dataScope,
+        })),
+        select: { id: true, permissionId: true },
+      });
+      const createdIdByPermission = new Map(
+        created.map((item) => [item.permissionId, item.id]),
+      );
+      for (const input of toCreate) {
+        const rolePermissionId = createdIdByPermission.get(input.permissionId);
+        if (!rolePermissionId || !input.departmentIds.length) continue;
+        for (const departmentId of input.departmentIds) {
+          departmentCreates.push({ rolePermissionId, departmentId });
+        }
+      }
+    }
+
+    if (departmentResetIds.length) {
+      await tx.rolePermissionDepartment.deleteMany({
+        where: { rolePermissionId: { in: departmentResetIds } },
+      });
+    }
+    if (departmentCreates.length) {
+      await tx.rolePermissionDepartment.createMany({
+        data: departmentCreates,
+      });
     }
   }
 

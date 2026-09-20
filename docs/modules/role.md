@@ -18,6 +18,7 @@
 ## 行为要点
 
 - 角色绑定菜单（RoleMenu）与权限（RolePermission），自定义数据范围写 `RolePermissionDepartment`
+- 同步权限时先算 diff，再在同一事务里批量 `createManyAndReturn` / `updateMany` / `deleteMany`，自定义部门一次性重写
 - 创建角色时写入 `createdById`（当前登录用户）；删除用户时创建人外键 SetNull
 - `getRoleDetail` 通过 `createdBy` 关系读取用户名，对外字段仍为 `creatorName`，不返回 User 对象
 - `getRoleMenu` 供前端登录后生成动态路由
