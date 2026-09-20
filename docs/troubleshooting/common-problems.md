@@ -22,11 +22,11 @@ pnpm --filter web build
 
 ## 登录验证码 / cookie
 
-开发环境必须让验证码请求和登录请求都 `withCredentials: true`，否则 `captchaId` cookie 带不上。验证码 TTL 5 分钟；当前实现校验成功后不会立刻删除，同一验证码可被重复尝试。
+开发环境必须让验证码请求和登录请求都 `withCredentials: true`，否则 `captchaId` cookie 带不上。验证码 TTL 5 分钟；校验成功会立即消费 Redis 记录，不能重放。密码错误后需重新获取验证码。
 
 ## 刷新失败 / 一直 401
 
-Refresh 走 `POST /auth/refresh`，依赖 httpOnly cookie `rt`。生产必须同源 `/api` 反代。Nest CORS 默认关闭，跨域前端无法带 cookie。
+Refresh 走 `POST /auth/refresh`，依赖 httpOnly cookie `rt`。生产必须同源 `/api` 反代。Nest CORS 默认关闭（`CORS_ORIGINS` 为空）；跨域前端需配置白名单才能带 cookie。
 
 ## 短信 / 微信登录 404
 

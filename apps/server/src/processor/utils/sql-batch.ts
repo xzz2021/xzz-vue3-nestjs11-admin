@@ -43,30 +43,30 @@ export function sqlBatchUpdateIntById(
   `;
 }
 
-export function sqlBatchUpdateRoles(
-  rows: Array<{
-    code: string;
-    name: string;
-    description: string | null;
-    enabled: boolean | null;
-  }>,
-) {
-  const values = Prisma.join(
-    rows.map((row) =>
-      sqlValueRow([row.code, row.name, row.description, row.enabled]),
-    ),
-  );
-  return Prisma.sql`
-    UPDATE "Role" AS r
-    SET
-      name = v.name,
-      description = COALESCE(v.description, r.description),
-      enabled = COALESCE(v.enabled::boolean, r.enabled),
-      "updatedAt" = CURRENT_TIMESTAMP
-    FROM (VALUES ${values}) AS v(code, name, description, enabled)
-    WHERE r.code = v.code
-  `;
-}
+// export function sqlBatchUpdateRoles(
+//   rows: Array<{
+//     code: string;
+//     name: string;
+//     description: string | null;
+//     enabled: boolean | null;
+//   }>,
+// ) {
+//   const values = Prisma.join(
+//     rows.map((row) =>
+//       sqlValueRow([row.code, row.name, row.description, row.enabled]),
+//     ),
+//   );
+//   return Prisma.sql`
+//     UPDATE "Role" AS r
+//     SET
+//       name = v.name,
+//       description = COALESCE(v.description, r.description),
+//       enabled = COALESCE(v.enabled::boolean, r.enabled),
+//       "updatedAt" = CURRENT_TIMESTAMP
+//     FROM (VALUES ${values}) AS v(code, name, description, enabled)
+//     WHERE r.code = v.code
+//   `;
+// }
 
 export function sqlBatchUpdateDictionaryTypes(
   rows: Array<{ code: string; name: string; enabled: boolean | null }>,

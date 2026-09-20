@@ -12,7 +12,7 @@
 | `src/core/config.ts`       | Zod 校验的应用配置                                                                  |
 | `src/system/app.system.ts` | 业务模块聚合                                                                        |
 
-全局 HTTP 前缀 `api` 在 `main.ts` 中**已注释**，Nest 路由为根路径（如 `/auth/rt/login`）。生产由 Nginx 去掉 `/api` 后转发。CORS 同样注释，依赖同源反代。
+全局 HTTP 前缀 `api` 在 `main.ts` 中**已注释**，Nest 路由为根路径（如 `/auth/rt/login`）。生产由 Nginx 去掉 `/api` 后转发。`CORS_ORIGINS` 为空时不启用 HTTP CORS（同源反代）；非空则为逗号分隔 Origin 白名单。WebSocket Gateway 使用同一白名单，空列表时 `origin: false`（不再 `origin: true`）。
 
 ## CORE_MODULE
 

@@ -7,6 +7,7 @@ import helmet from 'helmet';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { AppModule } from './app.module.js';
 import { createSwagger } from '#/core/swagger.js';
+import { httpCorsOptions } from '#/processor/utils/cors.util.js';
 import { GlobalZodValidationPipe } from '#/processor/pipe/global.zod.validation.pipe.js';
 // import { AllExceptionsFilter } from './processor/filter/exceptions';
 // import { VersioningType } from '@nestjs/common';
@@ -63,13 +64,10 @@ async function bootstrap() {
    cookies 携带 跨域
   */
   app.use(cookieParser());
-  // app.enableCors({
-  //   // origin: [frontendUrl, serverUrl, n8nUrl],
-  //   credentials: true,
-  //   vary: ['origin'],
-  //   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  //   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-  // });
+  const corsOrigins = configService.get<string[]>('corsOrigins') ?? [];
+  if (corsOrigins.length > 0) {
+    app.enableCors(httpCorsOptions(corsOrigins));
+  }
 
   app.useGlobalPipes(new GlobalZodValidationPipe());
   const port = configService.get<number>('port') ?? 3000;

@@ -1,4 +1,4 @@
-import type { PgService } from "#/prisma/pg.service.js";
+import { DictionaryRepository } from "./dictionary.repository.js";
 import { DictionaryService } from "./dictionary.service.js";
 
 describe("DictionaryService seed", () => {
@@ -40,7 +40,9 @@ describe("DictionaryService seed", () => {
       }),
   );
 
-  const service = new DictionaryService({ $transaction: transaction });
+  const service = new DictionaryService(
+    new DictionaryRepository({ $transaction: transaction } as never),
+  );
 
   beforeEach(() => {
     vi.clearAllMocks();

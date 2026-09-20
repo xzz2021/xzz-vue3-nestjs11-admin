@@ -99,7 +99,7 @@ Controller（HTTP / 权限装饰器）
             → Redis / BullMQ（缓存与异步）
 ```
 
-当前并非所有模块都有 Repository：User / Role / Customer / Department / Message / Staticfile / DbBackup 已拆分；Permission、Dictionary 等仍由 Service 直接使用 `PgService`。
+当前并非所有模块都有 Repository：User / Role / Customer / Department / Message / Staticfile / DbBackup / Permission / Dictionary 已拆分；Online / Monitor / FileCleanup 等仍由 Service 直接使用 `PgService`。
 
 全局能力：
 

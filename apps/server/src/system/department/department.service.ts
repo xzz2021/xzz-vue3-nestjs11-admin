@@ -200,20 +200,6 @@ export class DepartmentService {
     return { message: '删除部门成功' };
   }
 
-  async generateDepartmentSeed(data: DepartmentSeedDto[]) {
-    try {
-      await this.departments.transaction(async (tx) => {
-        for (const dept of data) {
-          await this.upsertNode(tx, dept, null);
-        }
-      });
-      await this.organizationGeneration.bump();
-      return { message: '批量插入部门成功' };
-    } catch (error) {
-      this.rethrowDuplicateName(error);
-    }
-  }
-
   private async upsertNode(
     tx: Prisma.TransactionClient,
     node: DepartmentSeedDto,

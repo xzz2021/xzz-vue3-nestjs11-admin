@@ -32,6 +32,7 @@
 | `PG_DATABASE_URL`                                             | **migrate** 容器：Compose 原样注入为 Prisma 的 `PG_DATABASE_URL`      |
 | `APP_DATABASE_URL`                                            | **server** 容器：Compose 将其注入为进程内的 `PG_DATABASE_URL`         |
 | `REDIS_HOST` / `REDIS_PORT` / `REDIS_PASSWORD` / `REDIS_URL`  | Redis                                                                 |
+| `CORS_ORIGINS`                                                | HTTP/WS Origin 白名单，逗号分隔、不要带末尾 `/`。空则关闭 Nest CORS   |
 | `DB_BACKUP_DIR`                                               | 容器内备份目录（默认 `/app/apps/server/backups`）                     |
 | `DB_BACKUP_CRON`                                              | 默认 cron；运行时配置以数据库 `DbBackupConfig` 为准                   |
 | `DB_BACKUP_TIMEZONE`                                          | 默认 `Asia/Shanghai`                                                  |

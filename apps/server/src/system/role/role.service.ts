@@ -5,7 +5,6 @@ import { DataScope } from '#/generated/prisma/enums.js';
 import { RbacPermissionCacheService } from '#/processor/rbac/index.js';
 import { uniqueBy } from '#/processor/utils/array.js';
 import { listToTree } from '#/processor/utils/list2tree.util.js';
-import { sqlBatchUpdateRoles } from '#/processor/utils/sql-batch.js';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   CreateRoleDto,
@@ -460,51 +459,6 @@ export class RoleService {
       ip,
     });
     return { id: res.role.id, message: '删除角色成功' };
-  }
-
-  async generateRoleSeed(data: RoleSeedDto[]) {
-    const roles = uniqueBy(data, (role) => role.code);
-    if (roles.length === 0) {
-      return { message: '生成角色种子数据成功', success: true };
-    }
-
-    await this.roles.transaction(async (tx) => {
-      const existing = await this.roles.findCodes(
-        roles.map((role) => role.code),
-        tx,
-      );
-      const existingCodes = new Set(existing.map((role) => role.code));
-      const toCreate = roles.filter((role) => !existingCodes.has(role.code));
-      const toUpdate = roles.filter((role) => existingCodes.has(role.code));
-
-      if (toCreate.length) {
-        await this.roles.createMany(
-          toCreate.map((role) => ({
-            code: role.code,
-            name: role.name,
-            ...(role.enabled !== undefined ? { enabled: role.enabled } : {}),
-            ...(role.description !== undefined
-              ? { description: role.description }
-              : {}),
-          })),
-          tx,
-        );
-      }
-      if (toUpdate.length) {
-        await this.roles.executeRaw(
-          sqlBatchUpdateRoles(
-            toUpdate.map((role) => ({
-              code: role.code,
-              name: role.name,
-              description: role.description ?? null,
-              enabled: role.enabled ?? null,
-            })),
-          ),
-          tx,
-        );
-      }
-    });
-    return { message: '生成角色种子数据成功', success: true };
   }
 
   private scopeAuditSummary(menus: CreateRoleDto['menus']) {

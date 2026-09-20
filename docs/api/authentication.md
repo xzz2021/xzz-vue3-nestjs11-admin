@@ -12,7 +12,7 @@
 4. 签发 access（响应体）+ refresh（httpOnly cookie `rt`）
 5. 会话登记 Redis，受 `SSO_COUNT` 限制
 
-验证码校验成功后当前实现**不会立即删除** Redis 记录，同一 captcha 在 TTL（5 分钟）内可重复用于登录尝试。
+验证码校验成功会原子消费 Redis 记录（匹配则 `GET`+`DEL`），同一 captcha 不能重放。密码错误后需重新获取验证码。TTL 仍为 5 分钟。
 
 ### 单 Token
 

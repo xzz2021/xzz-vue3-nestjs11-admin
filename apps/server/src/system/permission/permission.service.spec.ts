@@ -1,8 +1,8 @@
 import { PermissionType } from "#/prisma/generated/prisma/enums.js";
-import type { PgService } from "#/prisma/pg.service.js";
-import type { RbacPermissionCacheService } from "#/processor/rbac/index.js";
 import type { RoleRepository } from "#/system/role/role.repository.js";
+import type { RbacPermissionCacheService } from "#/processor/rbac/index.js";
 import { UpdatePermissionDto } from "./dto/permission.dto.js";
+import { PermissionRepository } from "./permission.repository.js";
 import { PermissionService } from "./permission.service.js";
 
 describe("PermissionService scope configuration", () => {
@@ -21,7 +21,7 @@ describe("PermissionService scope configuration", () => {
   const roles = { findUserIdsByPermissionIds: vi.fn() };
   const cache = { invalidateUsers: vi.fn() };
   const service = new PermissionService(
-    { $transaction: transaction },
+    new PermissionRepository({ $transaction: transaction } as never),
     roles as unknown as RoleRepository,
     cache as unknown as RbacPermissionCacheService,
   );

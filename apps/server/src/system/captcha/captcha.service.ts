@@ -10,6 +10,18 @@ import { CaptchaGenerateResult } from './captcha.module-definition.js';
 export const CAPTCHA_ID_COOKIE = 'captchaId';
 export const CAPTCHA_TEXT_COOKIE = 'captchaText';
 const CAPTCHA_COOKIE_MAX_AGE = 5 * 60 * 1000;
+/** 匹配则 DEL；不匹配保留；缺失返回 0。大小写不敏感。 */
+const CONSUME_CAPTCHA_SCRIPT = `
+local stored = redis.call('GET', KEYS[1])
+if not stored then
+  return 0
+end
+if string.lower(stored) == string.lower(ARGV[1]) then
+  redis.call('DEL', KEYS[1])
+  return 1
+end
+return -1
+`;
 const CAPTCHA_COOKIE_OPTIONS = {
   httpOnly: true,
   sameSite: 'lax' as const,
@@ -83,17 +95,19 @@ export class CaptchaService {
     if (!text) {
       return false;
     }
-    const res = await this.redis.get(`captchaId:${id}`);
-    if (!res) {
+    const result = Number(
+      await this.redis.eval(
+        CONSUME_CAPTCHA_SCRIPT,
+        1,
+        `captchaId:${id}`,
+        text,
+      ),
+    );
+    if (result === 0) {
       // 如果拿不到 说明是过期了
       throw new BadRequestException('验证码已过期');
     }
-    const ok = res.toLowerCase() === text.toLowerCase();
-    // if (ok) {
-    //   // 核对成功不需要删除 因为有可能是密码错误  删除就会导致重新生成验证码   且获取新的会自动覆写
-    //   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    //   setTimeout(() => this.redis.del(`captchaId:${id}`), 5 * 60 * 1000);
-    // }
-    return ok;
+    // 核对成功立即消费，避免 TTL 内重放；密码错误需重新获取验证码
+    return result === 1;
   }
 }

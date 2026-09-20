@@ -1,3 +1,4 @@
+import { parseCorsOrigins } from "#/processor/utils/cors.util.js";
 import { ConfigModule } from "@nestjs/config";
 import { z } from "zod";
 
@@ -48,6 +49,7 @@ interface AppConfig {
   logger: {
     fileEnabled: boolean;
   };
+  corsOrigins: string[];
 
   // 可以添加更多配置项
   [key: string]: any;
@@ -185,6 +187,7 @@ export const appConfig = (): AppConfig => {
     logger: {
       fileEnabled: processEnv.LOG_FILE === "true",
     },
+    corsOrigins: parseCorsOrigins(processEnv.CORS_ORIGINS),
   };
 };
 

@@ -8,6 +8,7 @@ import {
   type AppRedisConfig,
 } from '#/infrastructure/database/redis/redis-options.js';
 import { Public } from '#/processor/decorator/index.js';
+import { wsCorsOptions } from '#/processor/utils/cors.util.js';
 import { TokenService } from '#/system/auth/token.service.js';
 import { Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -37,7 +38,7 @@ type MsgSocket = WebSocket & {
 @Public()
 @WebSocketGateway({
   path: '/message/ws',
-  cors: { origin: true, credentials: true },
+  cors: wsCorsOptions(),
 })
 export class MessageGateway
   implements

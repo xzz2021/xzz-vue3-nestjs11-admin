@@ -1,24 +1,18 @@
-import { PgService } from '#/infrastructure/database/prisma/pg.service.js';
 import { uniqueBy } from '#/processor/utils/array.js';
-import {
-  sqlBatchUpdateDictionaryItems,
-  sqlBatchUpdateDictionaryTypes,
-} from '#/processor/utils/sql-batch.js';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   DictionarySeedArrayDto,
   UpsertDictionaryDto,
 } from './dto/dictionary.dto.js';
 import { UpsertItemDto } from './dto/entry.dto.js';
+import { DictionaryRepository } from './dictionary.repository.js';
 
 @Injectable()
 export class DictionaryService {
-  constructor(private readonly pgService: PgService) {}
+  constructor(private readonly dictionaries: DictionaryRepository) {}
 
   async batchRemove(ids: string[]) {
-    const res = await this.pgService.dictionaryType.deleteMany({
-      where: { id: { in: ids } },
-    });
+    const res = await this.dictionaries.deleteTypesByIds(ids);
     const count = res?.count || 0;
     if (count > 0 && count === ids.length)
       return { count, message: '删除字典成功' };
@@ -34,18 +28,11 @@ export class DictionaryService {
     };
 
     if (id) {
-      const result = await this.pgService.dictionaryType.update({
-        where: { id },
-        data,
-        select: { id: true },
-      });
+      const result = await this.dictionaries.updateType(id, data);
       return { id: result.id, message: '更新字典成功' };
     }
 
-    const result = await this.pgService.dictionaryType.create({
-      data,
-      select: { id: true },
-    });
+    const result = await this.dictionaries.createType(data);
     return { id: result.id, message: '新增字典成功' };
   }
 
@@ -64,25 +51,16 @@ export class DictionaryService {
     };
 
     if (id) {
-      const result = await this.pgService.dictionaryItem.update({
-        where: { id },
-        data,
-        select: { id: true },
-      });
+      const result = await this.dictionaries.updateItem(id, data);
       return { id: result.id, message: '更新字典项成功' };
     }
 
-    const result = await this.pgService.dictionaryItem.create({
-      data,
-      select: { id: true },
-    });
+    const result = await this.dictionaries.createItem(data);
     return { id: result.id, message: '新增字典项成功' };
   }
 
   async batchRemoveEntry(ids: string[]) {
-    const res = await this.pgService.dictionaryItem.deleteMany({
-      where: { id: { in: ids } },
-    });
+    const res = await this.dictionaries.deleteItemsByIds(ids);
     const count = res?.count || 0;
     if (count > 0 && count === ids.length)
       return { count, message: '删除字典项成功' };
@@ -91,20 +69,7 @@ export class DictionaryService {
   }
 
   async findAll() {
-    const res = await this.pgService.dictionaryType.findMany({
-      select: {
-        id: true,
-        name: true,
-        code: true,
-        enabled: true,
-        createdAt: true,
-        items: {
-          orderBy: {
-            sort: 'asc',
-          },
-        },
-      },
-    });
+    const res = await this.dictionaries.findAllWithItems();
     return { list: res, message: '获取所有字典列表成功' };
   }
 
@@ -114,95 +79,7 @@ export class DictionaryService {
       return { message: '新增字典成功', success: true };
     }
 
-    await this.pgService.$transaction(async (tx) => {
-      const codes = dictionaries.map((dict) => dict.code);
-      const existingTypes = await tx.dictionaryType.findMany({
-        where: { code: { in: codes } },
-        select: { id: true, code: true },
-      });
-      const existingByCode = new Map(
-        existingTypes.map((item) => [item.code, item.id]),
-      );
-      const toCreate = dictionaries.filter(
-        (dict) => !existingByCode.has(dict.code),
-      );
-      const toUpdate = dictionaries.filter((dict) =>
-        existingByCode.has(dict.code),
-      );
-
-      const createdTypes =
-        toCreate.length > 0
-          ? await tx.dictionaryType.createManyAndReturn({
-              data: toCreate.map((dict) => ({
-                code: dict.code,
-                name: dict.name,
-                ...(dict.status !== undefined ? { enabled: dict.status } : {}),
-              })),
-              select: { id: true, code: true },
-            })
-          : [];
-
-      if (toUpdate.length) {
-        await tx.$executeRaw(
-          sqlBatchUpdateDictionaryTypes(
-            toUpdate.map((dict) => ({
-              code: dict.code,
-              name: dict.name,
-              enabled: dict.status ?? null,
-            })),
-          ),
-        );
-      }
-
-      const typeIdByCode = new Map<string, string>([
-        ...existingTypes.map((item) => [item.code, item.id] as const),
-        ...createdTypes.map((item) => [item.code, item.id] as const),
-      ]);
-
-      const items = dictionaries.flatMap((dict) => {
-        const typeId = typeIdByCode.get(dict.code);
-        if (!typeId) return [];
-        return uniqueBy(dict.entries ?? [], (entry) => entry.code).map(
-          (entry) => ({
-            typeId,
-            label: entry.name,
-            value: entry.code,
-            sort: entry.sort ?? 0,
-            enabled: entry.enabled ?? null,
-          }),
-        );
-      });
-      if (items.length === 0) return;
-
-      const existingItems = await tx.dictionaryItem.findMany({
-        where: {
-          typeId: { in: [...new Set(items.map((item) => item.typeId))] },
-        },
-        select: { typeId: true, value: true },
-      });
-      const existingItemKeys = new Set(
-        existingItems.map((item) => `${item.typeId}:${item.value}`),
-      );
-      const itemsToCreate = items.filter(
-        (item) => !existingItemKeys.has(`${item.typeId}:${item.value}`),
-      );
-      const itemsToUpdate = items.filter((item) =>
-        existingItemKeys.has(`${item.typeId}:${item.value}`),
-      );
-
-      if (itemsToCreate.length) {
-        await tx.dictionaryItem.createMany({
-          data: itemsToCreate.map(({ enabled, ...rest }) => ({
-            ...rest,
-            ...(enabled !== null ? { enabled } : {}),
-          })),
-        });
-      }
-      if (itemsToUpdate.length) {
-        await tx.$executeRaw(sqlBatchUpdateDictionaryItems(itemsToUpdate));
-      }
-    });
-
+    await this.dictionaries.seedDictionaries(dictionaries);
     return { message: '新增字典成功', success: true };
   }
 }

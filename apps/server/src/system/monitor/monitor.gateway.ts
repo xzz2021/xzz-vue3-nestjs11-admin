@@ -14,6 +14,7 @@ import type { IncomingMessage } from "node:http";
 import type { Server } from "ws";
 import WebSocket from "ws";
 import { Public } from "#/processor/decorator/index.js";
+import { wsCorsOptions } from "#/processor/utils/cors.util.js";
 import { MonitorService } from "./monitor.service.js";
 
 type AuthedSocket = WebSocket & {
@@ -25,7 +26,7 @@ type AuthedSocket = WebSocket & {
 @Public()
 @WebSocketGateway({
   path: "/monitor/ws",
-  cors: { origin: true, credentials: true },
+  cors: wsCorsOptions(),
 })
 export class MonitorGateway
   implements OnGatewayConnection, OnGatewayDisconnect

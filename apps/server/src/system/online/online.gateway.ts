@@ -1,4 +1,4 @@
-import { extractIP, getIp, lookupIpLocation } from "#/processor/utils/index.js";
+import { extractIP, getIp, lookupIpLocation, wsCorsOptions } from "#/processor/utils/index.js";
 import { Public } from "#/processor/decorator/index.js";
 import { TokenService } from "#/system/auth/token.service.js";
 import { Logger } from "@nestjs/common";
@@ -40,7 +40,7 @@ interface JwtPresencePayload {
 @Public()
 @WebSocketGateway({
   path: "/online/ws",
-  cors: { origin: true, credentials: true },
+  cors: wsCorsOptions(),
 })
 export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger(OnlineGateway.name);
