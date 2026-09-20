@@ -80,7 +80,7 @@ onBeforeRouteUpdate(async (to) => {
   >
     <div v-if="!toBindPage" class="flex flex-col items-center">
       <div id="weixinLogin" class=""></div>
-      <ElLink type="primary" :underline="false" @click="toLogin">返回帐号登录</ElLink>
+      <ElLink type="primary" underline="never" @click="toLogin">返回帐号登录</ElLink>
     </div>
     <div v-else-if="wechatInfo" class="flex flex-col items-center">
       <BindForm :wechatInfo="wechatInfo" />

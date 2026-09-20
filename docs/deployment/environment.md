@@ -25,6 +25,7 @@
 | `OSS_S3_REGION`                                               | 默认 `us-east-1`                                                      |
 | `OSS_S3_FORCE_PATH_STYLE`                                     | 默认 `true`（MinIO 必须）                                             |
 | `SEED_ADMIN_USERNAME` / `SEED_ADMIN_PASSWORD` / `SEED_ADMIN_PHONE` | 空库 Seed 超级管理员                                            |
+| `RUN_DB_SEED`                                                 | migrate 容器：仅 `1` 时在 `migrate deploy` 后执行 `db seed`，默认 `0` |
 | `POSTGRES_DB`                                                 | 库名                                                                  |
 | `POSTGRES_ADMIN_USER` / `POSTGRES_ADMIN_PASSWORD`             | 超级用户                                                              |
 | `POSTGRES_MIGRATOR_USER` / `POSTGRES_MIGRATOR_PASSWORD`       | 迁移用户                                                              |

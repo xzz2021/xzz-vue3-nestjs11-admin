@@ -13,7 +13,6 @@ describe("RoleController permission boundary", () => {
     ["role:view", "getRoleMenuAndPermission"],
     ["role:view", "getRoleDetail"],
     ["role:delete", "remove"],
-    ["role:seed", "generateRoleSeed"],
   ] as const)("requires %s on %s", (permission, methodName) => {
     expect(
       Reflect.getMetadata(PERMISSION_KEY, RoleController.prototype[methodName]),

@@ -36,7 +36,8 @@ WORKDIR /app/apps/server
 
 ENV NODE_ENV=production
 
-CMD ["sh", "-c", "pnpm exec prisma migrate deploy && pnpm exec prisma db seed"]
+# 默认只 migrate deploy。空库首次初始化再设 RUN_DB_SEED=1。
+CMD ["sh", "-c", "pnpm exec prisma migrate deploy && if [ \"$RUN_DB_SEED\" = \"1\" ]; then pnpm exec prisma db seed; fi"]
 
 # ===== runner：仅运行 Nest 应用 =====
 FROM node:24.18-alpine3.24 AS runner

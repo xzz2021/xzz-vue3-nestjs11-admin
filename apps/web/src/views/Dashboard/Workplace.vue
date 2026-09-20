@@ -1,69 +1,69 @@
 <script setup lang="ts">
-import { getCountApi, getDynamicApi, getProjectApi, getRadarApi, getTeamApi } from '@/api/dashboard/workplace'
-import type { Dynamic, Project, Team, WorkplaceTotal } from '@/api/dashboard/workplace/types'
-import { CountTo } from '@/components/CountTo'
-import { Echart } from '@/components/Echart'
-import { Highlight } from '@/components/Highlight'
-import { useI18n } from '@/hooks/web/useI18n'
-import { useTimeAgo } from '@/hooks/web/useTimeAgo'
-import { formatTime } from '@/utils'
-import type { EChartsOption } from 'echarts'
-import { ElCard, ElCol, ElDivider, ElLink, ElRow, ElSkeleton } from 'element-plus'
-import { set } from 'lodash-es'
-import { reactive, ref } from 'vue'
-import { radarOption } from './echarts-data'
+import { getCountApi, getDynamicApi, getProjectApi, getRadarApi, getTeamApi } from '@/api/dashboard/workplace';
+import type { Dynamic, Project, Team, WorkplaceTotal } from '@/api/dashboard/workplace/types';
+import { CountTo } from '@/components/CountTo';
+import { Echart } from '@/components/Echart';
+import { Highlight } from '@/components/Highlight';
+import { useI18n } from '@/hooks/web/useI18n';
+import { useTimeAgo } from '@/hooks/web/useTimeAgo';
+import { formatTime } from '@/utils';
+import type { EChartsOption } from 'echarts';
+import { ElCard, ElCol, ElDivider, ElLink, ElRow, ElSkeleton } from 'element-plus';
+import { set } from 'lodash-es';
+import { reactive, ref } from 'vue';
+import { radarOption } from './echarts-data';
 
-const loading = ref(true)
+const loading = ref(true);
 
 // 获取统计数
 let totalSate = reactive<WorkplaceTotal>({
   project: 0,
   access: 0,
-  todo: 0,
-})
+  todo: 0
+});
 
 const getCount = async () => {
-  const res = await getCountApi().catch(() => {})
+  const res = await getCountApi().catch(() => {});
   if (res) {
-    totalSate = Object.assign(totalSate, res.data)
+    totalSate = Object.assign(totalSate, res.data);
   }
-}
+};
 
-let projects = reactive<Project[]>([])
+let projects = reactive<Project[]>([]);
 
 // 获取项目数
 const getProject = async () => {
-  const res = await getProjectApi().catch(() => {})
+  const res = await getProjectApi().catch(() => {});
   if (res) {
-    projects = Object.assign(projects, res.data)
+    projects = Object.assign(projects, res.data);
   }
-}
+};
 
 // 获取动态
-let dynamics = reactive<Dynamic[]>([])
+let dynamics = reactive<Dynamic[]>([]);
 
 const getDynamic = async () => {
-  const res = await getDynamicApi().catch(() => {})
+  const res = await getDynamicApi().catch(() => {});
   if (res) {
-    dynamics = Object.assign(dynamics, res.data)
+    dynamics = Object.assign(dynamics, res.data);
   }
-}
+};
 
 // 获取团队
-let team = reactive<Team[]>([])
+let team = reactive<Team[]>([]);
 
 const getTeam = async () => {
-  const res = await getTeamApi().catch(() => {})
+  const res = await getTeamApi().catch(() => {});
   if (res) {
-    team = Object.assign(team, res.data)
+    team = Object.assign(team, res.data);
   }
-}
+};
 
 // 获取指数
-const radarOptionData = reactive<EChartsOption>(radarOption) as EChartsOption
+const radarOptionData = reactive<EChartsOption>(radarOption) as EChartsOption;
 
 const getRadar = async () => {
-  const res = await getRadarApi().catch(() => {})
+  const res = await getRadarApi().catch(() => {});
   if (res) {
     set(
       radarOptionData,
@@ -71,10 +71,10 @@ const getRadar = async () => {
       res.data.map((v) => {
         return {
           name: t(v.name),
-          max: v.max,
-        }
-      }),
-    )
+          max: v.max
+        };
+      })
+    );
     set(radarOptionData, 'series', [
       {
         name: `xxx${t('workplace.index')}`,
@@ -82,27 +82,26 @@ const getRadar = async () => {
         data: [
           {
             value: res.data.map((v) => v.personal),
-            name: t('workplace.personal'),
+            name: t('workplace.personal')
           },
           {
             value: res.data.map((v) => v.team),
-            name: t('workplace.team'),
-          },
-        ],
-      },
-    ])
+            name: t('workplace.team')
+          }
+        ]
+      }
+    ]);
   }
-}
+};
 
 const getAllApi = async () => {
-  ElLoading.service().close()
-  await Promise.all([getCount(), getProject(), getDynamic(), getTeam(), getRadar()])
-  loading.value = false
-}
+  await Promise.all([getCount(), getProject(), getDynamic(), getTeam(), getRadar()]);
+  loading.value = false;
+};
 
-getAllApi()
+getAllApi();
 
-const { t } = useI18n()
+const { t } = useI18n();
 </script>
 
 <template>
@@ -148,7 +147,7 @@ const { t } = useI18n()
         <template #header>
           <div class="flex justify-between">
             <span>{{ t('workplace.project') }}</span>
-            <ElLink type="primary" :underline="false">{{ t('workplace.more') }}</ElLink>
+            <ElLink type="primary" underline="never">{{ t('workplace.more') }}</ElLink>
           </div>
         </template>
         <ElSkeleton :loading="loading" animated>
@@ -174,7 +173,7 @@ const { t } = useI18n()
         <template #header>
           <div class="flex justify-between">
             <span>{{ t('workplace.dynamic') }}</span>
-            <ElLink type="primary" :underline="false">{{ t('workplace.more') }}</ElLink>
+            <ElLink type="primary" underline="never">{{ t('workplace.more') }}</ElLink>
           </div>
         </template>
         <ElSkeleton :loading="loading" animated>
@@ -205,7 +204,7 @@ const { t } = useI18n()
         <ElSkeleton :loading="loading" animated>
           <ElRow>
             <ElCol v-for="item in 9" :key="`card-${item}`" :xl="12" :lg="12" :md="12" :sm="24" :xs="24" class="mb-10px">
-              <ElLink type="default" :underline="false"> {{ t('workplace.operation') }}{{ item }} </ElLink>
+              <ElLink type="default" underline="never"> {{ t('workplace.operation') }}{{ item }} </ElLink>
             </ElCol>
           </ElRow>
         </ElSkeleton>
@@ -229,7 +228,7 @@ const { t } = useI18n()
             <ElCol v-for="item in team" :key="`team-${item.name}`" :span="12" class="mb-20px">
               <div class="flex items-center">
                 <Icon :icon="item.icon" class="mr-10px" />
-                <ElLink type="default" :underline="false">
+                <ElLink type="default" underline="never">
                   {{ item.name }}
                 </ElLink>
               </div>

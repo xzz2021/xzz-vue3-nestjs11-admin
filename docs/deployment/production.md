@@ -30,7 +30,14 @@
 docker compose -f compose.yml up -d --build
 ```
 
-postgres/redis healthy → migrate 一次成功退出 → server、admin。
+postgres/redis healthy → migrate 一次成功退出（默认只迁移，不 seed）→ server、admin。
+
+空库第一次部署需要超级管理员和菜单时，在根 `.env` 临时加上 `RUN_DB_SEED=1` 再启动 migrate；成功后立刻改回 `0` 或删掉，避免以后每次 `up` 都跑 seed。
+
+```bash
+# 仅空库首次：临时 seed
+RUN_DB_SEED=1 docker compose -f compose.yml run --rm migrate
+```
 
 ## 反代（推荐拓扑）
 
@@ -67,7 +74,8 @@ WebSocket 路径：`/api/online/ws`、`/api/message/ws`、`/api/monitor/ws`。
 
 ```bash
 docker compose -f compose.yml up -d --build   # 代码更新后重建
-docker compose run --rm migrate                 # 仅迁移+seed
+docker compose run --rm migrate                 # 仅迁移（默认不 seed）
+RUN_DB_SEED=1 docker compose run --rm migrate   # 空库首次：迁移 + seed
 docker compose down                             # 停服务保留卷
 ```
 

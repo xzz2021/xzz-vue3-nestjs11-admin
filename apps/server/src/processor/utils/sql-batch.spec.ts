@@ -3,7 +3,6 @@ import {
   sqlBatchUpdateDictionaryItems,
   sqlBatchUpdateDictionaryTypes,
   sqlBatchUpdateIntById,
-  sqlBatchUpdateRoles,
   sqlReplaceDescendantPaths,
 } from "./sql-batch";
 
@@ -44,23 +43,6 @@ describe("sqlBatchUpdateIntById", () => {
     expect(text).toMatch(/UPDATE\s+"Menu"/i);
     expect(text).toMatch(/VALUES/i);
     expect(values).toEqual(expect.arrayContaining(["a", 1, "b", 2]));
-  });
-});
-
-describe("sqlBatchUpdateRoles", () => {
-  it("updates existing roles by unique code in one statement", () => {
-    const { text, values } = inspectSql(
-      sqlBatchUpdateRoles([
-        { code: "admin", name: "管理员", description: "all", enabled: true },
-        { code: "user", name: "用户", description: null, enabled: false },
-      ]),
-    );
-
-    expect(text).toMatch(/UPDATE\s+"Role"/i);
-    expect(text).toMatch(/WHERE r\.code = v\.code/);
-    expect(values).toEqual(
-      expect.arrayContaining(["admin", "管理员", "user", "用户"]),
-    );
   });
 });
 

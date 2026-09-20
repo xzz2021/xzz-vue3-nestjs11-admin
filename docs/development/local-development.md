@@ -26,7 +26,7 @@ Workspace：`apps/*`。`pnpm-workspace.yaml` 还写了 `packages/*`，当前没�
 ## 数据库
 
 - 首次建表：在 `apps/server` 执行 `pnpm prisma migrate dev --name init`
-- 种子：`pnpm prisma:seed`。入口 `prisma/seed/seed.ts`，菜单已有数据则整次跳过
+- 种子：`pnpm prisma:seed`。入口 `prisma/seed/seed.ts`，菜单已有数据则整次跳过。生产 migrator 默认不跑 seed。
 - 更新 schema 后：`pnpm prisma:gen` 同步 Client，再 `pnpm prisma migrate dev --name <name>`
 - 已有迁移记录、库被重置：`pnpm exec prisma migrate deploy` 再 `pnpm exec prisma db seed`
 - 客户 Demo 种子在 `prisma/seed/seed-customers.ts`，主入口默认不调用，也没有 `demo:seed` 脚本

@@ -154,7 +154,7 @@ const onInput = () => {
             type="primary"
             href="https://icon-sets.iconify.design/lucide/"
             target="_blank"
-            :underline="false"
+            underline="never"
             class="ml-6px align-baseline!"
           >
             Lucide 图库

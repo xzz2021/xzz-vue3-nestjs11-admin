@@ -26,6 +26,7 @@ services:
       - .env
     environment:
       PG_DATABASE_URL: ${PG_DATABASE_URL:?PG_DATABASE_URL is required}
+      RUN_DB_SEED: ${RUN_DB_SEED:-0}
     depends_on:
       postgres:
         condition: service_healthy

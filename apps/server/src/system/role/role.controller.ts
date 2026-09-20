@@ -21,7 +21,6 @@ import {
   QueryRoleParams,
   RoleAuthorizationTreeRes,
   RoleListRes,
-  RoleSeedArrayDto,
   UpdateRoleDto,
 } from './dto/role.dto.js';
 import { RoleService } from './role.service.js';

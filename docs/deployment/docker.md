@@ -10,7 +10,7 @@
 | -------- | ------------------------------------ | ------------------------------------------------------------------------------------------ |
 | postgres | postgres:18-alpine                   | 卷 `postgres-data`；挂载 `docker/postgres/init-users.sh` 初始化管理/迁移/运行账号          |
 | redis    | redis:8-alpine                       | 密码 + AOF；卷 `redis-data`                                                                |
-| migrate  | server Dockerfile `target: migrator` | 一次性：`migrate deploy && db seed`，成功后退出                                            |
+| migrate  | server Dockerfile `target: migrator` | 一次性：`migrate deploy`；仅 `RUN_DB_SEED=1` 时再 `db seed`，成功后退出 |
 | server   | server Dockerfile `target: runner`   | 健康检查当前探测 `GET /health`；bind mount `./data/server/public`、`./data/server/backups` |
 | admin    | `apps/web/Dockerfile`                | Nginx 托管 SPA；依赖 server healthy                                                        |
 
@@ -35,7 +35,7 @@
 ### server（`apps/server/Dockerfile`）
 
 1. **builder**：`HUSKY=0` + `verify-deps-before-run=false`，`pnpm --filter server...` 安装，再 `prisma generate` + `nest build`
-2. **migrator**：继承 builder，跑迁移与 seed
+2. **migrator**：继承 builder，默认只跑 `migrate deploy`；`RUN_DB_SEED=1` 时才 seed
 3. **runner**：alpine 生产依赖；安装 `postgresql18-client` 供 `pg_dump`；`USER node`（uid 1000）；EXPOSE 3000
 
 `COPY packages` 在 server Dockerfile 里已经注释。

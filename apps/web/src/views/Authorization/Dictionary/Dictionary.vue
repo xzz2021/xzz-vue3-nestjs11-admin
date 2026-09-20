@@ -181,7 +181,7 @@ const handleSave = async () => {
 
     <ContentWrap class="min-w-0 flex-1">
       <div class="mb-12px flex flex-wrap items-center gap-12px">
-        <ElLink v-if="currentTypeCode" type="primary" @click="copy(currentTypeCode)">
+        <ElLink v-if="currentTypeCode" type="primary" underline="hover" @click="copy(currentTypeCode)">
           {{ t('tableDemo.code') }}:{{ currentTypeCode }}
         </ElLink>
         <ElTag v-if="currentType && !currentType.enabled" type="info">{{ t('dict.typeDisabled') }}</ElTag>

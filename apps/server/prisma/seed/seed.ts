@@ -126,6 +126,7 @@ async function seedInitialData() {
     async (tx: Prisma.TransactionClient) => {
       //  创建前先检查数据库mneu是否存在,有说明已经生成过,跳过
       //  这里用于服务器首次部署时初始化完整数据
+      //  生产 migrator 默认不跑 seed；空库请显式 RUN_DB_SEED=1 或 pnpm prisma:seed
       const menuCount = await tx.menu.count();
       if (menuCount > 0) {
         console.log(

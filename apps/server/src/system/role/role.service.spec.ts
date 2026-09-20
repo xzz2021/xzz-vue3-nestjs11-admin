@@ -1,4 +1,3 @@
-import type { PgService } from "#/prisma/pg.service.js";
 import type { RbacPermissionCacheService } from "#/processor/rbac/index.js";
 import { QueryRoleParams } from "./dto/role.dto.js";
 import { RoleRepository } from "./role.repository.js";
@@ -8,48 +7,23 @@ type MenuFindArgs = {
   where?: { name?: { in: string[] }; id?: { in: string[] } };
 };
 
-describe("RoleService seed and queries", () => {
+describe("RoleService queries", () => {
   const roleFindMany = vi.fn();
   const roleCount = vi.fn();
   const roleFindUnique = vi.fn();
-  const roleCreateMany = vi.fn();
-  const roleUpsert = vi.fn();
   const menuFindMany = vi.fn();
   const roleMenuFindMany = vi.fn();
   const rolePermissionFindMany = vi.fn();
   const userFindUnique = vi.fn();
-  const executeRaw = vi.fn();
-  const transaction = vi.fn(
-    async (
-      callback: (tx: {
-        role: {
-          findMany: typeof roleFindMany;
-          createMany: typeof roleCreateMany;
-          upsert: typeof roleUpsert;
-        };
-        $executeRaw: typeof executeRaw;
-      }) => Promise<unknown>,
-    ) =>
-      callback({
-        role: {
-          findMany: roleFindMany,
-          createMany: roleCreateMany,
-          upsert: roleUpsert,
-        },
-        $executeRaw: executeRaw,
-      }),
-  );
+  const transaction = vi.fn();
 
   const service = new RoleService(
     new RoleRepository({
       $transaction: transaction,
-      $executeRaw: executeRaw,
       role: {
         findMany: roleFindMany,
         count: roleCount,
         findUnique: roleFindUnique,
-        createMany: roleCreateMany,
-        upsert: roleUpsert,
       },
       user: { findUnique: userFindUnique },
       menu: { findMany: menuFindMany },
@@ -64,9 +38,6 @@ describe("RoleService seed and queries", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    roleCreateMany.mockResolvedValue({ count: 1 });
-    executeRaw.mockResolvedValue(1);
-    roleUpsert.mockResolvedValue({});
     menuFindMany.mockResolvedValue([]);
   });
 
@@ -85,26 +56,6 @@ describe("RoleService seed and queries", () => {
     menuFindMany.mock.calls.filter(
       (call) => (call[0] as MenuFindArgs)?.where?.id,
     );
-
-  it("seeds roles with createMany and one update statement instead of looping upsert", async () => {
-    roleFindMany.mockResolvedValue([{ code: "admin" }]);
-
-    await service.generateRoleSeed([
-      { code: "admin", name: "管理员", enabled: true, description: "all" },
-      { code: "user", name: "用户", enabled: true, description: "user" },
-    ]);
-
-    expect(roleUpsert).not.toHaveBeenCalled();
-    expect(roleCreateMany).toHaveBeenCalledTimes(1);
-    expect(roleCreateMany).toHaveBeenCalledWith({
-      data: [
-        { code: "user", name: "用户", enabled: true, description: "user" },
-      ],
-    });
-    expect(executeRaw).toHaveBeenCalledTimes(1);
-    const sql = executeRaw.mock.calls[0][0] as { sql: string };
-    expect(sql.sql).toMatch(/UPDATE\s+"Role"/i);
-  });
 
   it("loads role menus and permissions in parallel", async () => {
     let resolveMenus!: (value: unknown[]) => void;

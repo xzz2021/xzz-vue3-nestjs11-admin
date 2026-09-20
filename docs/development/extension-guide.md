@@ -20,7 +20,7 @@
 3. 角色页勾选菜单和权限。超管 `super_admin` 不需要逐条授权。
 4. 需要行级范围时走 `AuthorizationService` + 资源 Policy，不要在 Controller 里手写部门过滤。当前完整范例是 Customer。
 
-空库 seed 只在 `Menu.count() === 0` 时灌入。已有库请用管理页或增量脚本，不要依赖重复 `prisma db seed`。
+空库 seed 只在 `Menu.count() === 0` 时灌入。已有库请用管理页或增量脚本，不要依赖重复 `prisma db seed`。生产 `migrate` 容器默认只 `migrate deploy`。
 
 ## Schema
 

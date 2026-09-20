@@ -85,5 +85,7 @@ Nest / Prisma 运行时**只读 `PG_DATABASE_URL`**。初始化脚本：`docker/
 - 数据：`prisma/seed/data.ts`（菜单/角色/部门/权限）+ `seed-admin.ts`（`SEED_ADMIN_*`）
 - 客户样例：`prisma/seed/seed-customers.ts`；主入口里 `seedAdditionalData()` **默认注释**，空库不会自动灌客户
 - 判定：`Menu.count() > 0` 则整次 seed 跳过（角色/部门/权限/管理员一并跳过）
+- 生产 migrator **默认不执行 seed**，避免每次 `compose up` 都灌演示数据
+- 空库首次：根 `.env` 临时 `RUN_DB_SEED=1` 后 `docker compose run --rm migrate`，完成后改回 `0`；或 `pnpm --filter server prisma:seed`
 - 命令：`pnpm --filter server prisma:seed`
 - Seed 不写 RoleMenu / RolePermission；超管依赖后端对 `super_admin` 的 `*` 通配

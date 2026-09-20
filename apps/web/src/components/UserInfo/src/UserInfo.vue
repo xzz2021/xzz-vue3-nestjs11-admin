@@ -1,48 +1,48 @@
 <script setup lang="ts">
-import { useDesign } from '@/hooks/web/useDesign'
-import { useI18n } from '@/hooks/web/useI18n'
-import { useLockStore } from '@/store/modules/lock'
-import { useUserStore } from '@/store/modules/user'
-import { ElDropdown, ElDropdownItem, ElDropdownMenu } from 'element-plus'
-import { storeToRefs } from 'pinia'
-import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import LockDialog from './components/LockDialog.vue'
-import LockPage from './components/LockPage.vue'
+import { useDesign } from '@/hooks/web/useDesign';
+import { useI18n } from '@/hooks/web/useI18n';
+import { useLockStore } from '@/store/modules/lock';
+import { useUserStore } from '@/store/modules/user';
+import { ElDropdown, ElDropdownItem, ElDropdownMenu } from 'element-plus';
+import { storeToRefs } from 'pinia';
+import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import LockDialog from './components/LockDialog.vue';
+import LockPage from './components/LockPage.vue';
 
-const { push } = useRouter()
+const { push } = useRouter();
 
-const userStore = useUserStore()
+const userStore = useUserStore();
 
-const { userInfo } = storeToRefs(userStore)
+const { userInfo } = storeToRefs(userStore);
 
-const avatarUrl = computed(() => userStore.getUserAvatarUrl)
+const avatarUrl = computed(() => userStore.getUserAvatarUrl);
 
-const lockStore = useLockStore()
+const lockStore = useLockStore();
 
-const getIsLock = computed(() => lockStore.getLockInfo?.isLock ?? false)
+const getIsLock = computed(() => lockStore.getLockInfo?.isLock ?? false);
 
-const { getPrefixCls } = useDesign()
+const { getPrefixCls } = useDesign();
 
-const prefixCls = getPrefixCls('user-info')
+const prefixCls = getPrefixCls('user-info');
 
-const { t } = useI18n()
+const { t } = useI18n();
 
 const loginOut = () => {
-  userStore.logoutConfirm()
-}
+  userStore.logoutConfirm();
+};
 
-const dialogVisible = ref<boolean>(false)
+const dialogVisible = ref<boolean>(false);
 
 // 锁定屏幕
 const lockScreen = () => {
-  dialogVisible.value = true
-}
+  dialogVisible.value = true;
+};
 
 const toPage = (path: string) => {
-  push(path)
-}
-
+  push(path);
+};
+ElLoading.service().close();
 // onMounted(() => {
 //   sseStore.initServerMsgListener()
 // })

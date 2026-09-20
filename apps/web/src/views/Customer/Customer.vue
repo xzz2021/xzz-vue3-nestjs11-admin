@@ -394,7 +394,7 @@ onMounted(() => {
             class="flex flex-wrap items-center gap-8px rounded-6px bg-[var(--el-bg-color)] px-12px py-8px"
           >
             <ElTag size="small" :type="account.tagType" effect="plain">{{ account.label }}</ElTag>
-            <ElLink type="primary" :underline="false" title="点击复制手机号" @click="copy(account.phone)">
+            <ElLink type="primary" underline="never" title="点击复制手机号" @click="copy(account.phone)">
               <span class="inline-flex items-center gap-4px font-mono">
                 {{ account.phone }}
                 <Icon icon="copy" :size="13" />

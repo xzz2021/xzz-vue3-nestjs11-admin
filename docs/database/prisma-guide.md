@@ -33,7 +33,7 @@ pnpm prisma db seed           # 或 pnpm prisma:seed
 pnpm prisma validate          # 或 pnpm prisma:val
 ```
 
-Docker `migrate` 服务：`prisma migrate deploy && prisma db seed`。
+Docker `migrate` 服务默认只 `prisma migrate deploy`。空库首次初始化再设 `RUN_DB_SEED=1`，或手动 `pnpm prisma:seed`。
 
 ## Nest 集成
 
