@@ -346,7 +346,7 @@ export class RoleService {
     ) {
       return [];
     }
-    // 整理权限名数组到每个菜单的 meta.permission 中
+    // 整理权限码数组到每个菜单的 meta.permissions
     const result = roleWithMenusAndPermissions.map((menu) => {
       const { permissions, ...rest } = menu;
       const permissionCodes = permissions.map((p) => p.code);

@@ -49,6 +49,8 @@ Nest 与 Prisma **只读 `PG_DATABASE_URL`**。Compose 里：
 
 本地 `apps/server/.env` 直接写 `PG_DATABASE_URL`。生产根目录 `.env` 必须同时提供上述两个 URL。
 
+`compose.local.yml` 用的是另一套本机单用户变量：`POSTGRES_USER`（默认 `root`）、`POSTGRES_PASSWORD`（必填）、`POSTGRES_DB`（默认 `ad4353`），从仓库根 `.env` 插值，需与 `PG_DATABASE_URL` 一致。
+
 `apps/server/.env.example` 的 Token 数值是 `30000` / `259200000`，代码按秒读取，不要直接用于生产。
 
 ### OSS / S3 CORS
@@ -77,6 +79,6 @@ Nest 与 Prisma **只读 `PG_DATABASE_URL`**。Compose 里：
 
 `apps/server/src/core/config.ts`：
 
-- `ConfigModule.forRoot({ ignoreEnvFile: true, ... })` — 不自动读 `.env` 文件
-- 本地开发能读到 `apps/server/.env`，是因为 Prisma 模块导入了 `dotenv/config`
+- `ConfigModule.forRoot({ ignoreEnvFile: true, ... })` — 不让 Nest 再读一遍 `.env`
+- 本地 `.env` 由 `src/core/load-env.ts` 显式加载（`main.ts` 最先导入；Prisma CLI 与 `pg.lib.ts` 也走同一函数，已有进程变量不覆盖）
 - `NODE_ENV=production` 时 Zod 校验密钥与 `PG_DATABASE_URL`

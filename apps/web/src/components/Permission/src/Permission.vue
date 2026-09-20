@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { propTypes } from '@/utils/propTypes'
+import { getRoutePermissions } from '@/utils/route-permission'
 import { computed, unref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -10,7 +11,7 @@ const props = defineProps({
 })
 
 const currentPermission = computed(() => {
-  return unref(currentRoute)?.meta?.permission || []
+  return getRoutePermissions(unref(currentRoute)?.meta)
 })
 
 const hasPermission = computed(() => {

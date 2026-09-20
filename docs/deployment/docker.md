@@ -52,7 +52,7 @@
 - `location ^~ /api/` → `proxy_pass http://server:3000/`（去掉 `/api` 前缀）
 - WebSocket：`Upgrade` / `Connection`；读写超时 3600s；`client_max_body_size 20m`
 - 转发头：`set_real_ip_from` 仅信任 Docker 私网；`X-Real-IP` 使用 `$remote_addr`（real_ip 处理后的客户端 IP）；`X-Forwarded-Proto` 只接受 `http`/`https`，其余回落 `$scheme`
-- CSP：`script-src 'self' 'unsafe-inline' 'unsafe-eval'`
+- CSP：`script-src 'self'`（已去掉 `unsafe-inline` / `unsafe-eval`）；`style-src` 仍允许 `unsafe-inline`（Element Plus / 运行时样式）
 
 热更新正在跑的容器（配置在宿主机改完后）：
 

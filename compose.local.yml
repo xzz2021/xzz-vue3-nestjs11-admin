@@ -1,19 +1,26 @@
+# 本机只起 Postgres / Redis，不用于生产。
+# Compose 从仓库根目录 `.env` 插值（不是 apps/server/.env）。
+# 与 apps/server/.env 的 PG_DATABASE_URL 用户/密码/库名保持一致。
 services:
   pgdb:
     image: postgres:18-alpine
     container_name: app-postgres
     restart: always
     environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: xzz...
-      POSTGRES_DB: admin2
+      POSTGRES_USER: ${POSTGRES_USER:-root}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:-ad4353}
     ports:
       - "5432:5432"
     volumes:
       - ./postgre/data:/var/lib/postgresql/data
       - ./postgre/logs:/var/log/postgresql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U root"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-root} -d ${POSTGRES_DB:-ad4353}",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5

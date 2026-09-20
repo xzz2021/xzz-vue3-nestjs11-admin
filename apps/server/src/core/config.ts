@@ -1,6 +1,9 @@
+import { loadAppEnv } from "#/core/load-env.js";
 import { parseCorsOrigins } from "#/processor/utils/cors.util.js";
 import { ConfigModule } from "@nestjs/config";
 import { z } from "zod";
+
+loadAppEnv();
 
 interface AppConfig {
   nodeEnv: string;

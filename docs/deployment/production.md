@@ -73,6 +73,8 @@ docker compose down                             # 停服务保留卷
 
 热更新 Nginx：见 [docker.md](./docker.md)（文件是 `docker/nginx/nginx.conf`，容器名 `app-admin`）。
 
+机器上用 `deploy.sh` 拉仓库时：默认若有未提交改动会中止；确认可覆盖本地补丁再用 `FORCE_DEPLOY=1`。`git clean` 会排除 `.env`、`data/`、`logs/`、证书和本机数据目录。
+
 Prisma 7 使用 Node 24 镜像（与 `apps/server/Dockerfile` 的 `node:24.18` 一致）。
 
 ## CI

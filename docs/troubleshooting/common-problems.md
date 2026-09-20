@@ -2,7 +2,7 @@
 
 ## 本地后端读不到 `.env`
 
-`ConfigModule` 设置了 `ignoreEnvFile: true`。本地能读到 `apps/server/.env`，是因为 Prisma 模块导入了 `dotenv/config`。如果启动顺序变化导致环境变量为空，检查进程环境或在启动前显式加载 `.env`。
+`ConfigModule` 设置了 `ignoreEnvFile: true`。本地 `.env` 由 `apps/server/src/core/load-env.ts` 显式加载。如果变量仍为空，检查进程环境、`apps/server/.env` 是否存在，以及 Nest 是否从 `apps/server` 目录启动。
 
 ## Prisma Client 路径找不到
 
@@ -44,7 +44,7 @@ CI 会跑 `pnpm test`。
 
 ## `compose.local.yml` Redis
 
-使用 `redis-server --appendonly yes`，数据在 `./redis/data`。不再挂载 `redis.conf`。Postgres 凭据写死在 compose 里，注意不要和 `apps/server/.env` 冲突。
+使用 `redis-server --appendonly yes`，数据在 `./redis/data`。不再挂载 `redis.conf`。Postgres 凭据来自根目录 `.env` 的 `POSTGRES_*`，须与 `apps/server/.env` 的 `PG_DATABASE_URL` 一致。
 
 ## 生产 Compose 起不来
 

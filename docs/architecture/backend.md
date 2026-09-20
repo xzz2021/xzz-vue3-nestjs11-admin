@@ -18,7 +18,7 @@
 
 | 模块                           | 作用                                                               |
 | ------------------------------ | ------------------------------------------------------------------ |
-| ConfigModule                   | Zod 校验（`ignoreEnvFile: true`，依赖进程环境；本地 `.env` 由 Prisma 侧 `dotenv/config` 间接加载） |
+| ConfigModule                   | Zod 校验（`ignoreEnvFile: true`；本地 `.env` 由 `src/core/load-env.ts` 显式加载，Prisma / `main.ts` / Config 共用） |
 | ServeStatic + StaticfileModule | 静态目录与文件上传 API                                             |
 | AppRedisModule                 | Redis 全局客户端与健康检查                                         |
 | QueueInfrastructureModule      | 全局 `BullModule.forRootAsync`（消息 / 文件清理 / 备份共用连接）   |

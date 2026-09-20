@@ -21,7 +21,9 @@ import { defineComponent } from 'vue'
  * noTagsView: true          如果设置为true，则不会出现在tag中(默认 false)
  * activeMenu: '/dashboard'  显示高亮的路由路径
  * canTo: true               设置为true即使hidden为true，也依然可以进行路由跳转(默认 false)
- * permissions: ['edit']     设置该路由的权限
+ * permissions: ['edit']     设置该路由的按钮权限码
+ * permission: ['edit']      已废弃，仅兼容旧的持久化路由
+
  * external: true            设置为true时点击菜单打开 link 指向的地址，不做站内路由跳转(默认 false)
  * link: 'https://a.com'     外链地址，支持 http(s) 绝对地址与 / 开头的相对地址
  */
@@ -38,6 +40,7 @@ interface AppRouteMenu extends Record<string | number | symbol, unknown> {
   noTagsView?: boolean
   canTo?: boolean
   permissions?: string[]
+  /** @deprecated 使用 permissions；读取请走 getRoutePermissions */
   permission?: string[]
   followRoute?: string
   external?: boolean

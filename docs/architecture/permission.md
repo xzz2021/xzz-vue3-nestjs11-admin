@@ -45,7 +45,7 @@ CASL（`@casl/ability`）只用于 Customer 的字段/属性规则，不是全�
 | 层       | 机制                                                         |
 | -------- | ------------------------------------------------------------ |
 | 路由     | 仅加载角色菜单对应的动态路由                                 |
-| 按钮     | `v-hasPermi` 对照 `meta.permissions`；`<Permission>` 对照 `meta.permission` |
+| 按钮     | `v-hasPermi` / `<Permission>` / 页面校验均对照 `meta.permissions` |
 | 菜单维护 | `views/Authorization/Menu` + `permission/*` API              |
 
 服务端接口 `GET /role/getRoleMenu` 返回当前用户菜单与权限，供登录后初始化。

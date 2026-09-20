@@ -19,8 +19,9 @@ Workspace：`apps/*`。`pnpm-workspace.yaml` 还写了 `packages/*`，当前没�
 ## 环境变量
 
 1. 后端使用 `apps/server/.env`，可从 `apps/server/.env.example` 复制。需包含 `PG_DATABASE_URL`、`TOKEN_*`、`REDIS_*` 等
-2. 前端使用 Vite mode：`dev` 脚本为 `--mode base`（`apps/web/.env.base`）
-3. Token 时间单位是**秒**。示例文件里的 `30000` / `259200000` 会变成约 8.3 小时 / 8.2 年
+2. `compose.local.yml` 读取仓库**根目录** `.env` 的 `POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB`（密码必填）。须与 `PG_DATABASE_URL` 一致
+3. 前端使用 Vite mode：`dev` 脚本为 `--mode base`（`apps/web/.env.base`）
+4. Token 时间单位是**秒**。示例文件里的 `30000` / `259200000` 会变成约 8.3 小时 / 8.2 年
 
 ## 数据库
 
@@ -43,7 +44,7 @@ Workspace：`apps/*`。`pnpm-workspace.yaml` 还写了 `packages/*`，当前没�
 
 Web 代理：`/api` → `http://127.0.0.1:3000`（去掉 `/api`）。
 
-仅起依赖可用 `compose.local.yml`。Redis 使用镜像默认配置 + AOF，不依赖外部 `redis.conf`。Postgres 凭据写死在 compose 里，注意不要和 `apps/server/.env` 冲突。
+仅起依赖可用 `compose.local.yml`。Redis 使用镜像默认配置 + AOF，不依赖外部 `redis.conf`。Postgres 用户/密码/库名从仓库**根目录** `.env` 读取（`POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB`），须与 `apps/server/.env` 的 `PG_DATABASE_URL` 一致。`POSTGRES_PASSWORD` 未设置时 Compose 会直接失败。
 
 ## 质量门
 

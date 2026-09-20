@@ -16,6 +16,7 @@ import { useI18n } from '@/hooks/web/useI18n'
 import router from '@/router'
 import { formatToDateTime } from '@/utils/dateUtil'
 import { formatBytes } from '@/utils/file'
+import { getRoutePermissions } from '@/utils/route-permission'
 import {
   ElCard,
   ElCol,
@@ -36,9 +37,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 const { t } = useI18n()
 
 const hasPermi = (code: string) => {
-  const meta = router.currentRoute.value.meta as Recordable
-  const permissions = (meta.permissions || meta.permission || []) as string[]
-  return permissions.includes(code)
+  return getRoutePermissions(router.currentRoute.value.meta).includes(code)
 }
 
 const configLoading = ref(false)

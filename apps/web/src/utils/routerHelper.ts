@@ -23,7 +23,6 @@ const ROUTE_MENU_META_KEYS = [
   'noTagsView',
   'canTo',
   'permissions',
-  'permission',
   'external',
   'link'
 ] as const

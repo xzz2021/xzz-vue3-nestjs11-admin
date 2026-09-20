@@ -109,10 +109,20 @@ if [ "$FETCH_SUCCESS" != true ]; then
 fi
 
 # ============================================================
-# 4. 强制同步远程 main
+# 4. 同步远程 main
+# 默认拒绝覆盖未提交改动。确认可以丢掉本地补丁时：FORCE_DEPLOY=1 ./deploy.sh
 # ============================================================
 echo
 echo "==> 同步远程 $BRANCH..."
+
+if [ -z "${FORCE_DEPLOY:-}" ]; then
+  if ! git diff --quiet || ! git diff --cached --quiet; then
+    echo "错误: 工作区有未提交改动，已中止以免 git reset --hard 丢掉补丁。"
+    echo "提交或贮藏后再部署，或 FORCE_DEPLOY=1 强制覆盖。"
+    git status --short
+    exit 1
+  fi
+fi
 
 git reset --hard "origin/$BRANCH"
 
@@ -123,16 +133,22 @@ git checkout -B "$BRANCH" "origin/$BRANCH" >/dev/null 2>&1
 # 5. 清理 Git 仓库中不存在的旧文件
 #
 # 保留:
-#   .env
+#   .env / .env.*
 #   deploy.sh
-#
-# 如果以后有 uploads / logs 等本地目录，也应在这里排除
+#   data / logs / uploads / certs / postgre / redis（本地数据与证书）
 # ============================================================
 echo "==> 清理旧文件..."
 
 git clean -fd \
   -e ".env" \
-  -e "$SCRIPT_NAME"
+  -e ".env.*" \
+  -e "$SCRIPT_NAME" \
+  -e "data" \
+  -e "logs" \
+  -e "uploads" \
+  -e "certs" \
+  -e "postgre" \
+  -e "redis"
 
 # ============================================================
 # 6. 输出当前部署版本

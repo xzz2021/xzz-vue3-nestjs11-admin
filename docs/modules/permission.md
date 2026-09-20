@@ -33,7 +33,7 @@
 - 菜单页：`apps/web/src/views/Authorization/Menu/`（含 `AddButtonPermission.vue`、排序、编辑）
 - 无独立 Permission 路由页
 - 指令：`directives/permission/hasPermi.ts`（`meta.permissions`）
-- 组件：`components/Permission/`（`meta.permission`）
+- 组件：`components/Permission/`（同一套 `getRoutePermissions`）
 
 ## Seed
 

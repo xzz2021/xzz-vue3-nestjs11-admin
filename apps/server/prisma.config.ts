@@ -1,5 +1,7 @@
-import 'dotenv/config';
+import { loadAppEnv } from './src/core/load-env.js';
 import { defineConfig, env } from 'prisma/config';
+
+loadAppEnv();
 
 export default defineConfig({
   schema: 'prisma/schema.prisma',

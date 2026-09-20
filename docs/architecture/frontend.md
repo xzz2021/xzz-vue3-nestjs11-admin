@@ -76,7 +76,7 @@ src/
 
 1. 登录后 `getRoleMenuApi`（`role/getRoleMenu`）→ 动态加路由
 2. 侧栏读 `permissionStore.getRouters`
-3. 按钮：`v-hasPermi` 读 `meta.permissions`；Permission 组件读 `meta.permission` — **字段名不一致**
+3. 按钮：`v-hasPermi`、`<Permission>`、页面内校验都读 `meta.permissions`（`getRoutePermissions`；旧的 `meta.permission` 仅作回退）
 
 无独立 Permission 管理页；按钮权限在菜单管理中维护。前端指令只控制展示，真正安全边界在后端 Guard。
 

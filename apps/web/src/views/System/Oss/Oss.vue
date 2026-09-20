@@ -16,6 +16,7 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { formatToDateTime } from '@/utils/dateUtil'
 import { breadcrumbSegments, joinRelativeKey, OssKeyError } from '@/utils/dangerousFilename'
 import { formatFileSize, getFileIcon2 } from '@/utils/file'
+import { getRoutePermissions } from '@/utils/route-permission'
 import { useClipboard } from '@vueuse/core'
 import {
   ElBreadcrumb,
@@ -72,12 +73,10 @@ const pickFiles = () => fileInput.value?.click()
 const pickFolder = () => folderInput.value?.click()
 
 const canAdd = () => {
-  const permissions = (route.meta.permissions || route.meta.permission || []) as string[]
-  return permissions.includes('oss:add')
+  return getRoutePermissions(route.meta).includes('oss:add')
 }
 const canDelete = () => {
-  const permissions = (route.meta.permissions || route.meta.permission || []) as string[]
-  return permissions.includes('oss:delete')
+  return getRoutePermissions(route.meta).includes('oss:delete')
 }
 
 const items = computed<OssListItem[]>(() => {
