@@ -68,6 +68,13 @@ export class MessageService {
 
   async searchReceivers(keyword?: string, excludeUserId?: string) {
     const list = await this.messages.searchReceivers(keyword, excludeUserId);
-    return { list, message: 'ok' };
+    const newList = list.map((item) => {
+      const { phone, ...rest } = item;
+      return {
+        ...rest,
+        phone: phone ? phone.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2') : '',
+      };
+    });
+    return { list: newList, message: '获取接收人列表成功' };
   }
 }

@@ -6,13 +6,13 @@
 
 根目录 **`compose.yml`**（另有 `compose.local.yml`，只起本机 Postgres/Redis，并映射宿主机端口，不用于生产）。
 
-| 服务     | 镜像/构建                            | 说明                                                                                          |
-| -------- | ------------------------------------ | --------------------------------------------------------------------------------------------- |
-| postgres | postgres:18-alpine                   | 卷 `postgres-data`；挂载 `docker/postgres/init-users.sh` 初始化管理/迁移/运行账号             |
-| redis    | redis:8-alpine                       | 密码 + AOF；卷 `redis-data`                                                                   |
-| migrate  | server Dockerfile `target: migrator` | 一次性：`migrate deploy && db seed`，成功后退出                                               |
-| server   | server Dockerfile `target: runner`   | 健康检查当前探测 `GET /health`；bind mount `./data/server/public`、`./data/server/backups`    |
-| admin    | `apps/web/Dockerfile`                | Nginx 托管 SPA；依赖 server healthy                                                           |
+| 服务     | 镜像/构建                            | 说明                                                                                       |
+| -------- | ------------------------------------ | ------------------------------------------------------------------------------------------ |
+| postgres | postgres:18-alpine                   | 卷 `postgres-data`；挂载 `docker/postgres/init-users.sh` 初始化管理/迁移/运行账号          |
+| redis    | redis:8-alpine                       | 密码 + AOF；卷 `redis-data`                                                                |
+| migrate  | server Dockerfile `target: migrator` | 一次性：`migrate deploy && db seed`，成功后退出                                            |
+| server   | server Dockerfile `target: runner`   | 健康检查当前探测 `GET /health`；bind mount `./data/server/public`、`./data/server/backups` |
+| admin    | `apps/web/Dockerfile`                | Nginx 托管 SPA；依赖 server healthy                                                        |
 
 启动顺序：postgres/redis healthy → migrate 成功退出 → server / admin。
 
@@ -26,7 +26,7 @@
 
 1. Server 健康检查访问 `GET /health`，应用只有受 JWT 保护的 `GET /`，容器会一直 unhealthy，`admin` 因 `service_healthy` 起不来。
 2. `apps/web/Dockerfile` 仍 `COPY packages packages/`，仓库没有 `packages/`，构建会失败。
-3. Server runner `CMD` 为 `node dist/src/main.js`，`start:prod` 与 `tsconfig.build.json` 的 `rootDir` 指向 `dist/main.js`，入口路径需要以实际 `nest build` 产物为准。
+3. Server runner `CMD` 为 `node dist/main.js`，`start:prod` 与 `tsconfig.build.json` 的 `rootDir` 指向 `dist/main.js`，入口路径需要以实际 `nest build` 产物为准。
 4. 根目录没有 `.env.example`，也没有 `scripts/generate-production-env.mjs`；`compose.yml` 又要求根 `.env` 提供全部必填插值。
 5. Server 只挂载 `public`、`backups`，**没有** logs bind mount。
 6. `compose.local.yml` 引用 `./redis/redis.conf`，仓库中不存在该文件。
