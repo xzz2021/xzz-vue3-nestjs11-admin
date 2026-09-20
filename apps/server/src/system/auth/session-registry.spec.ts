@@ -4,20 +4,20 @@ import { SessionRegistry } from "./session-registry.js";
 describe("SessionRegistry", () => {
   const values = new Map<string, string>();
   const redis = {
-    get: jest.fn((key: string) => Promise.resolve(values.get(key) ?? null)),
-    set: jest.fn((key: string, value: string, ...args: unknown[]) => {
+    get: vi.fn((key: string) => Promise.resolve(values.get(key) ?? null)),
+    set: vi.fn((key: string, value: string, ...args: unknown[]) => {
       if (args.includes("NX") && values.has(key)) return Promise.resolve(null);
       values.set(key, String(value));
       return Promise.resolve("OK");
     }),
-    del: jest.fn((...keys: string[]) => {
+    del: vi.fn((...keys: string[]) => {
       let count = 0;
       for (const key of keys) {
         if (values.delete(key)) count++;
       }
       return Promise.resolve(count);
     }),
-    eval: jest.fn((...args: unknown[]) => {
+    eval: vi.fn((...args: unknown[]) => {
       const key = String(args[2]);
       const owner = String(args[3]);
       if (values.get(key) === owner) {
@@ -40,7 +40,7 @@ describe("SessionRegistry", () => {
 
   beforeEach(() => {
     values.clear();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("registers sessions and evicts the oldest above the limit", async () => {

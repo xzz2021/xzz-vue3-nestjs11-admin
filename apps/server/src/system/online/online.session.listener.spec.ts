@@ -8,11 +8,11 @@ import type { OnlineService } from "./online.service.js";
 import { OnlineSessionListener } from "./online.session.listener.js";
 
 describe("OnlineSessionListener", () => {
-  const removeByUserId = jest.fn();
-  const remove = jest.fn();
-  const terminateUserByOperator = jest.fn();
-  const notifyForceLogout = jest.fn();
-  const notifyForceLogoutByUser = jest.fn();
+  const removeByUserId = vi.fn();
+  const remove = vi.fn();
+  const terminateUserByOperator = vi.fn();
+  const notifyForceLogout = vi.fn();
+  const notifyForceLogoutByUser = vi.fn();
 
   const events = new SessionEventBus();
   const listener = new OnlineSessionListener(
@@ -30,7 +30,7 @@ describe("OnlineSessionListener", () => {
   });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("clears presence and notifies WS on user-revoked without revoking tokens again", async () => {

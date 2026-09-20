@@ -6,24 +6,24 @@ import { RoleService } from "./role.service.js";
 describe("RoleService data scopes", () => {
   const tx = {};
   const roles = {
-    transaction: jest.fn((callback) => callback(tx)),
-    findByCode: jest.fn(),
-    findByIdCode: jest.fn(),
-    findEnabledMenusByIds: jest.fn(),
-    findEnabledPermissionsByIds: jest.fn(),
-    findEnabledDepartmentsByIds: jest.fn(),
-    create: jest.fn(),
-    createMenus: jest.fn(),
-    syncRolePermissions: jest.fn(),
-    syncRoleMenus: jest.fn(),
-    updateById: jest.fn(),
-    findUserIdsByRoleId: jest.fn(),
-    findEnabledMenusWithPermissions: jest.fn(),
-    findRoleMenuIds: jest.fn(),
-    findRolePermissionScopes: jest.fn(),
+    transaction: vi.fn((callback) => callback(tx)),
+    findByCode: vi.fn(),
+    findByIdCode: vi.fn(),
+    findEnabledMenusByIds: vi.fn(),
+    findEnabledPermissionsByIds: vi.fn(),
+    findEnabledDepartmentsByIds: vi.fn(),
+    create: vi.fn(),
+    createMenus: vi.fn(),
+    syncRolePermissions: vi.fn(),
+    syncRoleMenus: vi.fn(),
+    updateById: vi.fn(),
+    findUserIdsByRoleId: vi.fn(),
+    findEnabledMenusWithPermissions: vi.fn(),
+    findRoleMenuIds: vi.fn(),
+    findRolePermissionScopes: vi.fn(),
   };
-  const cache = { invalidateUsers: jest.fn() };
-  const audit = { record: jest.fn() };
+  const cache = { invalidateUsers: vi.fn() };
+  const audit = { record: vi.fn() };
   const service = new RoleService(
     roles as unknown as RoleRepository,
     cache as unknown as import("#/processor/rbac/index.js").RbacPermissionCacheService,
@@ -46,7 +46,7 @@ describe("RoleService data scopes", () => {
   });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     roles.findByCode.mockResolvedValue(null);
     roles.findEnabledMenusByIds.mockResolvedValue([{ id: "menu-1" }]);
     roles.findEnabledPermissionsByIds.mockResolvedValue([

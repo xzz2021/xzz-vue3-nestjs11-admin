@@ -8,20 +8,20 @@ import { MESSAGE_JOB, MESSAGE_PUSH_CHANNEL } from "./message.constants.js";
 
 describe("MessageDeliveryService", () => {
   const redis = {
-    get: jest.fn(),
-    set: jest.fn(),
-    publish: jest.fn(),
+    get: vi.fn(),
+    set: vi.fn(),
+    publish: vi.fn(),
   };
   const queue = {
-    add: jest.fn(),
+    add: vi.fn(),
   };
   const messages = {
-    findEnabledUserIdsByIds: jest.fn(),
-    findEnabledUserIds: jest.fn(),
-    findSuperAdminUserIds: jest.fn(),
-    countUnread: jest.fn(),
-    groupUnreadByReceiverIds: jest.fn(),
-    insertDispatched: jest.fn(),
+    findEnabledUserIdsByIds: vi.fn(),
+    findEnabledUserIds: vi.fn(),
+    findSuperAdminUserIds: vi.fn(),
+    countUnread: vi.fn(),
+    groupUnreadByReceiverIds: vi.fn(),
+    insertDispatched: vi.fn(),
   };
 
   const createService = () =>
@@ -32,7 +32,7 @@ describe("MessageDeliveryService", () => {
     );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     redis.get.mockResolvedValue(null);
     redis.set.mockResolvedValue("OK");
     redis.publish.mockResolvedValue(1);

@@ -13,5 +13,6 @@ apps/web/dist-*/
 apps/web/node_modules/
 
 apps/server/node_modules/
+apps/server/package-lock.json
 
 # apps/server/src/prisma/generated/

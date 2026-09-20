@@ -3,7 +3,7 @@ import { BackupDiskListener } from "./backup-disk.listener.js";
 import type { DbBackupLifecycleService } from "./db-backup-lifecycle.service.js";
 
 describe("BackupDiskListener", () => {
-  const purgeExpired = jest.fn();
+  const purgeExpired = vi.fn();
   const events = new DiskCleanupEventBus();
   const listener = new BackupDiskListener(events, {
     purgeExpired,
@@ -14,7 +14,7 @@ describe("BackupDiskListener", () => {
   });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     purgeExpired.mockResolvedValue(undefined);
   });
 

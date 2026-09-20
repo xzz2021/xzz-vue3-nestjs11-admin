@@ -61,7 +61,7 @@ describe("LockoutService", () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("allows login when the account is not locked", async () => {
@@ -70,7 +70,7 @@ describe("LockoutService", () => {
 
   it("rejects login while the account lock is active", async () => {
     const now = 1_700_000_000_000;
-    jest.spyOn(Date, "now").mockReturnValue(now);
+    vi.spyOn(Date, "now").mockReturnValue(now);
     await redis.set(lockKey, String(now + 12_000), "EX", 12);
 
     await expect(service.ensureNotLocked(phone)).rejects.toBeInstanceOf(
@@ -95,7 +95,7 @@ describe("LockoutService", () => {
 
   it("locks the phone after consecutive failures and starts a fresh window", async () => {
     const now = 1_700_000_000_000;
-    jest.spyOn(Date, "now").mockReturnValue(now);
+    vi.spyOn(Date, "now").mockReturnValue(now);
 
     for (let i = 0; i < LOGIN_LOCKOUT.failThreshold - 1; i++) {
       await service.onFail(phone);

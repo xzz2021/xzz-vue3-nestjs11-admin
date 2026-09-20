@@ -7,19 +7,19 @@ import { DepartmentService } from "./department.service.js";
 
 describe("DepartmentService organization generation", () => {
   const departments = {
-    transaction: jest.fn(),
-    create: jest.fn(),
-    updateById: jest.fn(),
-    findPathById: jest.fn(),
-    findTreeLinks: jest.fn(),
-    replaceDescendantPaths: jest.fn(),
-    lockById: jest.fn(),
-    findFirstChildId: jest.fn(),
-    findDeleteReferences: jest.fn(),
-    deleteById: jest.fn(),
+    transaction: vi.fn(),
+    create: vi.fn(),
+    updateById: vi.fn(),
+    findPathById: vi.fn(),
+    findTreeLinks: vi.fn(),
+    replaceDescendantPaths: vi.fn(),
+    lockById: vi.fn(),
+    findFirstChildId: vi.fn(),
+    findDeleteReferences: vi.fn(),
+    deleteById: vi.fn(),
   };
-  const audit = { record: jest.fn() };
-  const generation = { bump: jest.fn() };
+  const audit = { record: vi.fn() };
+  const generation = { bump: vi.fn() };
   const service = new DepartmentService(
     departments as unknown as DepartmentRepository,
     audit as unknown as AuditLogService,
@@ -27,7 +27,7 @@ describe("DepartmentService organization generation", () => {
   );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     departments.transaction.mockImplementation(
       (callback: (tx: object) => Promise<unknown>) => callback({}),
     );

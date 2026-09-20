@@ -12,8 +12,8 @@ import { HttpException, HttpStatus } from "@nestjs/common";
 import { loadOssS3Config, type OssS3RuntimeConfig } from "./oss.s3.js";
 import { OssService } from "./oss.service.js";
 
-jest.mock("@aws-sdk/s3-request-presigner", () => ({
-  getSignedUrl: jest.fn(() => "https://s3.example/presigned"),
+vi.mock("@aws-sdk/s3-request-presigner", () => ({
+  getSignedUrl: vi.fn(() => "https://s3.example/presigned"),
 }));
 
 const presign = getSignedUrl;
@@ -64,11 +64,11 @@ describe("loadOssS3Config", () => {
 });
 
 describe("OssService", () => {
-  let send: jest.Mock;
+  let send: vi.Mock;
   let service: OssService;
 
   beforeEach(() => {
-    send = jest.fn();
+    send = vi.fn();
     presign.mockResolvedValue("https://s3.example/presigned");
     service = new OssService({ send }, configured());
   });
@@ -97,7 +97,7 @@ describe("OssService", () => {
       configured({ configured: false, bucket: "" }),
     );
     await expectOss(
-      () => void unconfigured.getPublicConfig(),
+      () => unconfigured.getPublicConfig(),
       HttpStatus.SERVICE_UNAVAILABLE,
       "1404",
     );
@@ -163,7 +163,7 @@ describe("OssService", () => {
       throw error;
     });
     await expectOss(
-      () => void service.createFolder({ prefix: "docs", name: "photos" }),
+      () => service.createFolder({ prefix: "docs", name: "photos" }),
       HttpStatus.CONFLICT,
       "1401",
     );
@@ -173,7 +173,7 @@ describe("OssService", () => {
     send.mockResolvedValue({ ContentLength: 10 });
     await expectOss(
       () =>
-        void service.presignPut({
+        service.presignPut({
           prefix: "",
           filename: "a.txt",
           contentType: "text/plain",
@@ -218,7 +218,7 @@ describe("OssService", () => {
     });
     await expectOss(
       () =>
-        void service.deleteObjects({
+        service.deleteObjects({
           keys: [{ key: "docs/", isFolder: true }],
         }),
       HttpStatus.BAD_REQUEST,
@@ -229,7 +229,7 @@ describe("OssService", () => {
   it("rejects moving a folder into its own descendant path", async () => {
     await expectOss(
       () =>
-        void service.copyObjects({
+        service.copyObjects({
           sources: [{ key: "docs/", isFolder: true }],
           destinationPrefix: "docs/nested/",
         }),

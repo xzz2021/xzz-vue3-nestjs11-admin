@@ -2,14 +2,14 @@ import type { PgService } from "#/prisma/pg.service.js";
 import { DictionaryService } from "./dictionary.service.js";
 
 describe("DictionaryService seed", () => {
-  const typeFindMany = jest.fn();
-  const typeCreateManyAndReturn = jest.fn();
-  const typeUpsert = jest.fn();
-  const itemFindMany = jest.fn();
-  const itemCreateMany = jest.fn();
-  const itemUpsert = jest.fn();
-  const executeRaw = jest.fn();
-  const transaction = jest.fn(
+  const typeFindMany = vi.fn();
+  const typeCreateManyAndReturn = vi.fn();
+  const typeUpsert = vi.fn();
+  const itemFindMany = vi.fn();
+  const itemCreateMany = vi.fn();
+  const itemUpsert = vi.fn();
+  const executeRaw = vi.fn();
+  const transaction = vi.fn(
     async (
       callback: (tx: {
         dictionaryType: {
@@ -43,7 +43,7 @@ describe("DictionaryService seed", () => {
   const service = new DictionaryService({ $transaction: transaction });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     typeCreateManyAndReturn.mockResolvedValue([
       { id: "type-new", code: "gender" },
     ]);

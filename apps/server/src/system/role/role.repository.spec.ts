@@ -3,12 +3,12 @@ import type { PgService } from "#/prisma/pg.service.js";
 import { RoleRepository } from "./role.repository.js";
 
 describe("RoleRepository permission synchronization", () => {
-  const findMany = jest.fn();
-  const create = jest.fn();
-  const update = jest.fn();
-  const deleteMany = jest.fn();
-  const departmentDeleteMany = jest.fn();
-  const departmentCreateMany = jest.fn();
+  const findMany = vi.fn();
+  const create = vi.fn();
+  const update = vi.fn();
+  const deleteMany = vi.fn();
+  const departmentDeleteMany = vi.fn();
+  const departmentCreateMany = vi.fn();
   const tx = {
     rolePermission: { findMany, create, update, deleteMany },
     rolePermissionDepartment: {
@@ -19,7 +19,7 @@ describe("RoleRepository permission synchronization", () => {
   const repository = new RoleRepository({} as PgService);
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("preserves unchanged legacy RolePermission ids and updates only changed scopes", async () => {
@@ -90,7 +90,7 @@ describe("RoleRepository permission synchronization", () => {
 
 describe("RoleRepository authorization tree ordering", () => {
   it("orders menus and permissions by sort then id for stable echo", async () => {
-    const findMany = jest.fn().mockResolvedValue([]);
+    const findMany = vi.fn().mockResolvedValue([]);
     const repository = new RoleRepository({ menu: { findMany } });
 
     await repository.findEnabledMenusWithPermissions();

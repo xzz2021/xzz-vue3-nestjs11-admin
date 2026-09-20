@@ -83,6 +83,12 @@ export const usePermissionStore = defineStore('permission', {
     },
     setMenuTabRouters(routers: AppRouteRecordRaw[]): void {
       this.menuTabRouters = routers
+    },
+    resetRoutes(): void {
+      this.routers = []
+      this.addRouters = []
+      this.menuTabRouters = []
+      this.isAddRouters = false
     }
   },
   persist: [

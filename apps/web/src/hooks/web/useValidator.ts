@@ -112,7 +112,7 @@ export const useValidator = () => {
 
   const validatecheckPwd = async (checkValue: () => Promise<string>) => {
     return {
-      validator: async (_: any, val: string, callback: (arg0?: Error) => void) => {
+      validator: async (_rule: unknown, val: string, callback: (error?: Error) => void) => {
         const checkData = await checkValue()
         if (val !== checkData) {
           callback(new Error('两次输入的内容不一致!'))

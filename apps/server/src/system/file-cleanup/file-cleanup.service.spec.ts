@@ -5,16 +5,16 @@ import { DiskCleanupEventBus } from "./disk-cleanup.events.js";
 import { FILE_CLEANUP_UNLINK } from "./file-cleanup.constants.js";
 import { FileCleanupService } from "./file-cleanup.service.js";
 
-jest.mock("node:fs", () => ({
+vi.mock("node:fs", () => ({
   promises: {
-    unlink: jest.fn(),
-    rm: jest.fn(),
+    unlink: vi.fn(),
+    rm: vi.fn(),
   },
 }));
 
-jest.mock("#/system/staticfile/multer.config.js", () => ({
+vi.mock("#/system/staticfile/multer.config.js", () => ({
   getStaticFileRoot: () => "/static-root",
-  tryResolvePathInsideRoot: jest.fn((root: string, target: string) => {
+  tryResolvePathInsideRoot: vi.fn((root: string, target: string) => {
     const normalizedRoot = root.replace(/\\/g, "/");
     const normalizedTarget = target.replace(/\\/g, "/");
     if (
@@ -35,10 +35,10 @@ jest.mock("#/system/staticfile/multer.config.js", () => ({
 }));
 
 describe("FileCleanupService", () => {
-  const unlink = fs.unlink as jest.MockedFunction<typeof fs.unlink>;
-  const rm = fs.rm as jest.MockedFunction<typeof fs.rm>;
-  const queueAdd = jest.fn();
-  const findUnique = jest.fn();
+  const unlink = fs.unlink as vi.MockedFunction<typeof fs.unlink>;
+  const rm = fs.rm as vi.MockedFunction<typeof fs.rm>;
+  const queueAdd = vi.fn();
+  const findUnique = vi.fn();
 
   const createService = () => {
     const events = new DiskCleanupEventBus();
@@ -54,7 +54,7 @@ describe("FileCleanupService", () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     unlink.mockResolvedValue(undefined);
     rm.mockResolvedValue(undefined);
     queueAdd.mockResolvedValue({});
@@ -79,7 +79,7 @@ describe("FileCleanupService", () => {
 
   it("unlinks then emits disk.unlinked without touching file metadata", async () => {
     const { service, events } = createService();
-    const onUnlinked = jest.fn();
+    const onUnlinked = vi.fn();
     events.onUnlinked(onUnlinked);
 
     await service.process({ kind: "managed-file", fileId: 9, path: "a.png" });
@@ -97,7 +97,7 @@ describe("FileCleanupService", () => {
     unlink.mockRejectedValue(
       Object.assign(new Error("busy"), { code: "EBUSY" }),
     );
-    const onUnlinked = jest.fn();
+    const onUnlinked = vi.fn();
     events.onUnlinked(onUnlinked);
 
     await expect(
@@ -111,7 +111,7 @@ describe("FileCleanupService", () => {
     unlink.mockRejectedValue(
       Object.assign(new Error("gone"), { code: "ENOENT" }),
     );
-    const onUnlinked = jest.fn();
+    const onUnlinked = vi.fn();
     events.onUnlinked(onUnlinked);
 
     await service.process({
@@ -131,7 +131,7 @@ describe("FileCleanupService", () => {
   it("skips managed-file unlink when the file has been restored", async () => {
     const { service, events } = createService();
     findUnique.mockResolvedValue({ deletedAt: null });
-    const onUnlinked = jest.fn();
+    const onUnlinked = vi.fn();
     events.onUnlinked(onUnlinked);
 
     await service.process({ kind: "managed-file", fileId: 9, path: "a.png" });
@@ -142,7 +142,7 @@ describe("FileCleanupService", () => {
 
   it("recursively removes upload session temp directories", async () => {
     const { service, events } = createService();
-    const onUnlinked = jest.fn();
+    const onUnlinked = vi.fn();
     events.onUnlinked(onUnlinked);
 
     await service.process({

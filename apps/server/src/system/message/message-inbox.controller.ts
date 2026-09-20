@@ -1,4 +1,4 @@
-import { User } from "#/processor/decorator/index.js";
+import { Authenticated, User } from "#/processor/decorator/index.js";
 import type { JwtUser } from "#/system/auth/dto/auth.dto.js";
 import { Body, Controller, Delete, Get, Post, Query } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
@@ -7,6 +7,7 @@ import { MessageService } from "./message.service.js";
 
 @ApiTags("消息收件箱")
 @Controller("message")
+@Authenticated()
 export class MessageInboxController {
   constructor(private readonly messageService: MessageService) {}
 

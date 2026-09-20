@@ -51,6 +51,6 @@
 
 ## Git / CI
 
-- 根依赖包含 commitlint conventional 配置，但 husky hook 当前未接入
-- CI：PR / push 到 main、master 时跑 `pnpm lint && pnpm typecheck && pnpm build`
-- 测试框架是 Vitest，不要新增 `jest.fn()` / `jest.mock()`
+- 提交前 husky 跑 lint-staged（server oxlint / web eslint），`commit-msg` 走 commitlint conventional
+- CI：PR / push 到 main、master 时跑 `pnpm lint && pnpm typecheck && pnpm test && pnpm build`
+- 测试框架是 Vitest，使用 `vi.fn()` / `vi.mock()`

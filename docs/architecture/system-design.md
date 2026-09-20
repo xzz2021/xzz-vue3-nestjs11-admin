@@ -80,7 +80,7 @@ sequenceDiagram
 | 分层         | 路径                                         | 职责                                                                                          |
 | ------------ | -------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | 核心基础设施 | `apps/server/src/core/`                      | Config、静态资源、Swagger、日志                                                               |
-| 数据基础设施 | `apps/server/src/infrastructure/database/`   | Prisma/`PgService`、Redis、BullMQ 连接                                                        |
+| 数据基础设施 | `apps/server/src/infrastructure/`            | Prisma/`PgService`、Redis、`QueueInfrastructureModule`（BullMQ 连接）                         |
 | 横切处理器   | `apps/server/src/processor/`                 | Guard / Decorator / Filter / Interceptor / RBAC 缓存 / DataScope 授权                         |
 | 业务系统     | `apps/server/src/system/`                    | auth、session、user、role、menu、permission、department、dictionary、customer、message、online、monitor、captcha、staticfile、oss、db-backup |
 | 数据模型     | `apps/server/prisma/`                        | Schema、migrations、seed                                                                      |

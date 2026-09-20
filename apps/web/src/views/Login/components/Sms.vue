@@ -222,9 +222,9 @@ const signIn = async () => {
       const res = await smsLoginApi(formData).finally(() => {
         loading.value = false
       })
-      const { access_token = '', userinfo = {} } = res.data
-      if (access_token) {
-        successLogin(userinfo, access_token as string)
+      const { access_token, userinfo } = res.data
+      if (access_token && userinfo) {
+        await successLogin(userinfo, access_token)
       }
     }
   })

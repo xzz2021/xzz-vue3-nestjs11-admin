@@ -29,7 +29,6 @@
 3. Server runner `CMD` 为 `node dist/main.js`，`start:prod` 与 `tsconfig.build.json` 的 `rootDir` 指向 `dist/main.js`，入口路径需要以实际 `nest build` 产物为准。
 4. 根目录没有 `.env.example`，也没有 `scripts/generate-production-env.mjs`；`compose.yml` 又要求根 `.env` 提供全部必填插值。
 5. Server 只挂载 `public`、`backups`，**没有** logs bind mount。
-6. `compose.local.yml` 引用 `./redis/redis.conf`，仓库中不存在该文件。
 
 ## Dockerfile 要点
 
@@ -52,7 +51,7 @@
 - SPA：`try_files` → `index.html`
 - `location ^~ /api/` → `proxy_pass http://server:3000/`（去掉 `/api` 前缀）
 - WebSocket：`Upgrade` / `Connection`；读写超时 3600s；`client_max_body_size 20m`
-- 转发头：`X-Real-IP` 来自请求的 `X-Real-IP`（空则 `$remote_addr`）；`X-Forwarded-Proto` 透传客户端值。当前配置**没有** `set_real_ip_from` / `real_ip_header`
+- 转发头：`set_real_ip_from` 仅信任 Docker 私网；`X-Real-IP` 使用 `$remote_addr`（real_ip 处理后的客户端 IP）；`X-Forwarded-Proto` 只接受 `http`/`https`，其余回落 `$scheme`
 - CSP：`script-src 'self' 'unsafe-inline' 'unsafe-eval'`
 
 热更新正在跑的容器（配置在宿主机改完后）：
@@ -75,4 +74,4 @@ chown -R 1000:1000 data/server
 ```
 
 - 数据库备份由 server 内 BullMQ 执行；环境变量见 [environment.md](./environment.md)
-- CI（`.github/workflows/ci.yml`）跑 `pnpm lint && pnpm typecheck && pnpm build`，不构建/推送镜像，也不跑测试
+- CI（`.github/workflows/ci.yml`）跑 `pnpm lint && pnpm typecheck && pnpm test && pnpm build`，不构建/推送镜像

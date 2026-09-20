@@ -48,7 +48,7 @@ declare module 'vue-router' {
   interface RouteMeta extends AppRouteMenu {}
 }
 
-type Component<T = any> =
+type Component<T = unknown> =
   ReturnType<typeof defineComponent> | (() => Promise<typeof import('*.vue')>) | (() => Promise<T>)
 
 declare global {

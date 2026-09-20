@@ -1,7 +1,7 @@
 import { PERMISSION_KEY } from "#/processor/decorator/index.js";
 import { OssController } from "./oss.controller.js";
 
-jest.mock("./oss.service", () => ({
+vi.mock("./oss.service", () => ({
   OssService: class OssService {},
 }));
 

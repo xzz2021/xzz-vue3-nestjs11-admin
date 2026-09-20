@@ -1,4 +1,4 @@
-import { RequiredPermission, Serialize } from "#/processor/decorator/index.js";
+import { Authenticated, RequiredPermission, Serialize } from "#/processor/decorator/index.js";
 import { clientIp } from "#/processor/utils/index.js";
 import type { JwtReqDto } from "#/system/auth/dto/auth.dto.js";
 import { Body, Controller, Delete, Get, Post, Req } from "@nestjs/common";
@@ -39,6 +39,7 @@ export class DepartmentController {
   }
 
   @Get("lookup")
+  @Authenticated()
   @ApiOperation({ summary: "获取部门精简树, 用于下拉和范围选择" })
   @Serialize(DepartmentLookupResDto)
   @ApiResponse({ type: DepartmentLookupResDto, isArray: true })

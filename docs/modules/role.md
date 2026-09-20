@@ -12,7 +12,7 @@
 | DELETE | `/role/:id`                   | `role:delete`                                         |
 | GET    | `/role/getRoleDetail/:id`     | `role:view`                                           |
 | GET    | `/role/getRoleMenuAndPer/:id` | `role:view`                                           |
-| GET    | `/role/getRoleMenu`           | 当前用户菜单+权限（无 `@RequiredPermission`，需登录） |
+| GET    | `/role/getRoleMenu`           | `@Authenticated()`（当前用户菜单+权限）              |
 | POST   | `/role/generateRoleSeed`      | `role:seed`                                           |
 
 ## 行为要点

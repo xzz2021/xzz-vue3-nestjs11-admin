@@ -9,17 +9,17 @@ type MenuFindArgs = {
 };
 
 describe("RoleService seed and queries", () => {
-  const roleFindMany = jest.fn();
-  const roleCount = jest.fn();
-  const roleFindUnique = jest.fn();
-  const roleCreateMany = jest.fn();
-  const roleUpsert = jest.fn();
-  const menuFindMany = jest.fn();
-  const roleMenuFindMany = jest.fn();
-  const rolePermissionFindMany = jest.fn();
-  const userFindUnique = jest.fn();
-  const executeRaw = jest.fn();
-  const transaction = jest.fn(
+  const roleFindMany = vi.fn();
+  const roleCount = vi.fn();
+  const roleFindUnique = vi.fn();
+  const roleCreateMany = vi.fn();
+  const roleUpsert = vi.fn();
+  const menuFindMany = vi.fn();
+  const roleMenuFindMany = vi.fn();
+  const rolePermissionFindMany = vi.fn();
+  const userFindUnique = vi.fn();
+  const executeRaw = vi.fn();
+  const transaction = vi.fn(
     async (
       callback: (tx: {
         role: {
@@ -58,12 +58,12 @@ describe("RoleService seed and queries", () => {
     }),
     {} as unknown as RbacPermissionCacheService,
     {
-      record: jest.fn(),
+      record: vi.fn(),
     } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
   );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     roleCreateMany.mockResolvedValue({ count: 1 });
     executeRaw.mockResolvedValue(1);
     roleUpsert.mockResolvedValue({});

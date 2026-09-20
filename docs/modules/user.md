@@ -8,15 +8,15 @@
 | ------ | -------------------------- | -------------------- |
 | GET    | `/user/list`               | `user:view`          |
 | GET    | `/user/listByDepartmentId` | `user:view`          |
-| GET    | `/user/lookup`             | 登录即可             |
-| GET    | `/user/detailInfo`         | 当前用户（登录即可） |
+| GET    | `/user/lookup`             | `@Authenticated()`   |
+| GET    | `/user/detailInfo`         | `@Authenticated()`   |
 | POST   | `/user/add`                | `user:add`           |
 | POST   | `/user/update`             | `user:update`        |
 | DELETE | `/user/delete`             | `user:delete`        |
-| POST   | `/user/updatePersonalInfo` | 本人                 |
-| POST   | `/user/updatePassword`     | 本人                 |
+| POST   | `/user/updatePersonalInfo` | `@Authenticated()`（本人） |
+| POST   | `/user/updatePassword`     | `@Authenticated()`（本人） |
 | POST   | `/user/resetPassword`      | `user:update`        |
-| POST   | `/user/upload/avatar`      | 登录用户             |
+| POST   | `/user/upload/avatar`      | `@Authenticated()`   |
 
 另有 `POST /auth/forceLogout`（权限 `user:update`）与在线踢人接口配合会话撤销。
 

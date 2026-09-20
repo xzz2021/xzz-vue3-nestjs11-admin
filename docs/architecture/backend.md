@@ -21,6 +21,7 @@
 | ConfigModule                   | Zod 校验（`ignoreEnvFile: true`，依赖进程环境；本地 `.env` 由 Prisma 侧 `dotenv/config` 间接加载） |
 | ServeStatic + StaticfileModule | 静态目录与文件上传 API                                             |
 | AppRedisModule                 | Redis 全局客户端与健康检查                                         |
+| QueueInfrastructureModule      | 全局 `BullModule.forRootAsync`（消息 / 文件清理 / 备份共用连接）   |
 | RbacModule                     | 权限 Redis 缓存                                                    |
 | AuthorizationModule            | DataScope 快照与 Grant                                             |
 | UserPersistenceModule          | 用户仓储，供授权/会话复用                                          |
@@ -54,7 +55,7 @@
 
 1. `GlobalThrottlerGuard` — 限流
 2. `RtJwtAuthGuard` — Access JWT（仅 `@Public()` 跳过；静态资源由独立中间件处理；WS 交由 Gateway 自鉴权）
-3. `PermissionGuard` — `@RequiredPermission` 校验；**未标注权限码的登录路由默认放行**
+3. `PermissionGuard` — `@Public()` 放行；`@RequiredPermission` 校验权限码；`@Authenticated()` 仅需登录；**未标注则拒绝**
 
 拦截器：`OperationLogInterceptor` → `TransformInterceptor`。过滤器：`AllExceptionsFilter`。
 
@@ -68,7 +69,7 @@
 | Interceptor | OperationLogInterceptor   | 写 `UserOperationLog` 访问日志                              |
 | Interceptor | MonitorLatencyInterceptor | 监控模块内延迟采样，非全局                                  |
 
-未全局启用但代码库存在的示例：Timeout / Idempotence Interceptor、HTTP Redis Cache、PoliciesGuard（CASL 全局设想）等。Customer 的 CASL 在 `customer.policy.ts` 内使用，不走全局 PoliciesGuard。
+未全局启用但代码库存在的示例：Timeout / Idempotence Interceptor、PoliciesGuard（CASL 全局设想）等。Customer 的 CASL 在 `customer.policy.ts` 内使用，不走全局 PoliciesGuard。
 
 ## WebSocket
 
@@ -93,7 +94,6 @@
 
 ## 测试
 
-- 单元：Vitest（`src/**/*.spec.ts`，`pnpm --filter server test`）
-- E2E 配置：`vitest.config.e2e.ts`；当前仓库没有 `*.e2e-spec.ts`
-- 根脚本 `pnpm test` 调用 `server` 的 `test:ci`，该脚本仍写的是 `jest`，与 Vitest 配置不一致
-- CI 只跑 lint / typecheck / build，不执行测试
+- 单元：Vitest（`src/**/*.spec.ts`，`pnpm --filter server test` / 根目录 `pnpm test` → `test:ci`）
+- E2E 配置：`vitest.config.e2e.ts`；没有 `*.e2e-spec.ts` 时允许 0 测试通过
+- CI 跑 lint / typecheck / test / build

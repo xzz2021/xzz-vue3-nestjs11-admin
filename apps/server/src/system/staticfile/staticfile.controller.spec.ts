@@ -1,20 +1,20 @@
 import { PERMISSION_KEY } from "#/processor/decorator/index.js";
 import { StaticfileController } from "./staticfile.controller.js";
 
-jest.mock("./staticfile.service", () => ({
+vi.mock("./staticfile.service", () => ({
   StaticfileService: class StaticfileService {},
 }));
 
-jest.mock("./file-upload.service", () => ({
+vi.mock("./file-upload.service", () => ({
   FileUploadService: class FileUploadService {},
 }));
 
-jest.mock("./multer.config", () => ({
+vi.mock("./multer.config", () => ({
   generateMulterConfig: () => ({}),
   generateChunkMulterConfig: () => ({}),
 }));
 
-jest.mock("@nestjs/config", () => ({
+vi.mock("@nestjs/config", () => ({
   ConfigService: class ConfigService {
     get() {
       return "/static";

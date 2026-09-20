@@ -1,6 +1,5 @@
 export * from './captcha.js';
 export * from './global-throttler.js';
-export * from './jwt-auth.js';
 export * from './jwt-refresh.js';
 export * from './permission.js';
 export * from './rt-jwt-auth.js';

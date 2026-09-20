@@ -7,6 +7,7 @@ import { ElInput, ElMessage, type FormRules } from 'element-plus'
 import { useValidator } from '@/hooks/web/useValidator'
 import { BaseButton } from '@/components/Button'
 import { getSmsCode, wechatBind } from '@/api/login'
+import type { UserRegisterType, WechatProfile } from '@/api/login/types'
 import { useLogin } from './hooks'
 
 const { formRegister, formMethods } = useForm()
@@ -17,7 +18,7 @@ const { t } = useI18n()
 const { required, lengthRange, phone, numberLength } = useValidator()
 
 const props = defineProps<{
-  wechatInfo: any
+  wechatInfo: WechatProfile
 }>()
 
 const getCodeTime = ref(60)
@@ -181,7 +182,7 @@ const schema = reactive<FormSchema[]>([
   }
 ])
 
-const validatecheckPwd = async (_rule: any, value: any, callback: any) => {
+const validatecheckPwd = async (_rule: unknown, value: string, callback: (error?: Error) => void) => {
   const formData = await getFormData()
   if (value !== formData.password) {
     callback(new Error('两次输入的密码不一致!'))
@@ -207,10 +208,17 @@ const loginRegister = async () => {
   formRef?.validate(async (valid) => {
     if (valid) {
       try {
-        const formData = await getFormData()
+        const formData = await getFormData<UserRegisterType>()
         console.log('xzz2021: loginRegister -> formData', formData)
         console.log('xzz2021: loginRegister -> props.wechatInfo', props.wechatInfo)
-        const res = await wechatBind({ ...formData, ...props.wechatInfo })
+        const { username, phone, password, code } = formData
+        const res = await wechatBind({
+          ...props.wechatInfo,
+          username,
+          phone,
+          password,
+          code
+        })
         const { userinfo, access_token } = res.data
         if (access_token) {
           //  说明登录成功  设定token 路由跳转

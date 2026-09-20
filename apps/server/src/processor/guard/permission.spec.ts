@@ -1,7 +1,8 @@
 import { AuthorizationContext } from "#/processor/authorization/authorization-context";
 import type { AuthorizationService } from "#/processor/authorization/authorization.service";
 import { PERMISSION_KEY } from "#/processor/decorator/permission";
-import { Prisma } from "#/prisma/generated/prisma/client";
+import { IS_AUTHENTICATED_KEY, IS_PUBLIC_KEY } from "#/processor/decorator/public";
+import { Prisma } from "#/generated/prisma/client";
 import {
   ForbiddenException,
   ServiceUnavailableException,
@@ -11,7 +12,7 @@ import { Reflector } from "@nestjs/core";
 import { PermissionGuard } from "./permission";
 
 describe("PermissionGuard", () => {
-  const authCreateContext = jest.fn();
+  const authCreateContext = vi.fn();
 
   const createGuard = () =>
     new PermissionGuard(
@@ -19,16 +20,31 @@ describe("PermissionGuard", () => {
       new Reflector(),
     );
 
-  const executionContext = (permission?: string, userId?: string) => {
+  const executionContext = (options?: {
+    permission?: string;
+    userId?: string;
+    isPublic?: boolean;
+    authenticated?: boolean;
+    type?: "http" | "ws";
+  }) => {
     const handler = () => undefined;
     class TestController {}
-    if (permission) Reflect.defineMetadata(PERMISSION_KEY, permission, handler);
+    if (options?.permission) {
+      Reflect.defineMetadata(PERMISSION_KEY, options.permission, handler);
+    }
+    if (options?.isPublic) {
+      Reflect.defineMetadata(IS_PUBLIC_KEY, true, handler);
+    }
+    if (options?.authenticated) {
+      Reflect.defineMetadata(IS_AUTHENTICATED_KEY, true, handler);
+    }
     const request: {
       user?: { id: string };
       authorizationContext?: AuthorizationContext;
-    } = { user: userId ? { id: userId } : undefined };
+    } = { user: options?.userId ? { id: options.userId } : undefined };
 
     const context = {
+      getType: () => options?.type ?? "http",
       getHandler: () => handler,
       getClass: () => TestController,
       switchToHttp: () => ({
@@ -39,19 +55,45 @@ describe("PermissionGuard", () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
-  it("allows routes without permission metadata", async () => {
+  it("rejects routes without public, authenticated, or permission metadata", async () => {
     await expect(
       createGuard().canActivate(executionContext().context),
+    ).rejects.toThrow(new ForbiddenException("接口未配置访问权限"));
+    expect(authCreateContext).not.toHaveBeenCalled();
+  });
+
+  it("allows public routes without permission metadata", async () => {
+    await expect(
+      createGuard().canActivate(executionContext({ isPublic: true }).context),
     ).resolves.toBe(true);
     expect(authCreateContext).not.toHaveBeenCalled();
   });
 
+  it("allows authenticated-only routes when the request has a user", async () => {
+    await expect(
+      createGuard().canActivate(
+        executionContext({ authenticated: true, userId: "user-1" }).context,
+      ),
+    ).resolves.toBe(true);
+    expect(authCreateContext).not.toHaveBeenCalled();
+  });
+
+  it("rejects authenticated-only routes without a user", async () => {
+    await expect(
+      createGuard().canActivate(
+        executionContext({ authenticated: true }).context,
+      ),
+    ).rejects.toThrow(new ForbiddenException("身份无效，无法校验权限"));
+  });
+
   it("rejects protected routes without an authenticated user", async () => {
     await expect(
-      createGuard().canActivate(executionContext("user:update").context),
+      createGuard().canActivate(
+        executionContext({ permission: "user:update" }).context,
+      ),
     ).rejects.toThrow(new ForbiddenException("身份无效，无法校验权限"));
     expect(authCreateContext).not.toHaveBeenCalled();
   });
@@ -65,7 +107,10 @@ describe("PermissionGuard", () => {
       },
     );
     authCreateContext.mockResolvedValue(authorizationContext);
-    const { context, request } = executionContext("user:update", "user-1");
+    const { context, request } = executionContext({
+      permission: "user:update",
+      userId: "user-1",
+    });
 
     await expect(createGuard().canActivate(context)).resolves.toBe(true);
     expect(authCreateContext).toHaveBeenCalledWith("user-1", ["user:update"]);
@@ -79,7 +124,10 @@ describe("PermissionGuard", () => {
 
     await expect(
       createGuard().canActivate(
-        executionContext("user:update", "user-1").context,
+        executionContext({
+          permission: "user:update",
+          userId: "user-1",
+        }).context,
       ),
     ).rejects.toThrow(new ForbiddenException("无权限访问当前接口"));
   });
@@ -94,7 +142,10 @@ describe("PermissionGuard", () => {
 
     await expect(
       createGuard().canActivate(
-        executionContext("user:update", "user-1").context,
+        executionContext({
+          permission: "user:update",
+          userId: "user-1",
+        }).context,
       ),
     ).rejects.toThrow(ServiceUnavailableException);
   });
@@ -105,7 +156,10 @@ describe("PermissionGuard", () => {
 
     await expect(
       createGuard().canActivate(
-        executionContext("user:update", "user-1").context,
+        executionContext({
+          permission: "user:update",
+          userId: "user-1",
+        }).context,
       ),
     ).rejects.toBe(error);
   });

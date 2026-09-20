@@ -4,12 +4,12 @@ import { FileRepository } from "./file.repository.js";
 import { StaticfileService } from "./staticfile.service.js";
 
 describe("StaticfileService", () => {
-  const findMany = jest.fn();
-  const count = jest.fn();
-  const create = jest.fn();
-  const updateMany = jest.fn();
-  const deleteMany = jest.fn();
-  const enqueue = jest.fn();
+  const findMany = vi.fn();
+  const count = vi.fn();
+  const create = vi.fn();
+  const updateMany = vi.fn();
+  const deleteMany = vi.fn();
+  const enqueue = vi.fn();
 
   const service = new StaticfileService(
     new FileRepository({
@@ -19,7 +19,7 @@ describe("StaticfileService", () => {
   );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     enqueue.mockResolvedValue(undefined);
     updateMany.mockResolvedValue({ count: 1 });
   });

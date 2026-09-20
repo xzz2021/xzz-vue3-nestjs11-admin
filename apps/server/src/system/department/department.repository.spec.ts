@@ -22,7 +22,7 @@ describe("DepartmentRepository", () => {
   });
 
   it("locks the target row with FOR UPDATE on the transaction client", async () => {
-    const queryRaw = jest.fn().mockResolvedValue([{ id: "dept-1" }]);
+    const queryRaw = vi.fn().mockResolvedValue([{ id: "dept-1" }]);
     const repository = new DepartmentRepository({} as PgService);
     const tx = { $queryRaw: queryRaw };
 

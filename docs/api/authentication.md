@@ -49,7 +49,7 @@
 | `POST /auth/forceLogout`         | 管理员强制下线（`user:update`）        |
 | `POST /online/kick` / `kickUser` | 在线模块踢人（`onlineUser:kick`）      |
 
-前端 `loginOutApi` 目前声明为 `GET auth/logout`，与后端不一致；UI 登出也尚未调用该 API。
+前端：确认登出时 `POST /auth/logout`（独立 axios，避免走 401 刷新环）；随后 `resetRouter()` 并清空 permission store。Token 已失效时的自动登出只清本地。
 
 ## 全局鉴权顺序
 
@@ -58,7 +58,9 @@ Throttler → RtJwtAuthGuard → PermissionGuard
 ```
 
 - `@Public()`：跳过 JWT
-- 无 `@RequiredPermission`：跳过权限码检查（仍需登录，除非 Public）
+- `@Authenticated()`：需要登录，不校验权限码
+- `@RequiredPermission`：校验权限码
+- 未标注上述任一装饰器：拒绝
 - 静态文件：由独立中间件按 `STATIC_FILE_ROOT_PATH` 前缀提供，不经过 JWT Guard
 - WebSocket：全局 JWT 返回 false，由各 Gateway 自行验 token
 

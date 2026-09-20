@@ -6,16 +6,16 @@ import { RtTokenService } from "./rt.token.service.js";
 
 describe("RtTokenService", () => {
   const redis = {
-    get: jest.fn(),
-    set: jest.fn(),
-    del: jest.fn(),
-    eval: jest.fn().mockResolvedValue(1),
+    get: vi.fn(),
+    set: vi.fn(),
+    del: vi.fn(),
+    eval: vi.fn().mockResolvedValue(1),
   };
   const jwt = {
-    signAsync: jest.fn(),
+    signAsync: vi.fn(),
   };
   const configService = {
-    get: jest.fn((key: string) => {
+    get: vi.fn((key: string) => {
       if (key === "ssoCount") return 2;
       if (key === "isProduction") return false;
       if (key === "token") {
@@ -38,7 +38,7 @@ describe("RtTokenService", () => {
     );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     redis.get.mockResolvedValue(null);
     redis.set.mockResolvedValue("OK");
     redis.del.mockResolvedValue(1);

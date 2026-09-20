@@ -6,21 +6,21 @@ import { DbBackupRepository } from "./db-backup.repository.js";
 
 describe("DbBackupConfigService", () => {
   const queue = {
-    getJobScheduler: jest.fn(),
-    getRepeatableJobs: jest.fn(),
-    removeRepeatableByKey: jest.fn(),
-    upsertJobScheduler: jest.fn(),
-    removeJobScheduler: jest.fn(),
+    getJobScheduler: vi.fn(),
+    getRepeatableJobs: vi.fn(),
+    removeRepeatableByKey: vi.fn(),
+    upsertJobScheduler: vi.fn(),
+    removeJobScheduler: vi.fn(),
   };
 
   const pgService = {
     dbBackupConfig: {
-      upsert: jest.fn(),
+      upsert: vi.fn(),
     },
   };
 
   const configService = {
-    get: jest.fn((key: string) => {
+    get: vi.fn((key: string) => {
       const map: Record<string, unknown> = {
         "dbBackup.dir": "backups",
         "dbBackup.cron": "0 0 * * * *",
@@ -41,7 +41,7 @@ describe("DbBackupConfigService", () => {
     );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     pgService.dbBackupConfig.upsert.mockResolvedValue({
       enabled: true,
       cron: "0 0 * * * *",

@@ -202,7 +202,7 @@ const getCode = async () => {
   }
 }
 
-const validatecheckPwd = async (_rule: any, value: any, callback: any) => {
+const validatecheckPwd = async (_rule: unknown, value: string, callback: (error?: Error) => void) => {
   const formData = await getFormData()
   if (value !== formData.password) {
     callback(new Error('两次输入的密码不一致!'))

@@ -1,12 +1,12 @@
 import { applyCookieCommand, type CookieCommand } from "./http-cookie.js";
 
 describe("applyCookieCommand", () => {
-  const cookie = jest.fn();
-  const clearCookie = jest.fn();
+  const cookie = vi.fn();
+  const clearCookie = vi.fn();
   const res = { cookie, clearCookie };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("sets cookie from a set command", () => {

@@ -34,8 +34,8 @@ declare global {
   declare type AxiosResponseType = 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream'
 
   declare interface AxiosConfig {
-    params?: any
-    data?: any
+    params?: object
+    data?: unknown
     url?: string
     method?: AxiosMethod
     headers?: RawAxiosRequestHeaders

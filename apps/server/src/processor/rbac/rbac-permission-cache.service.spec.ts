@@ -3,11 +3,11 @@ import { RbacPermissionCacheService } from "./rbac-permission-cache.service";
 
 describe("RbacPermissionCacheService", () => {
   const redis = {
-    get: jest.fn(),
-    mget: jest.fn(),
-    set: jest.fn(),
-    del: jest.fn(),
-    eval: jest.fn(),
+    get: vi.fn(),
+    mget: vi.fn(),
+    set: vi.fn(),
+    del: vi.fn(),
+    eval: vi.fn(),
   };
 
   const createService = () =>
@@ -16,7 +16,7 @@ describe("RbacPermissionCacheService", () => {
     } as unknown as RedisService);
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     redis.get.mockResolvedValue(null);
     redis.mget.mockResolvedValue([null, null]);
     redis.set.mockResolvedValue("OK");
@@ -139,7 +139,7 @@ describe("RbacPermissionCacheService", () => {
   it("singleflight coalesces concurrent cache fills", async () => {
     const service = createService();
     let calls = 0;
-    const loader = jest.fn(async () => {
+    const loader = vi.fn(async () => {
       calls += 1;
       await new Promise((resolve) => setTimeout(resolve, 30));
       return ["user:update"];

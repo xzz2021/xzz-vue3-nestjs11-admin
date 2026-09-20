@@ -1,4 +1,4 @@
-import { RequiredPermission } from "#/processor/decorator/index.js";
+import { Authenticated, RequiredPermission } from "#/processor/decorator/index.js";
 import { clientIp } from "#/processor/utils/index.js";
 import type { JwtReqDto } from "#/system/auth/dto/auth.dto.js";
 import {
@@ -76,6 +76,7 @@ export class RoleController {
   // 用户登录瞬间  根据token获取用户信息  获取菜单 以及 权限  进行 去重合并
   //  此处有严重bug  如果返回数据不规则 前端会出现404 且无法清空数据重新登录  前端要优化
   @Get("getRoleMenu")
+  @Authenticated()
   @ApiOperation({ summary: "获取当前角色菜单及权限" })
   @ApiResponse({ type: MenuPermissionListRes, isArray: true })
   getMenu(@Req() req: JwtReqDto) {

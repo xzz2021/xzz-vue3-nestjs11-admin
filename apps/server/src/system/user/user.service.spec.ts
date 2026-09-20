@@ -5,13 +5,13 @@ import type { PgService } from "#/prisma/pg.service.js";
 import { UserRepository } from "./user.repository.js";
 import { UserService } from "./user.service.js";
 
-jest.mock("#/processor/utils/index.js", () => ({
-  formatDateToYMDHMS: jest.fn(),
-  hashPayPassword: jest.fn(() => Promise.resolve("hashed")),
-  verifyPayPassword: jest.fn(() => Promise.resolve(true)),
+vi.mock("#/processor/utils/index.js", () => ({
+  formatDateToYMDHMS: vi.fn(),
+  hashPayPassword: vi.fn(() => Promise.resolve("hashed")),
+  verifyPayPassword: vi.fn(() => Promise.resolve(true)),
 }));
 
-jest.mock("#/system/staticfile/multer.config.js", () => ({
+vi.mock("#/system/staticfile/multer.config.js", () => ({
   sanitizePathSegment: (segment: string) =>
     segment.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 64) || "unknown",
   getStaticFileRoot: () => "/static-root",
@@ -24,30 +24,30 @@ jest.mock("#/system/staticfile/multer.config.js", () => ({
 }));
 
 describe("UserService session revocation", () => {
-  const userUpdate = jest.fn();
-  const userFindUnique = jest.fn();
-  const invalidateUsers = jest.fn();
-  const revokeAll = jest.fn();
+  const userUpdate = vi.fn();
+  const userFindUnique = vi.fn();
+  const invalidateUsers = vi.fn();
+  const revokeAll = vi.fn();
 
   const createService = () =>
     new UserService(
       new UserRepository({
         user: { update: userUpdate, findUnique: userFindUnique },
-        $transaction: jest.fn(),
+        $transaction: vi.fn(),
       }),
       { invalidateUsers } as unknown as RbacPermissionCacheService,
       { revokeAll } as unknown as SessionRevocationService,
       {
         get: () => "api/public",
       } as unknown as import("@nestjs/config").ConfigService,
-      { enqueue: jest.fn() } as unknown as FileCleanupService,
+      { enqueue: vi.fn() } as unknown as FileCleanupService,
       {
-        record: jest.fn(),
+        record: vi.fn(),
       } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
     );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     userUpdate.mockResolvedValue({ id: "user-1" });
     invalidateUsers.mockResolvedValue(undefined);
     revokeAll.mockResolvedValue(undefined);
@@ -147,28 +147,28 @@ describe("UserService session revocation", () => {
 });
 
 describe("UserService uploadAvatar", () => {
-  const userUpdate = jest.fn();
-  const userFindUnique = jest.fn();
-  const enqueue = jest.fn();
+  const userUpdate = vi.fn();
+  const userFindUnique = vi.fn();
+  const enqueue = vi.fn();
 
   const createService = () =>
     new UserService(
       new UserRepository({
         user: { update: userUpdate, findUnique: userFindUnique },
       }),
-      { invalidateUsers: jest.fn() } as unknown as RbacPermissionCacheService,
-      { revokeAll: jest.fn() } as unknown as SessionRevocationService,
+      { invalidateUsers: vi.fn() } as unknown as RbacPermissionCacheService,
+      { revokeAll: vi.fn() } as unknown as SessionRevocationService,
       {
         get: () => "api/public",
       } as unknown as import("@nestjs/config").ConfigService,
       { enqueue } as unknown as FileCleanupService,
       {
-        record: jest.fn(),
+        record: vi.fn(),
       } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
     );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     userUpdate.mockResolvedValue({ id: "user-1" });
     userFindUnique.mockResolvedValue({ avatar: null });
     enqueue.mockResolvedValue(undefined);
@@ -242,9 +242,9 @@ describe("UserService uploadAvatar", () => {
 });
 
 describe("UserService role assignment", () => {
-  const userCreate = jest.fn();
-  const userFindUnique = jest.fn();
-  const transaction = jest.fn(
+  const userCreate = vi.fn();
+  const userFindUnique = vi.fn();
+  const transaction = vi.fn(
     async (
       callback: (tx: {
         user: { create: typeof userCreate };
@@ -257,24 +257,24 @@ describe("UserService role assignment", () => {
       new UserRepository({
         user: {
           create: userCreate,
-          update: jest.fn(),
+          update: vi.fn(),
           findUnique: userFindUnique,
         },
         $transaction: transaction,
       }),
-      { invalidateUsers: jest.fn() } as unknown as RbacPermissionCacheService,
-      { revokeAll: jest.fn() } as unknown as SessionRevocationService,
+      { invalidateUsers: vi.fn() } as unknown as RbacPermissionCacheService,
+      { revokeAll: vi.fn() } as unknown as SessionRevocationService,
       {
         get: () => "api/public",
       } as unknown as import("@nestjs/config").ConfigService,
-      { enqueue: jest.fn() } as unknown as FileCleanupService,
+      { enqueue: vi.fn() } as unknown as FileCleanupService,
       {
-        record: jest.fn(),
+        record: vi.fn(),
       } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
     );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     userFindUnique.mockResolvedValue(null);
     userCreate.mockResolvedValue({ id: "user-2" });
   });
@@ -311,28 +311,28 @@ describe("UserService role assignment", () => {
 });
 
 describe("UserService list queries", () => {
-  const findMany = jest.fn();
-  const count = jest.fn();
+  const findMany = vi.fn();
+  const count = vi.fn();
 
   const createService = () =>
     new UserService(
       new UserRepository({
-        user: { findMany, count, update: jest.fn(), findUnique: jest.fn() },
-        $transaction: jest.fn(),
+        user: { findMany, count, update: vi.fn(), findUnique: vi.fn() },
+        $transaction: vi.fn(),
       }),
-      { invalidateUsers: jest.fn() } as unknown as RbacPermissionCacheService,
-      { revokeAll: jest.fn() } as unknown as SessionRevocationService,
+      { invalidateUsers: vi.fn() } as unknown as RbacPermissionCacheService,
+      { revokeAll: vi.fn() } as unknown as SessionRevocationService,
       {
         get: () => "api/public",
       } as unknown as import("@nestjs/config").ConfigService,
-      { enqueue: jest.fn() } as unknown as FileCleanupService,
+      { enqueue: vi.fn() } as unknown as FileCleanupService,
       {
-        record: jest.fn(),
+        record: vi.fn(),
       } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
     );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("loads user list and count in parallel", async () => {

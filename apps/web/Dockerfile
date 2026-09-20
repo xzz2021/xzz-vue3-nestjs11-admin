@@ -23,7 +23,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store,sharing=locked \
 
 COPY . .
 
-# 限制 Node 进程的最大内存使用为 2GB（根据你的服务器内存调整，如 1024 / 2048 / 4096）
+# 限制 Node 进程最大内存为 1GB（按构建机内存可改为 2048 / 4096）
 ENV NODE_OPTIONS="--max-old-space-size=1024"
 
 RUN pnpm --filter web build:pro

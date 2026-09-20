@@ -34,17 +34,17 @@ Refresh 走 `POST /auth/refresh`，依赖 httpOnly cookie `rt`。生产必须同
 
 ## `pnpm test` / `pnpm check` 异常
 
-根 `test` 调用 server `test:ci`，该脚本仍是 `jest --runInBand --ci`，而测试文件按 Vitest 编写。直接测后端请用：
+根 `test` 调用 server `test:ci`（`vitest run`）。直接测后端：
 
 ```bash
 pnpm --filter server test
 ```
 
-CI 不跑测试。
+CI 会跑 `pnpm test`。
 
-## `compose.local.yml` Redis 起不来
+## `compose.local.yml` Redis
 
-该文件挂载 `./redis/redis.conf`，仓库里没有这个文件。Postgres 凭据也是写死在 compose 里的，注意不要和 `apps/server/.env` 冲突。
+使用 `redis-server --appendonly yes`，数据在 `./redis/data`。不再挂载 `redis.conf`。Postgres 凭据写死在 compose 里，注意不要和 `apps/server/.env` 冲突。
 
 ## 生产 Compose 起不来
 

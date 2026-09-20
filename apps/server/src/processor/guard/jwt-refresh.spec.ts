@@ -5,8 +5,8 @@ import { AuthGuard } from "@nestjs/passport";
 import { JwtRefreshAuthGuard } from "./jwt-refresh";
 
 describe("JwtRefreshAuthGuard", () => {
-  const isBlacklisted = jest.fn();
-  const listSessions = jest.fn();
+  const isBlacklisted = vi.fn();
+  const listSessions = vi.fn();
   const rtTokenService = {
     isBlacklisted,
     listSessions,
@@ -23,8 +23,8 @@ describe("JwtRefreshAuthGuard", () => {
     }) as unknown as ExecutionContext;
 
   beforeEach(() => {
-    jest.restoreAllMocks();
-    jest.clearAllMocks();
+    vi.restoreAllMocks();
+    vi.clearAllMocks();
     jest
       .spyOn(AuthGuard("jwt-refresh").prototype, "canActivate")
       .mockResolvedValue(true);

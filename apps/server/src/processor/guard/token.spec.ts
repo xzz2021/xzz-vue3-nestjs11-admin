@@ -6,8 +6,8 @@ import { TokenGuard } from "./token";
 
 describe("TokenGuard", () => {
   const tokenService = {
-    isBlacklisted: jest.fn(),
-    listSessions: jest.fn(),
+    isBlacklisted: vi.fn(),
+    listSessions: vi.fn(),
   } as unknown as TokenService;
 
   const createContext = (
@@ -23,8 +23,8 @@ describe("TokenGuard", () => {
     }) as unknown as ExecutionContext;
 
   beforeEach(() => {
-    jest.restoreAllMocks();
-    jest.clearAllMocks();
+    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
   it("does not skip token auth for /public/ URLs without @Public()", async () => {

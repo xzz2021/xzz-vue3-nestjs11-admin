@@ -5,7 +5,6 @@ import {
   BadRequestException,
   ConflictException,
   ForbiddenException,
-  NotFoundException,
 } from "@nestjs/common";
 import type { CustomerRepository } from "./customer.repository.js";
 import { CustomerService } from "./customer.service.js";
@@ -56,26 +55,26 @@ const row = (overrides: Record<string, unknown> = {}) => ({
 describe("CustomerService", () => {
   const tx = {};
   const repository = {
-    findPage: jest.fn(),
-    findFirst: jest.fn(),
-    transaction: jest.fn((callback) => callback(tx)),
-    create: jest.fn(),
-    lockCustomerForUpdate: jest.fn(),
-    lockUsersForShare: jest.fn(),
-    lockDepartmentsForShare: jest.fn(),
-    updateMany: jest.fn(),
-    findMany: jest.fn(),
-    deleteMany: jest.fn(),
-    findExportBatch: jest.fn(),
+    findPage: vi.fn(),
+    findFirst: vi.fn(),
+    transaction: vi.fn((callback) => callback(tx)),
+    create: vi.fn(),
+    lockCustomerForUpdate: vi.fn(),
+    lockUsersForShare: vi.fn(),
+    lockDepartmentsForShare: vi.fn(),
+    updateMany: vi.fn(),
+    findMany: vi.fn(),
+    deleteMany: vi.fn(),
+    findExportBatch: vi.fn(),
   };
-  const audit = { record: jest.fn() };
+  const audit = { record: vi.fn() };
   const service = new CustomerService(
     repository as unknown as CustomerRepository,
     audit as unknown as AuditLogService,
   );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     audit.record.mockReset();
     audit.record.mockResolvedValue(undefined);
     repository.findFirst.mockReset();
@@ -286,7 +285,7 @@ describe("CustomerService", () => {
     repository.findFirst.mockResolvedValueOnce(null);
     await expect(
       service.update({ id: "missing", version: 0, name: "B" }, context),
-    ).rejects.toBeInstanceOf(NotFoundException);
+    ).rejects.toBeInstanceOf(ForbiddenException);
 
     repository.findFirst
       .mockResolvedValueOnce(row({ version: 2 }))
@@ -369,7 +368,7 @@ describe("CustomerService", () => {
     expect(repository.updateMany).not.toHaveBeenCalled();
   });
 
-  it("returns 404 when the post-lock row has become attribute-denied", async () => {
+  it("returns 403 when the post-lock row has become attribute-denied", async () => {
     const context = auth(["customer:update"], "customer:update", {
       all: true,
       scopes: [],
@@ -380,7 +379,7 @@ describe("CustomerService", () => {
 
     await expect(
       service.update({ id: "c1", version: 0, name: "B" }, context),
-    ).rejects.toBeInstanceOf(NotFoundException);
+    ).rejects.toBeInstanceOf(ForbiddenException);
     expect(repository.updateMany).not.toHaveBeenCalled();
   });
 
@@ -406,7 +405,7 @@ describe("CustomerService", () => {
     repository.updateMany.mockResolvedValueOnce({ count: 0 });
     await expect(
       service.update({ id: "c1", version: 0, name: "B" }, context),
-    ).rejects.toBeInstanceOf(NotFoundException);
+    ).rejects.toBeInstanceOf(ForbiddenException);
   });
 
   it("requires sensitive-update only when sensitive values change", async () => {
@@ -445,14 +444,14 @@ describe("CustomerService", () => {
     });
     repository.findMany.mockResolvedValueOnce([row()]);
     await expect(service.delete(["c1", "c2"], context)).rejects.toBeInstanceOf(
-      NotFoundException,
+      ForbiddenException,
     );
     expect(repository.deleteMany).not.toHaveBeenCalled();
 
     repository.findMany.mockResolvedValueOnce([row()]);
     repository.deleteMany.mockResolvedValueOnce({ count: 0 });
     await expect(service.delete(["c1"], context)).rejects.toBeInstanceOf(
-      NotFoundException,
+      ForbiddenException,
     );
     expect(repository.transaction).toHaveBeenCalled();
     expect(audit.record).not.toHaveBeenCalled();

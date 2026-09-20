@@ -43,7 +43,7 @@ Workspace：`apps/*`。`pnpm-workspace.yaml` 还写了 `packages/*`，当前没�
 
 Web 代理：`/api` → `http://127.0.0.1:3000`（去掉 `/api`）。
 
-仅起依赖可用 `compose.local.yml`。该文件当前引用不存在的 `./redis/redis.conf`，Redis 可能起不来；Postgres 凭据是写死的。
+仅起依赖可用 `compose.local.yml`。Redis 使用镜像默认配置 + AOF，不依赖外部 `redis.conf`。Postgres 凭据写死在 compose 里，注意不要和 `apps/server/.env` 冲突。
 
 ## 质量门
 
@@ -58,9 +58,9 @@ pnpm check
 
 注意：
 
-- `pnpm test` / `pnpm check` 会走 server 的 `test:ci`（仍写 `jest`），与 Vitest 配置不一致
-- CI 实际执行的是 `pnpm lint && pnpm typecheck && pnpm build`
-- 根 `package.json` 声明了 husky / commitlint / lint-staged，但 `.husky/` 与 lint-staged 配置当前不存在
-- server 的 `lint:check` 调用 eslint，server 包未声明 eslint 依赖
+- 根 `test` 调用 server 的 `test:ci`（`vitest run`）
+- CI 执行 `pnpm lint && pnpm typecheck && pnpm test && pnpm build`
+- `pnpm install` 后 husky 会安装 git hooks：pre-commit 跑 lint-staged，commit-msg 跑 commitlint
+- server 的 `lint:check` 使用 oxlint
 
 常见问题见 [common-problems](../troubleshooting/common-problems.md)。

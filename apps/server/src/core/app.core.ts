@@ -21,6 +21,7 @@ import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis'
 import { ThrottlerModule } from '@nestjs/throttler';
 
 import { AppRedisModule } from '#/infrastructure/database/redis/redis.module.js';
+import { QueueInfrastructureModule } from '#/infrastructure/queue/queue.module.js';
 import { AuthorizationModule } from '#/processor/authorization/authorization.module.js';
 import { RbacModule } from '#/processor/rbac/rbac.module.js';
 import { UserPersistenceModule } from '#/system/user/user-persistence.module.js';
@@ -32,9 +33,8 @@ export const CORE_MODULE: Array<
   CONFIG_MODULE,
   SERVER_STATIC_MODULE,
   StaticfileModule,
-  // 外部 redis 缓存  版本一
-  // CACHE_MODULE,
   AppRedisModule,
+  QueueInfrastructureModule,
   RbacModule,
   AuthorizationModule,
   UserPersistenceModule,
@@ -120,34 +120,6 @@ export const GLOBAL_GUARD = [
   //   provide: APP_GUARD,
   //   useClass: DynamicThrottlerGuard,
   // },
-  // {
-  //   //  全局缓存所有 get 端点 ?????
-  //   provide: APP_INTERCEPTOR,
-  //   useClass: CacheInterceptor, //  自定义 处理  HttpCacheInterceptor
-  //   multi: true,
-  // },
-
-  /*
-    内置的缓存拦截器  CacheInterceptor  可以应用在 不同层级上
-@Controller()
-@UseInterceptors(CacheInterceptor)
-export class AppController {
-  @Get()
-  findAll(): string[] { return [] }
-}
-
-启用全局缓存后 依然可以 在 单个接口上 覆盖某些缓存设置  @CacheKey() 和 @CacheTTL()
-@Controller()
-@CacheTTL(50)
-export class AppController {
-  @CacheKey('custom_key')
-  @CacheTTL(20)
-  findAll(): string[] { return [] }
-}
-
-
-
-    */
   // { provide: APP_INTERCEPTOR, useClass: CaptchaInterceptor },   // 验证码拦截器
   { provide: APP_INTERCEPTOR, useClass: OperationLogInterceptor }, // 全局启用日志拦截器
   { provide: APP_INTERCEPTOR, useClass: TransformInterceptor },

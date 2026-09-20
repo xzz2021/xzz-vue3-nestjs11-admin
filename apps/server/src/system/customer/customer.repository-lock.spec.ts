@@ -8,11 +8,11 @@ interface SqlQuery {
 }
 
 describe("CustomerRepository row locks", () => {
-  const queryRaw = jest.fn();
+  const queryRaw = vi.fn();
   const tx = { $queryRaw: queryRaw } as unknown as Prisma.TransactionClient;
   const repository = new CustomerRepository({} as PgService);
 
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => vi.clearAllMocks());
 
   it("locks a customer with parameterized FOR UPDATE", async () => {
     queryRaw.mockResolvedValue([{ id: "customer-1" }]);

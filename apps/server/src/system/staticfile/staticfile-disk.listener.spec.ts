@@ -3,7 +3,7 @@ import type { StaticfileService } from "./staticfile.service.js";
 import { StaticfileDiskListener } from "./staticfile-disk.listener.js";
 
 describe("StaticfileDiskListener", () => {
-  const purgeAfterUnlink = jest.fn();
+  const purgeAfterUnlink = vi.fn();
   const events = new DiskCleanupEventBus();
   const listener = new StaticfileDiskListener(events, {
     purgeAfterUnlink,
@@ -14,7 +14,7 @@ describe("StaticfileDiskListener", () => {
   });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     purgeAfterUnlink.mockResolvedValue(undefined);
   });
 

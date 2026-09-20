@@ -53,9 +53,8 @@ src/
 | user                                  | 用户信息、access token、roleRouters、登出         |
 | permission                            | 动态路由生成                                      |
 | app                                   | 布局主题、`dynamicRouter` / `serverDynamicRouter` |
-| menu / role / department / dictionary | 对应业务列表状态；`menu` 当前无外部引用           |
+| role / department / dictionary        | 对应业务列表状态                                  |
 | message / onlinePresence              | 消息未读、presence WS                             |
-| sse                                   | 旧 EventSource 通道，当前无外部引用               |
 | tagsView / locale / lock              | 标签页、语言、锁屏                                |
 
 没有独立的 `system` / `oss` store。OSS 页面直接调 API。
@@ -71,7 +70,7 @@ src/
 
 部分 `api/dashboard`、`api/table` 使用本地 mock（`_local.ts`），**不请求真实后端**。
 
-前端另有短信/微信登录 API 与 UI 入口，**后端没有对应 Controller**，调用会 404。登出 API 声明为 `GET auth/logout`，后端实际是 `POST /auth/logout`，且 UI 登出当前只清本地状态。
+前端另有短信/微信登录 API 与 UI 入口，**后端没有对应 Controller**，调用会 404。确认登出调用 `POST /auth/logout`，并清理动态路由。
 
 ## 权限（前端）
 

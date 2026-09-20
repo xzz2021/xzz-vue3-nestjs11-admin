@@ -1,4 +1,4 @@
-import { RequiredPermission } from "#/processor/decorator/index.js";
+import { Authenticated, RequiredPermission } from "#/processor/decorator/index.js";
 import { clientIp } from "#/processor/utils/index.js";
 import type { JwtReqDto } from "#/system/auth/dto/auth.dto.js";
 import { multerConfigForAvatar } from "#/system/staticfile/multer.config.js";
@@ -49,6 +49,7 @@ export class UserController {
   }
 
   @Get("lookup")
+  @Authenticated()
   @ApiOperation({ summary: "获取用户精简选项, 用于负责人下拉" })
   @ApiResponse({ type: UserLookupListRes })
   lookup(@Query() params: QueryUserParams) {
@@ -56,6 +57,7 @@ export class UserController {
   }
 
   @Get("detailInfo")
+  @Authenticated()
   @ApiOperation({ summary: "获取用户详情信息" })
   // @ApiResponse({ type: UpdateUserDto })
   detailInfo(@Req() req: JwtReqDto) {
@@ -64,6 +66,7 @@ export class UserController {
   }
 
   @Post("updatePersonalInfo")
+  @Authenticated()
   @ApiOperation({ summary: "用户更新自己的个人信息" })
   updatePersonalInfo(
     @Body() updateUserinfo: UpdatePersonalInfo,
@@ -77,6 +80,7 @@ export class UserController {
   }
 
   @Post("updatePassword")
+  @Authenticated()
   @ApiOperation({ summary: "用户更新自己的密码" })
   updatePassword(
     @Body() updatePasswordDto: UpdatePwdDto,
@@ -146,6 +150,7 @@ export class UserController {
   }
 
   @Post("upload/avatar")
+  @Authenticated()
   @ApiOperation({ summary: "用户上传更新自己的头像" })
   @UseInterceptors(FileInterceptor("file", multerConfigForAvatar))
   uploadAvatar(

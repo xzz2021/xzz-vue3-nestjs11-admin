@@ -6,20 +6,20 @@ import { UpdatePermissionDto } from "./dto/permission.dto.js";
 import { PermissionService } from "./permission.service.js";
 
 describe("PermissionService scope configuration", () => {
-  const findUnique = jest.fn();
-  const update = jest.fn();
-  const remove = jest.fn();
-  const rolePermissionUpdateMany = jest.fn();
-  const departmentsDeleteMany = jest.fn();
-  const transaction = jest.fn((callback) =>
+  const findUnique = vi.fn();
+  const update = vi.fn();
+  const remove = vi.fn();
+  const rolePermissionUpdateMany = vi.fn();
+  const departmentsDeleteMany = vi.fn();
+  const transaction = vi.fn((callback) =>
     callback({
       permission: { findUnique, update, delete: remove },
       rolePermission: { updateMany: rolePermissionUpdateMany },
       rolePermissionDepartment: { deleteMany: departmentsDeleteMany },
     }),
   );
-  const roles = { findUserIdsByPermissionIds: jest.fn() };
-  const cache = { invalidateUsers: jest.fn() };
+  const roles = { findUserIdsByPermissionIds: vi.fn() };
+  const cache = { invalidateUsers: vi.fn() };
   const service = new PermissionService(
     { $transaction: transaction },
     roles as unknown as RoleRepository,
@@ -27,7 +27,7 @@ describe("PermissionService scope configuration", () => {
   );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     findUnique.mockResolvedValue({ id: "permission-1", scopeEnabled: true });
     update.mockResolvedValue({ id: "permission-1" });
     remove.mockResolvedValue({ id: "permission-1" });

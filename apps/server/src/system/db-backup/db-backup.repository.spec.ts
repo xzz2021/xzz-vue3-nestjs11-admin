@@ -5,26 +5,26 @@ import { DbBackupRepository } from "./db-backup.repository.js";
 describe("DbBackupRepository", () => {
   const db = {
     dbBackupConfig: {
-      upsert: jest.fn(),
-      update: jest.fn(),
+      upsert: vi.fn(),
+      update: vi.fn(),
     },
     dbBackupJob: {
-      count: jest.fn(),
-      findMany: jest.fn(),
-      findFirst: jest.fn(),
-      findUnique: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      updateMany: jest.fn(),
-      deleteMany: jest.fn(),
+      count: vi.fn(),
+      findMany: vi.fn(),
+      findFirst: vi.fn(),
+      findUnique: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      updateMany: vi.fn(),
+      deleteMany: vi.fn(),
     },
-    $transaction: jest.fn(),
+    $transaction: vi.fn(),
   };
 
   const repo = () => new DbBackupRepository(db);
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     db.$transaction.mockImplementation(async (ops: unknown[]) =>
       Promise.all(ops as Promise<unknown>[]),
     );

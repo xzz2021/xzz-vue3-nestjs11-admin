@@ -1,3 +1,5 @@
+import type { UserItem } from '@/api/user/types'
+
 export interface UserLoginType {
   username?: string
   password: string
@@ -21,18 +23,20 @@ export interface SmsLoginType {
 
 export type UserRegisterType = UserLoginType & SmsLoginType
 
-export interface UserType {
-  id: number
-  username: string
-  phone: string
-  avatar: string
-  roles: Array<{ id: number; name: string }>
-  department: { id: number; name: string }
-  createdAt: string
-  email: string
+export interface RegisterResult {
+  res?: { id: string }
 }
 
+export interface WechatProfile {
+  username?: string
+  avatar?: string
+}
+
+export interface WechatBindPayload extends UserRegisterType, WechatProfile {}
+
+export type LoginUser = UserItem
+
 export interface SmsLoginRes {
-  userinfo: UserType
+  userinfo: LoginUser
   access_token: string
 }

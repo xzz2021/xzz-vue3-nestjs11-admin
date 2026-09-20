@@ -6,9 +6,9 @@ import { SessionRevocationService } from "./session-revocation.service.js";
 import type { TokenService } from "./token.service.js";
 
 describe("SessionRevocationService", () => {
-  const revokeAllAccess = jest.fn();
-  const revokeAllRt = jest.fn();
-  const emit = jest.fn();
+  const revokeAllAccess = vi.fn();
+  const revokeAllRt = vi.fn();
+  const emit = vi.fn();
 
   const service = () =>
     new SessionRevocationService(
@@ -18,7 +18,7 @@ describe("SessionRevocationService", () => {
     );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("revokes tokens then emits user-revoked", async () => {

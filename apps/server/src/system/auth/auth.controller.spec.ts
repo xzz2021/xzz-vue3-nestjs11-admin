@@ -1,13 +1,13 @@
-import { IS_PUBLIC_KEY, PERMISSION_KEY } from "#/processor/decorator/index.js";
+import { IS_AUTHENTICATED_KEY, IS_PUBLIC_KEY, PERMISSION_KEY } from "#/processor/decorator/index.js";
 import { AuthController } from "./auth.controller.js";
 import type { AuthService } from "./auth.service.js";
 import type { CookieCommand } from "./http-cookie.js";
 
-jest.mock("./auth.service", () => ({
+vi.mock("./auth.service", () => ({
   AuthService: class AuthService {},
 }));
 
-jest.mock("#/processor/guard/index.js", () => ({
+vi.mock("#/processor/guard/index.js", () => ({
   CaptchaGuard: class CaptchaGuard {},
   JwtRefreshAuthGuard: class JwtRefreshAuthGuard {},
 }));
@@ -41,6 +41,15 @@ describe("AuthController authentication boundary", () => {
     },
   );
 
+  it("requires login for logout", () => {
+    expect(
+      Reflect.getMetadata(
+        IS_AUTHENTICATED_KEY,
+        AuthController.prototype["logout"],
+      ),
+    ).toBe(true);
+  });
+
   it("requires user update permission for force logout", () => {
     expect(
       Reflect.getMetadata(
@@ -70,12 +79,12 @@ describe("AuthController cookie adapter", () => {
     options: { httpOnly: true, secure: false, sameSite: "lax", path: "/" },
   };
 
-  const cookie = jest.fn();
-  const clearCookieFn = jest.fn();
+  const cookie = vi.fn();
+  const clearCookieFn = vi.fn();
   const res = { cookie, clearCookie: clearCookieFn };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("rtLogin writes RT cookie and returns JSON body without cookie", async () => {
@@ -85,7 +94,7 @@ describe("AuthController cookie adapter", () => {
       access_token: "access",
     };
     const controller = new AuthController({
-      rtLogin: jest.fn().mockResolvedValue({ cookie: setCookie, body }),
+      rtLogin: vi.fn().mockResolvedValue({ cookie: setCookie, body }),
     } as unknown as AuthService);
 
     const result = await controller.rtLogin(
@@ -106,7 +115,7 @@ describe("AuthController cookie adapter", () => {
   it("refresh writes rotated RT cookie and returns JSON body without cookie", async () => {
     const body = { access_token: "access", message: "ok" };
     const controller = new AuthController({
-      rtRefresh: jest.fn().mockResolvedValue({ cookie: setCookie, body }),
+      rtRefresh: vi.fn().mockResolvedValue({ cookie: setCookie, body }),
     } as unknown as AuthService);
 
     const result = await controller.refresh(
@@ -125,7 +134,7 @@ describe("AuthController cookie adapter", () => {
   it("logout clears RT cookie and returns JSON body without cookie", async () => {
     const body = { message: "退出登录成功", id: "u1" };
     const controller = new AuthController({
-      logout: jest.fn().mockResolvedValue({ cookie: clearCookie, body }),
+      logout: vi.fn().mockResolvedValue({ cookie: clearCookie, body }),
     } as unknown as AuthService);
 
     const result = await controller.logout(

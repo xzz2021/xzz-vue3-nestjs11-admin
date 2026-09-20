@@ -4,17 +4,17 @@ import { MessageService } from "./message.service.js";
 
 describe("MessageService", () => {
   const messages = {
-    findInboxPage: jest.fn(),
-    count: jest.fn(),
-    markRead: jest.fn(),
-    markAllRead: jest.fn(),
-    deleteMany: jest.fn(),
-    searchReceivers: jest.fn(),
+    findInboxPage: vi.fn(),
+    count: vi.fn(),
+    markRead: vi.fn(),
+    markAllRead: vi.fn(),
+    deleteMany: vi.fn(),
+    searchReceivers: vi.fn(),
   };
   const delivery = {
-    getUnreadCount: jest.fn(),
-    refreshUnread: jest.fn(),
-    setUnread: jest.fn(),
+    getUnreadCount: vi.fn(),
+    refreshUnread: vi.fn(),
+    setUnread: vi.fn(),
   };
 
   const service = new MessageService(
@@ -23,7 +23,7 @@ describe("MessageService", () => {
   );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("lists inbox from repository and unread from delivery", async () => {

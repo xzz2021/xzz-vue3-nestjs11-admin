@@ -90,8 +90,8 @@ const schema = reactive<FormSchema[]>([
         }
       },
       // 按下enter键触发登录
-      onKeydown: (_e: any) => {
-        if (_e.key === 'Enter') {
+      onKeydown: (e: KeyboardEvent) => {
+        if (e.key === 'Enter') {
           signIn()
         }
       }

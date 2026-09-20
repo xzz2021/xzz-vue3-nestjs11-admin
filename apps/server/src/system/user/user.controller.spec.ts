@@ -1,7 +1,7 @@
-import { PERMISSION_KEY } from "#/processor/decorator/index.js";
+import { IS_AUTHENTICATED_KEY, PERMISSION_KEY } from "#/processor/decorator/index.js";
 import { UserController } from "./user.controller.js";
 
-jest.mock("./user.service", () => ({
+vi.mock("./user.service", () => ({
   UserService: class UserService {},
 }));
 
@@ -25,9 +25,15 @@ describe("UserController permission boundary", () => {
     "updatePassword",
     "uploadAvatar",
     "lookup",
-  ] as const)("does not require management permission for %s", (methodName) => {
+  ] as const)("requires login without a management permission for %s", (methodName) => {
     expect(
       Reflect.getMetadata(PERMISSION_KEY, UserController.prototype[methodName]),
     ).toBeUndefined();
+    expect(
+      Reflect.getMetadata(
+        IS_AUTHENTICATED_KEY,
+        UserController.prototype[methodName],
+      ),
+    ).toBe(true);
   });
 });

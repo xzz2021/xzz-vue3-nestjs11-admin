@@ -13,7 +13,7 @@
 | `apps/server/.env.example`            | 后端环境变量模板（仓库根目录没有 `.env.example`） |
 | `docker/postgres/`                    | DB 用户初始化                             |
 | `docker/nginx/nginx.conf`             | admin 容器 Nginx 反代与 SPA               |
-| `.github/workflows/ci.yml`            | `lint` + `typecheck` + `build`            |
+| `.github/workflows/ci.yml`            | `lint` + `typecheck` + `test` + `build`            |
 
 ## Backend `apps/server`
 
@@ -25,6 +25,7 @@
 | `src/core/app.core.ts`                    | `CORE_MODULE` + `GLOBAL_GUARD`      |
 | `src/infrastructure/database/prisma/`     | `PgService`、PostgreSQL adapter     |
 | `src/infrastructure/database/redis/`      | Redis 模块、Lua、BullMQ 错误处理    |
+| `src/infrastructure/queue/`               | 全局 BullMQ 连接（`QueueInfrastructureModule`） |
 | `src/system/app.system.ts`                | 业务模块聚合                        |
 | `src/system/auth/`                        | 认证                                |
 | `src/system/session/`                     | Access / Refresh 会话               |

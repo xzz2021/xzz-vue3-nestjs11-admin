@@ -6,7 +6,7 @@ import { CustomerController } from "./customer.controller.js";
 import type { CustomerService } from "./customer.service.js";
 
 describe("CustomerController export lifecycle", () => {
-  const exportCustomers = jest.fn();
+  const exportCustomers = vi.fn();
   const controller = new CustomerController({
     export: exportCustomers,
   } as unknown as CustomerService);
@@ -17,12 +17,12 @@ describe("CustomerController export lifecycle", () => {
     }) as unknown as AuthorizedJwtRequest;
     const response = Object.assign(new EventEmitter(), {
       writableEnded: false,
-      setHeader: jest.fn(),
+      setHeader: vi.fn(),
     }) as unknown as Response;
     return { request, response };
   }
 
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => vi.clearAllMocks());
 
   it("destroys the export stream when the request is aborted", async () => {
     const stream = new PassThrough();

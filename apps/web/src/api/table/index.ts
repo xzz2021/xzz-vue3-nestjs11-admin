@@ -30,11 +30,11 @@ const paginate = <T>(list: T[], params: { pageIndex?: number; pageSize?: number 
 
 const allRows = createRows(36)
 
-export const getTableListApi = (params: any) => {
+export const getTableListApi = (params: { pageIndex?: number; pageSize?: number }) => {
   return ok(paginate(allRows, params || {}))
 }
 
-export const getCardTableListApi = (params: any) => {
+export const getCardTableListApi = (params: { pageIndex?: number; pageSize?: number }) => {
   const cards = allRows.map((row) => ({
     ...row,
     name: row.title,
@@ -44,7 +44,7 @@ export const getCardTableListApi = (params: any) => {
   return ok(paginate(cards, params || {}))
 }
 
-export const getTreeTableListApi = (params: any) => {
+export const getTreeTableListApi = (params: { pageIndex?: number; pageSize?: number }) => {
   const roots = createRows(8).map((row, index) => ({
     ...row,
     children:

@@ -22,7 +22,7 @@ Seed 中权限编码规则：`code = \`${resource}:${action}\``，`resource` 对
 
 关键代码：
 
-- 装饰器：`apps/server/src/processor/decorator/permission.ts` → `@RequiredPermission(code)`
+- 装饰器：`apps/server/src/processor/decorator/permission.ts` → `@RequiredPermission(code)`；仅登录用 `@Authenticated()`
 - Guard：`apps/server/src/processor/guard/permission.ts`（全局 APP_GUARD）
 - 缓存：`RbacPermissionCacheService`（TTL 约 5 分钟 + 抖动；未命中 singleflight；失效靠 per-user 版本号）
 - 未命中：`UserRepository.findEnabledRolePermissionTree`，再解析权限码
@@ -30,11 +30,13 @@ Seed 中权限编码规则：`code = \`${resource}:${action}\``，`resource` 对
 
 流程：
 
-1. 无 `@RequiredPermission` → 放行（仍需通过 JWT，除非 `@Public`）
-2. 有则取 `request.user.id`
-3. `PermissionGuard` 先读 Redis 权限缓存；未命中再走 User 仓储；空权限列表会负缓存
-4. 含 `*` 或精确匹配所需 code → 通过
-5. 角色/权限/部门变更后递增 generation 并删 Redis；CAS Lua 防止旧快照回写
+1. `@Public()` → 放行（JWT 已跳过）
+2. `@RequiredPermission` → 取 `request.user.id`，校验权限码
+3. `@Authenticated()` → 仅要求已登录
+4. 以上都没有 → `403 接口未配置访问权限`（fail-closed）
+5. `PermissionGuard` 先读 Redis 权限缓存；未命中再走 User 仓储；空权限列表会负缓存
+6. 含 `*` 或精确匹配所需 code → 通过
+7. 角色/权限/部门变更后递增 generation 并删 Redis；CAS Lua 防止旧快照回写
 
 CASL（`@casl/ability`）只用于 Customer 的字段/属性规则，不是全局策略引擎。详见 [customer.md](../modules/customer.md)。
 

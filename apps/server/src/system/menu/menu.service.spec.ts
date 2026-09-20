@@ -1,13 +1,12 @@
-import { MenuType } from "@prisma/generated/zod/enums";
-import type { PgService } from "#/prisma/pg.service.js";
+import { MenuType } from "#/generated/zod/enums.js";
 import { MenuRepository } from "./menu.repository.js";
 import { MenuService } from "./menu.service.js";
 
 describe("MenuService tree updates", () => {
-  const findMany = jest.fn();
-  const update = jest.fn();
-  const executeRaw = jest.fn();
-  const transaction = jest.fn(
+  const findMany = vi.fn();
+  const update = vi.fn();
+  const executeRaw = vi.fn();
+  const transaction = vi.fn(
     async (
       callback: (tx: {
         menu: { findMany: typeof findMany; update: typeof update };
@@ -19,16 +18,16 @@ describe("MenuService tree updates", () => {
   const service = new MenuService(
     new MenuRepository({ $transaction: transaction }),
     {
-      record: jest.fn(),
+      record: vi.fn(),
     } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
     {} as import("#/system/role/role.repository.js").RoleRepository,
     {
-      invalidateUsers: jest.fn(),
+      invalidateUsers: vi.fn(),
     } as unknown as import("#/processor/rbac/index.js").RbacPermissionCacheService,
   );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     update.mockResolvedValue({ id: "menu-1" });
     executeRaw.mockResolvedValue(2);
     findMany.mockResolvedValue([
@@ -93,13 +92,13 @@ describe("MenuService tree updates", () => {
 });
 
 describe("MenuService delete rules", () => {
-  const findUnique = jest.fn();
-  const count = jest.fn();
-  const remove = jest.fn();
-  const permissionFindMany = jest.fn();
-  const findUserIdsByPermissionIds = jest.fn();
-  const invalidateUsers = jest.fn();
-  const transaction = jest.fn((callback) =>
+  const findUnique = vi.fn();
+  const count = vi.fn();
+  const remove = vi.fn();
+  const permissionFindMany = vi.fn();
+  const findUserIdsByPermissionIds = vi.fn();
+  const invalidateUsers = vi.fn();
+  const transaction = vi.fn((callback) =>
     callback({
       menu: { delete: remove },
       permission: { findMany: permissionFindMany },
@@ -111,7 +110,7 @@ describe("MenuService delete rules", () => {
       menu: { findUnique, count, delete: remove },
     }),
     {
-      record: jest.fn(),
+      record: vi.fn(),
     } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
     {
       findUserIdsByPermissionIds,
@@ -122,7 +121,7 @@ describe("MenuService delete rules", () => {
   );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     permissionFindMany.mockResolvedValue([{ id: "permission-1" }]);
     findUserIdsByPermissionIds.mockResolvedValue([{ userId: "user-1" }]);
     remove.mockResolvedValue({ id: "menu-1" });

@@ -10,9 +10,9 @@ import type { RtTokenService } from "./rt.token.service.js";
 import type { SessionRevocationService } from "./session-revocation.service.js";
 import type { TokenService } from "./token.service.js";
 
-jest.mock("#/processor/utils/index.js", () => ({
-  hashPayPassword: jest.fn(),
-  verifyPayPassword: jest.fn(),
+vi.mock("#/processor/utils/index.js", () => ({
+  hashPayPassword: vi.fn(),
+  verifyPayPassword: vi.fn(),
 }));
 
 describe("AuthService rtLogin lockout", () => {
@@ -30,14 +30,14 @@ describe("AuthService rtLogin lockout", () => {
     email: null,
   };
 
-  const findEnabledByPhoneForLogin = jest.fn();
-  const recordLoginSuccess = jest.fn();
-  const ensureNotLocked = jest.fn();
-  const onFail = jest.fn();
-  const onSuccess = jest.fn();
-  const signToken = jest.fn();
+  const findEnabledByPhoneForLogin = vi.fn();
+  const recordLoginSuccess = vi.fn();
+  const ensureNotLocked = vi.fn();
+  const onFail = vi.fn();
+  const onSuccess = vi.fn();
+  const signToken = vi.fn();
 
-  const record = jest.fn();
+  const record = vi.fn();
   const createService = () =>
     new AuthService(
       {
@@ -45,7 +45,7 @@ describe("AuthService rtLogin lockout", () => {
         recordLoginSuccess,
       } as unknown as UserRepository,
       {} as JwtService,
-      { getOrThrow: () => ({ del: jest.fn() }) } as unknown as RedisService,
+      { getOrThrow: () => ({ del: vi.fn() }) } as unknown as RedisService,
       { get: () => ({}) } as unknown as ConfigService,
       {} as TokenService,
       { signToken } as unknown as RtTokenService,
@@ -57,7 +57,7 @@ describe("AuthService rtLogin lockout", () => {
     );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     ensureNotLocked.mockResolvedValue(undefined);
     onFail.mockResolvedValue(undefined);
     onSuccess.mockResolvedValue(undefined);
@@ -67,7 +67,7 @@ describe("AuthService rtLogin lockout", () => {
       cookie: { action: "set", name: "rt", value: "refresh", options: {} },
     });
     record.mockResolvedValue(undefined);
-    (verifyPayPassword as jest.Mock).mockResolvedValue(true);
+    (verifyPayPassword as vi.Mock).mockResolvedValue(true);
   });
 
   it("blocks login before credential lookup when the account is locked", async () => {
@@ -103,7 +103,7 @@ describe("AuthService rtLogin lockout", () => {
 
   it("records a failure for a wrong password with the same credential error", async () => {
     findEnabledByPhoneForLogin.mockResolvedValue(user);
-    (verifyPayPassword as jest.Mock).mockResolvedValue(false);
+    (verifyPayPassword as vi.Mock).mockResolvedValue(false);
 
     await expect(createService().rtLogin(loginInfo, ip)).rejects.toThrow(
       "账号或密码错误",

@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 
 declare module 'virtual:svg-icons-register' {
-  const component: any
+  const component: unknown
   export default component
 }
 
@@ -13,6 +13,20 @@ declare module 'virtual:svg-icons-names' {
 declare module '@wangeditor/editor-for-vue' {
   import type { DefineComponent } from 'vue'
 
-  export const Editor: DefineComponent<Record<string, any>, Record<string, any>, any>
-  export const Toolbar: DefineComponent<Record<string, any>, Record<string, any>, any>
+  export const Editor: DefineComponent
+  export const Toolbar: DefineComponent
+}
+
+interface WxLoginOptions {
+  self_redirect: boolean
+  id: string
+  appid: string
+  scope: string
+  redirect_uri: string
+  state: string
+  style?: string
+}
+
+declare class WxLogin {
+  constructor(options: WxLoginOptions)
 }

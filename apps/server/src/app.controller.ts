@@ -1,11 +1,9 @@
 import { RedisHealthService } from '#/infrastructure/database/redis/redis-health.service.js';
 import { PgService } from '#/infrastructure/database/prisma/pg.service.js';
-import { IS_PUBLIC_KEY } from '#/processor/decorator/index.js';
-import { Controller, Get, Res, SetMetadata } from '@nestjs/common';
+import { Authenticated, Public } from '#/processor/decorator/index.js';
+import { Controller, Get, Res } from '@nestjs/common';
 import type { Response } from 'express';
 import { AppService } from './app.service.js';
-
-const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
 
 @Controller()
 export class AppController {
@@ -15,6 +13,7 @@ export class AppController {
     private readonly redisHealthService: RedisHealthService,
   ) {}
 
+  @Authenticated()
   @Get()
   getHello(): string {
     return this.appService.getHello();

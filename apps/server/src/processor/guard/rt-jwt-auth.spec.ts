@@ -7,8 +7,8 @@ import { AuthGuard } from "@nestjs/passport";
 import { RtJwtAuthGuard } from "./rt-jwt-auth";
 
 describe("RtJwtAuthGuard", () => {
-  const isAccessBlacklisted = jest.fn();
-  const isRtBlacklisted = jest.fn();
+  const isAccessBlacklisted = vi.fn();
+  const isRtBlacklisted = vi.fn();
   const tokenService = {
     isBlacklisted: isAccessBlacklisted,
   } as unknown as TokenService;
@@ -30,8 +30,8 @@ describe("RtJwtAuthGuard", () => {
     }) as unknown as ExecutionContext;
 
   beforeEach(() => {
-    jest.restoreAllMocks();
-    jest.clearAllMocks();
+    vi.restoreAllMocks();
+    vi.clearAllMocks();
     jest
       .spyOn(AuthGuard("jwt").prototype, "canActivate")
       .mockResolvedValue(true);

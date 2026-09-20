@@ -1,5 +1,6 @@
 import type { AuthorizationContext } from '#/processor/authorization/authorization-context.js';
 import { AuthorizationService } from '#/processor/authorization/authorization.service.js';
+import { IS_AUTHENTICATED_KEY } from '#/processor/decorator/public.js';
 import { PERMISSION_KEY } from '#/processor/decorator/permission.js';
 import { isTransientDbError } from '#/processor/filter/prisma.exception.js';
 import {
@@ -11,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import type { Request } from 'express';
+import { isPublicRoute } from './is-public.js';
 /*
 
 此guard 通过rbac定义 控制了 所有 路由 调用 和 按钮操作 的权限
@@ -36,13 +38,29 @@ export class PermissionGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    // WebSocket 走各自 Gateway 鉴权，避免 HTTP Guard 误伤
+    if (context.getType?.() === 'ws') {
+      return true;
+    }
+    if (isPublicRoute(this.reflector, context)) return true;
+
     const requiredPermission = this.reflector.getAllAndOverride<string>(
       PERMISSION_KEY,
       [context.getHandler(), context.getClass()],
     );
 
-    // 没挂permission装饰器 直接放行 因为还有很多公开接口, 如果没挂, 后续细颗粒度权限读取时会抛出异常,不用担心泄漏
-    if (!requiredPermission) return true;
+    if (!requiredPermission) {
+      const authenticatedOnly = this.reflector.getAllAndOverride<boolean>(
+        IS_AUTHENTICATED_KEY,
+        [context.getHandler(), context.getClass()],
+      );
+      if (!authenticatedOnly) {
+        throw new ForbiddenException('接口未配置访问权限');
+      }
+      const request = context.switchToHttp().getRequest<AuthorizedJwtRequest>();
+      if (!request.user?.id) throw new ForbiddenException('身份无效，无法校验权限');
+      return true;
+    }
 
     const request = context.switchToHttp().getRequest<AuthorizedJwtRequest>();
     const userId = request.user?.id;

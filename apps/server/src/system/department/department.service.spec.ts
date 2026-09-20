@@ -3,16 +3,16 @@ import type { PgService } from "#/prisma/pg.service.js";
 import { DepartmentRepository } from "./department.repository.js";
 import { DepartmentService } from "./department.service.js";
 
-const organizationGenerationBump = jest.fn().mockResolvedValue(undefined);
+const organizationGenerationBump = vi.fn().mockResolvedValue(undefined);
 const organizationGeneration = {
   bump: organizationGenerationBump,
 } as unknown as import("#/processor/authorization/organization-generation.service.js").OrganizationGenerationService;
 
 describe("DepartmentService tree updates", () => {
-  const findMany = jest.fn();
-  const update = jest.fn();
-  const executeRaw = jest.fn();
-  const transaction = jest.fn(
+  const findMany = vi.fn();
+  const update = vi.fn();
+  const executeRaw = vi.fn();
+  const transaction = vi.fn(
     async (
       callback: (tx: {
         department: { findMany: typeof findMany; update: typeof update };
@@ -25,13 +25,13 @@ describe("DepartmentService tree updates", () => {
   const service = new DepartmentService(
     new DepartmentRepository({ $transaction: transaction }),
     {
-      record: jest.fn(),
+      record: vi.fn(),
     } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
     organizationGeneration,
   );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     update.mockImplementation(({ where }: { where: { id: string } }) =>
       Promise.resolve({ id: where.id }),
     );
@@ -110,14 +110,14 @@ describe("DepartmentService tree updates", () => {
 });
 
 describe("DepartmentService list queries", () => {
-  const findMany = jest.fn();
-  const count = jest.fn();
+  const findMany = vi.fn();
+  const count = vi.fn();
   const service = new DepartmentService(
     new DepartmentRepository({
       department: { findMany, count },
     }),
     {
-      record: jest.fn(),
+      record: vi.fn(),
     } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
     organizationGeneration,
   );
@@ -160,30 +160,30 @@ describe("DepartmentService list queries", () => {
 });
 
 describe("DepartmentService delete rules", () => {
-  const findUnique = jest.fn();
-  const findFirst = jest.fn();
-  const rolePermissionDepartmentFindFirst = jest.fn();
-  const customerFindFirst = jest.fn();
-  const remove = jest.fn();
-  const queryRaw = jest.fn();
+  const findUnique = vi.fn();
+  const findFirst = vi.fn();
+  const rolePermissionDepartmentFindFirst = vi.fn();
+  const customerFindFirst = vi.fn();
+  const remove = vi.fn();
+  const queryRaw = vi.fn();
   const deleteDb = {
     department: { findUnique, findFirst, delete: remove },
     rolePermissionDepartment: { findFirst: rolePermissionDepartmentFindFirst },
     customer: { findFirst: customerFindFirst },
     $queryRaw: queryRaw,
-    $transaction: jest.fn(),
+    $transaction: vi.fn(),
   };
   deleteDb.$transaction.mockImplementation((callback) => callback(deleteDb));
   const service = new DepartmentService(
     new DepartmentRepository(deleteDb),
     {
-      record: jest.fn(),
+      record: vi.fn(),
     } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
     organizationGeneration,
   );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     rolePermissionDepartmentFindFirst.mockResolvedValue(null);
     customerFindFirst.mockResolvedValue(null);
     queryRaw.mockResolvedValue([{ id: "node" }]);
@@ -218,8 +218,8 @@ describe("DepartmentService delete rules", () => {
 });
 
 describe("DepartmentService unique names", () => {
-  const create = jest.fn();
-  const transaction = jest.fn(
+  const create = vi.fn();
+  const transaction = vi.fn(
     async (
       callback: (tx: {
         department: { create: typeof create };
@@ -229,7 +229,7 @@ describe("DepartmentService unique names", () => {
   const service = new DepartmentService(
     new DepartmentRepository({ $transaction: transaction }),
     {
-      record: jest.fn(),
+      record: vi.fn(),
     } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
     organizationGeneration,
   );
@@ -249,20 +249,20 @@ describe("DepartmentService unique names", () => {
 });
 
 describe("DepartmentService lookup", () => {
-  const findMany = jest.fn();
-  const count = jest.fn();
+  const findMany = vi.fn();
+  const count = vi.fn();
   const service = new DepartmentService(
     new DepartmentRepository({
       department: { findMany, count },
     }),
     {
-      record: jest.fn(),
+      record: vi.fn(),
     } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
     organizationGeneration,
   );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("returns a slim tree without management fields", async () => {

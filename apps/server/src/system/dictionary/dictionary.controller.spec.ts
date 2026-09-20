@@ -1,7 +1,7 @@
 import { IS_PUBLIC_KEY, PERMISSION_KEY } from "#/processor/decorator/index.js";
 import { DictionaryController } from "./dictionary.controller.js";
 
-jest.mock("./dictionary.service", () => ({
+vi.mock("./dictionary.service", () => ({
   DictionaryService: class DictionaryService {},
 }));
 

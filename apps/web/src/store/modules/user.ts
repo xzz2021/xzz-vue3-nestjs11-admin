@@ -1,12 +1,14 @@
 import type { UserLoginInfoType } from '@/api/login/types'
 import type { UserItem } from '@/api/user/types'
+import { loginOutApi } from '@/api/login'
 import defaultAvatar from '@/assets/imgs/avatar.jpg'
 import { useI18n } from '@/hooks/web/useI18n'
-import router from '@/router'
+import router, { resetRouter } from '@/router'
 import { resolveAvatarUrl } from '@/utils/file'
 import { ElMessageBox } from 'element-plus'
 import { defineStore } from 'pinia'
 import { store } from '../index'
+import { usePermissionStoreWithOut } from './permission'
 import { useTagsViewStore } from './tagsView'
 
 interface UserState {
@@ -95,19 +97,32 @@ export const useUserStore = defineStore('user', {
       ElMessageBox.confirm(t('common.loginOutMessage'), t('common.reminder'), {
         confirmButtonText: t('common.ok'),
         cancelButtonText: t('common.cancel'),
-        type: 'warning',
+        type: 'warning'
       }).then(async () => {
+        await this.logoutRemote()
         this.reset()
       })
     },
     async cmdLogout() {
-      // const res = await forceLogoutApi(id).catch(() => {})
       // 这里是收到 强制退出命令    应该做下打点记录  调用登出接口 及 登出原因类型
       this.reset()
     },
+    async logoutRemote() {
+      const userId = this.userInfo?.id
+      const token = this.token
+      if (!userId || !token) return
+      try {
+        await loginOutApi(userId, token)
+      } catch {
+        // 服务端会话可能已失效，仍清理本地状态
+      }
+    },
     reset() {
       const tagsViewStore = useTagsViewStore()
+      const permissionStore = usePermissionStoreWithOut()
       tagsViewStore.delAllViews(false)
+      resetRouter()
+      permissionStore.resetRoutes()
       this.setToken('')
       this.setUserInfo()
       this.setRoleRouters([])

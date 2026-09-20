@@ -6,6 +6,7 @@ import { onMounted, onUnmounted, ref } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
 import BindForm from './BindForm.vue'
 import { useLogin } from './hooks'
+import type { WechatProfile } from '@/api/login/types'
 const WECHAT_REDIRECT_URL = import.meta.env.VITE_WECHAT_REDIRECT_URL
 console.log('xzz2021: WECHAT_REDIRECT_URL', WECHAT_REDIRECT_URL)
 const emit = defineEmits(['to-login'])
@@ -22,8 +23,7 @@ onMounted(() => {
   s.src = 'https://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js'
   const wxElement = document.body.appendChild(s)
   wxElement.onload = function () {
-    // @ts-expect-error 上面全局挂载了WxLogin
-    const obj = new WxLogin({
+    new WxLogin({
       self_redirect: !true,
       id: 'weixinLogin', // 需要显示的容器id
       appid: 'wxe1b07777734e93', // 微信开放平台appid wx*******
@@ -43,7 +43,7 @@ onMounted(() => {
 })
 
 const { successLogin } = useLogin()
-const wechatInfo = ref<any>(null)
+const wechatInfo = ref<WechatProfile | null>(null)
 const toBindPage = ref(false)
 //  监听路由跳转  并拦截停留在当前页
 onBeforeRouteUpdate(async (to) => {
@@ -82,6 +82,8 @@ onBeforeRouteUpdate(async (to) => {
       <div id="weixinLogin" class=""></div>
       <ElLink type="primary" :underline="false" @click="toLogin">返回帐号登录</ElLink>
     </div>
-    <div v-else class="flex flex-col items-center"> <BindForm :wechatInfo="wechatInfo" /></div>
+    <div v-else-if="wechatInfo" class="flex flex-col items-center">
+      <BindForm :wechatInfo="wechatInfo" />
+    </div>
   </div>
 </template>

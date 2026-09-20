@@ -1,4 +1,4 @@
-import { Public, RequiredPermission, Serialize } from "#/processor/decorator/index.js";
+import { Authenticated, Public, RequiredPermission, Serialize } from "#/processor/decorator/index.js";
 import { CaptchaGuard, JwtRefreshAuthGuard } from "#/processor/guard/index.js";
 import { clientIp } from "#/processor/utils/index.js";
 import { Body, Controller, Post, Req, Res, UseGuards } from "@nestjs/common";
@@ -58,6 +58,7 @@ export class AuthController {
   }
 
   @Post("logout")
+  @Authenticated()
   @ApiOperation({ summary: "用户主动退出登录" })
   async logout(
     @Body() body: ForceLogoutDto,

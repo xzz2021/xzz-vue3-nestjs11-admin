@@ -77,4 +77,4 @@ Prisma 7 使用 Node 24 镜像（与 `apps/server/Dockerfile` 的 `node:24.18` �
 
 ## CI
 
-`.github/workflows/ci.yml`：install → `pnpm lint && pnpm typecheck && pnpm build`。无测试、无自动部署。
+`.github/workflows/ci.yml`：install → `pnpm lint && pnpm typecheck && pnpm test && pnpm build`。无自动部署。

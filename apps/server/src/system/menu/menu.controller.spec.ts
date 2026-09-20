@@ -1,7 +1,7 @@
 import { PERMISSION_KEY } from "#/processor/decorator/index.js";
 import { MenuController } from "./menu.controller.js";
 
-jest.mock("./menu.service", () => ({
+vi.mock("./menu.service", () => ({
   MenuService: class MenuService {},
 }));
 

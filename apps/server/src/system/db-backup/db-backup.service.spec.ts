@@ -13,41 +13,41 @@ import { DbBackupService } from "./db-backup.service.js";
 
 describe("DbBackupService", () => {
   const redis = {
-    set: jest.fn(),
-    eval: jest.fn(),
+    set: vi.fn(),
+    eval: vi.fn(),
   };
 
   const queue = {
-    add: jest.fn(),
-    getJob: jest.fn(),
-    getJobScheduler: jest.fn(),
-    getRepeatableJobs: jest.fn(),
-    removeRepeatableByKey: jest.fn(),
-    upsertJobScheduler: jest.fn(),
-    removeJobScheduler: jest.fn(),
+    add: vi.fn(),
+    getJob: vi.fn(),
+    getJobScheduler: vi.fn(),
+    getRepeatableJobs: vi.fn(),
+    removeRepeatableByKey: vi.fn(),
+    upsertJobScheduler: vi.fn(),
+    removeJobScheduler: vi.fn(),
   };
 
   const pgService = {
     dbBackupConfig: {
-      upsert: jest.fn(),
-      update: jest.fn(),
+      upsert: vi.fn(),
+      update: vi.fn(),
     },
     dbBackupJob: {
-      count: jest.fn(),
-      findMany: jest.fn(),
-      findFirst: jest.fn(),
-      findUnique: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      updateMany: jest.fn(),
-      delete: jest.fn(),
-      deleteMany: jest.fn(),
+      count: vi.fn(),
+      findMany: vi.fn(),
+      findFirst: vi.fn(),
+      findUnique: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      updateMany: vi.fn(),
+      delete: vi.fn(),
+      deleteMany: vi.fn(),
     },
-    $transaction: jest.fn(),
+    $transaction: vi.fn(),
   };
 
   const configService = {
-    get: jest.fn((key: string) => {
+    get: vi.fn((key: string) => {
       const map: Record<string, unknown> = {
         "dbBackup.dir": "backups",
         "dbBackup.cron": "0 0 * * * *",
@@ -62,11 +62,11 @@ describe("DbBackupService", () => {
   };
 
   const pgDumpRunner = {
-    run: jest.fn(),
+    run: vi.fn(),
   };
 
   const fileCleanup = {
-    enqueue: jest.fn(),
+    enqueue: vi.fn(),
   };
 
   const createService = () => {
@@ -91,7 +91,7 @@ describe("DbBackupService", () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     pgService.dbBackupConfig.upsert.mockResolvedValue({
       id: "default",
       enabled: true,
@@ -199,8 +199,8 @@ describe("DbBackupService", () => {
   it("rejects enqueue when manual job already exists in queue", async () => {
     const service = createService();
     queue.getJob.mockResolvedValue({
-      getState: jest.fn().mockResolvedValue("waiting"),
-      remove: jest.fn(),
+      getState: vi.fn().mockResolvedValue("waiting"),
+      remove: vi.fn(),
     });
 
     await expect(

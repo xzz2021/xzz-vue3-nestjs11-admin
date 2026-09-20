@@ -13,26 +13,26 @@ import type { FileRepository } from "./file.repository.js";
 const SHA = "a".repeat(64);
 
 describe("FileUploadService", () => {
-  const findActiveBySha256 = jest.fn();
-  const findDeletedBySha256 = jest.fn();
-  const restoreById = jest.fn();
-  const createFile = jest.fn();
-  const countOpenSessions = jest.fn();
-  const findResumable = jest.fn();
-  const createSession = jest.fn();
-  const updateTempDir = jest.fn();
-  const findById = jest.fn();
-  const listChunkIndexes = jest.fn();
-  const upsertChunk = jest.fn();
-  const markUploading = jest.fn();
-  const tryBeginComplete = jest.fn();
-  const tryAbort = jest.fn();
-  const setStatus = jest.fn();
-  const findExpiredOpen = jest.fn();
-  const findStuckCompleting = jest.fn();
-  const markExpired = jest.fn();
-  const markFailed = jest.fn();
-  const enqueue = jest.fn();
+  const findActiveBySha256 = vi.fn();
+  const findDeletedBySha256 = vi.fn();
+  const restoreById = vi.fn();
+  const createFile = vi.fn();
+  const countOpenSessions = vi.fn();
+  const findResumable = vi.fn();
+  const createSession = vi.fn();
+  const updateTempDir = vi.fn();
+  const findById = vi.fn();
+  const listChunkIndexes = vi.fn();
+  const upsertChunk = vi.fn();
+  const markUploading = vi.fn();
+  const tryBeginComplete = vi.fn();
+  const tryAbort = vi.fn();
+  const setStatus = vi.fn();
+  const findExpiredOpen = vi.fn();
+  const findStuckCompleting = vi.fn();
+  const markExpired = vi.fn();
+  const markFailed = vi.fn();
+  const enqueue = vi.fn();
 
   let root: string;
   let previousRoot: string | undefined;
@@ -52,7 +52,7 @@ describe("FileUploadService", () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     previousRoot = process.env.STATIC_FILE_ROOT_PATH;
     root = mkdtempSync(join(tmpdir(), "file-upload-"));
     process.env.STATIC_FILE_ROOT_PATH = root;
