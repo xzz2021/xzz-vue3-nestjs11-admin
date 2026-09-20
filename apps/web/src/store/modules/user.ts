@@ -134,7 +134,7 @@ export const useUserStore = defineStore('user', {
         // 服务端会话可能已失效，仍清理本地状态
       }
     },
-    reset() {
+    clearClientSession() {
       const tagsViewStore = useTagsViewStore()
       const permissionStore = usePermissionStoreWithOut()
       tagsViewStore.delAllViews(false)
@@ -146,6 +146,15 @@ export const useUserStore = defineStore('user', {
       void import('@/axios/session').then(({ markSessionUnrestorable }) => {
         markSessionUnrestorable()
       })
+    },
+    async abortSession() {
+      await this.logoutRemote()
+      this.clearClientSession()
+      const { markSessionUnrestorable } = await import('@/axios/session')
+      markSessionUnrestorable()
+    },
+    reset() {
+      this.clearClientSession()
       router.replace('/login')
     },
     logout() {

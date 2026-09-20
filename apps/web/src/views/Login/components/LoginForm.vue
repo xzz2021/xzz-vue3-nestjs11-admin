@@ -272,6 +272,8 @@ const signIn = async () => {
         if (error instanceof AxiosError && error.response?.data?.message === '验证码已过期') {
           // 只有当后面的登录失败时，才更新验证码
           updateCaptcha()
+        } else if (error instanceof Error && !(error instanceof AxiosError)) {
+          ElMessage.error(error.message)
         }
       } finally {
         // ElLoading.service().close()  改为进入的第一个组件里关闭

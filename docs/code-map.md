@@ -70,7 +70,7 @@
 | `views/Dashboard/`          | 分析/工作台（本地 mock） |
 | `views/Personal/`           | 个人中心（依赖服务端菜单） |
 | `directives/permission/`    | `v-hasPermi`             |
-| `hooks/fn/useRoleMenu.ts`   | 拉菜单并生成路由         |
+| `hooks/fn/useRoleMenu.ts`   | 拉菜单并生成路由；失败会抛出让登录/守卫回滚 |
 | `utils/routerHelper.ts`     | 动态路由组件映射         |
 
 前端镜像：`apps/web/Dockerfile`。Nginx 配置在仓库根 `docker/nginx/nginx.conf`。

@@ -11,8 +11,13 @@ export const useLogin = () => {
     markSessionRestorable()
     userStore.setUserInfo(userinfo)
     userStore.setToken(access_token) // 设置新token
-    await getRole()
-    markSessionReady()
+    try {
+      await getRole()
+      markSessionReady()
+    } catch (error) {
+      await userStore.abortSession()
+      throw error
+    }
   }
 
   return {

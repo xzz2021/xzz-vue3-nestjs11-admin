@@ -22,6 +22,7 @@ export default defineConfig({
       '../web/src/utils/route-permission.spec.ts',
       '../web/src/axios/auth-refresh.spec.ts',
       '../web/src/store/modules/user.persist.spec.ts',
+      '../web/src/hooks/fn/apply-role-routes.spec.ts',
     ],
   },
 });

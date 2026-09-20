@@ -20,6 +20,13 @@ import { filterMenuTree } from './utils/menuTree'
 const { t } = useI18n()
 const router = useRouter()
 const { getRole } = useRoleMenu()
+const refreshRole = async () => {
+  try {
+    await getRole()
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : t('common.refresh'))
+  }
+}
 /** 完整菜单树缓存，搜索只在前端过滤 */
 const sourceList = ref<MenuItem[]>([])
 const searchParams = ref<Recordable>({})
@@ -230,7 +237,7 @@ onActivated(() => {
         <BaseButton type="primary" class="mb-[18px] flex-shrink-0" @click="openSortDialog">
           {{ t('menu.sort') }}
         </BaseButton>
-        <BaseButton type="danger" class="mb-[18px] flex-shrink-0" @click="getRole">{{
+        <BaseButton type="danger" class="mb-[18px] flex-shrink-0" @click="refreshRole">{{
           t('common.refresh')
         }}</BaseButton>
       </div>

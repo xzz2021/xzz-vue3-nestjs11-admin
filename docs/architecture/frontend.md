@@ -74,7 +74,7 @@ src/
 
 ## 权限（前端）
 
-1. 登录后 `getRoleMenuApi`（`role/getRoleMenu`）→ 动态加路由
+1. 登录后 `getRoleMenuApi`（`role/getRoleMenu`）→ 动态加路由；生成失败会中止并清会话，不会沿用旧菜单
 2. 侧栏读 `permissionStore.getRouters`
 3. 按钮：`v-hasPermi`、`<Permission>`、页面内校验都读 `meta.permissions`（`getRoutePermissions`；旧的 `meta.permission` 仅作回退）
 
