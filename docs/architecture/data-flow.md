@@ -35,9 +35,11 @@ sequenceDiagram
 
 ## Token 刷新
 
-- 业务响应 401/406 → 独立请求 `POST /auth/refresh`（`withCredentials`）
+- Access token 只放 Pinia 内存，不写 localStorage；刷新页由路由守卫先用 cookie `rt` 换新 access，再拉 userInfo / 菜单
+- 业务响应 401/406 → 独立请求 `POST /auth/refresh`（`withCredentials`）；无内存 access 时也会尝试
 - 成功：更新 Pinia token 并重试原请求
-- Refresh 仍 401：清空登录态跳转登录页
+- 登录 / 注册 / 验证码失败不会走 refresh
+- Refresh 仍 401：若当时已有内存 access 则清空登录态跳转登录页
 - 刷新基础设施错误（500/503）保留登录态，不强制踢出
 
 ## 站内消息派发

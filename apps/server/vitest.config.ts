@@ -20,6 +20,8 @@ export default defineConfig({
     include: [
       '**/*.spec.ts',
       '../web/src/utils/route-permission.spec.ts',
+      '../web/src/axios/auth-refresh.spec.ts',
+      '../web/src/store/modules/user.persist.spec.ts',
     ],
   },
 });

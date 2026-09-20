@@ -7,9 +7,22 @@ import router, { resetRouter } from '@/router'
 import { resolveAvatarUrl } from '@/utils/file'
 import { ElMessageBox } from 'element-plus'
 import { defineStore } from 'pinia'
+import { USER_PERSIST_PICK, purgeLegacyAuthStorage } from './user-persist'
 import { store } from '../index'
 import { usePermissionStoreWithOut } from './permission'
 import { useTagsViewStore } from './tagsView'
+
+const readAccessTokenUserId = (token: string): string | undefined => {
+  try {
+    const segment = token.split('.')[1]
+    if (!segment) return undefined
+    const normalized = segment.replace(/-/g, '+').replace(/_/g, '/')
+    const payload = JSON.parse(atob(normalized)) as { id?: string; sub?: string }
+    return payload.id || payload.sub
+  } catch {
+    return undefined
+  }
+}
 
 interface UserState {
   userInfo: UserItem | undefined
@@ -99,6 +112,10 @@ export const useUserStore = defineStore('user', {
         cancelButtonText: t('common.cancel'),
         type: 'warning'
       }).then(async () => {
+        if (!this.token) {
+          const { restoreSession } = await import('@/axios/session')
+          await restoreSession()
+        }
         await this.logoutRemote()
         this.reset()
       })
@@ -108,8 +125,8 @@ export const useUserStore = defineStore('user', {
       this.reset()
     },
     async logoutRemote() {
-      const userId = this.userInfo?.id
       const token = this.token
+      const userId = this.userInfo?.id || (token ? readAccessTokenUserId(token) : undefined)
       if (!userId || !token) return
       try {
         await loginOutApi(userId, token)
@@ -126,6 +143,9 @@ export const useUserStore = defineStore('user', {
       this.setToken('')
       this.setUserInfo()
       this.setRoleRouters([])
+      void import('@/axios/session').then(({ markSessionUnrestorable }) => {
+        markSessionUnrestorable()
+      })
       router.replace('/login')
     },
     logout() {
@@ -151,10 +171,14 @@ export const useUserStore = defineStore('user', {
     // }
   },
   persist: {
-    pick: ['tokenKey', 'token', 'userInfo', 'roleRouters', 'rememberMe', 'loginInfo', 'unReadCount', 'avatarVersion'],
+    pick: [...USER_PERSIST_PICK],
     // 这个「把persist持久化数据灌回内存状态」的过程，就叫 hydrate / 水合
     // afterHydrate 在「灌完之后立刻再跑一次清理  避免历史脏数据
     afterHydrate: (ctx) => {
+      ctx.store.token = ''
+      ctx.store.userInfo = undefined
+      ctx.store.roleRouters = undefined
+      purgeLegacyAuthStorage()
       const info = ctx.store.loginInfo as (UserLoginInfoType & { password?: string }) | undefined
       if (info && 'password' in info) {
         ctx.store.loginInfo = {

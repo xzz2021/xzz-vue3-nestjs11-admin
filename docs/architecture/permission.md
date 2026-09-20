@@ -72,7 +72,7 @@ CASL（`@casl/ability`）只用于 Customer 的字段/属性规则，不是全�
 
 ## 与会话的关系
 
-- Access Token：Bearer，全局 JWT Guard 校验
+- Access Token：Bearer，全局 JWT Guard 校验；前端只放内存，刷新页用 `rt` 重签
 - Refresh Token：httpOnly cookie `rt`（双 token 登录路径）
 - 强制下线 / kick：撤销会话 + WS 通知
 - SSO：`SSO_COUNT` 限制同用户最大会话数

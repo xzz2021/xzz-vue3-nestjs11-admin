@@ -1,5 +1,6 @@
 import { useUserStoreWithOut } from '@/store/modules/user'
 import axios, { type InternalAxiosRequestConfig } from 'axios'
+import { canAttemptTokenRefresh } from './auth-refresh'
 
 type RefreshResponse = {
   data?: {
@@ -25,7 +26,7 @@ const requestNewToken = async (): Promise<string> => {
   return token
 }
 
-const refreshToken = (): Promise<string> => {
+export const refreshToken = (): Promise<string> => {
   if (!refreshPromise) {
     refreshPromise = requestNewToken().finally(() => {
       refreshPromise = null
@@ -53,7 +54,15 @@ export const refreshExpiredToken = async (
   const userStore = useUserStoreWithOut()
   const currentToken = userStore.getToken
 
-  if ((status !== 401 && status !== 406) || !config || config._retry || !currentToken) {
+  if (
+    !config ||
+    !canAttemptTokenRefresh({
+      status,
+      url: String(config.url || ''),
+      alreadyRetried: Boolean(config._retry),
+      hasAccessToken: Boolean(currentToken)
+    })
+  ) {
     return null
   }
 
@@ -62,7 +71,7 @@ export const refreshExpiredToken = async (
   const requestToken = String(config.headers.get(headerKey) || '')
 
   // 其他并发请求可能已经刷新成功，直接用最新 Token 重试即可。
-  if (requestToken !== `Bearer ${currentToken}`) {
+  if (currentToken && requestToken !== `Bearer ${currentToken}`) {
     return applyAuthHeader(config, currentToken)
   }
 
@@ -73,7 +82,9 @@ export const refreshExpiredToken = async (
   } catch (error: unknown) {
     // 仅鉴权失败才登出；503/500 等基础设施故障保留登录态，避免误提示「登录过期」
     if (axios.isAxiosError(error) && error.response?.status === 401) {
-      userStore.logout()
+      if (currentToken) {
+        userStore.logout()
+      }
     } else {
       config._refreshInfraError = true
     }

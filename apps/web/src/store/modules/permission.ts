@@ -90,21 +90,7 @@ export const usePermissionStore = defineStore('permission', {
       this.menuTabRouters = []
       this.isAddRouters = false
     }
-  },
-  persist: [
-    {
-      pick: ['routers'],
-      storage: localStorage
-    },
-    {
-      pick: ['addRouters'],
-      storage: localStorage
-    },
-    {
-      pick: ['menuTabRouters'],
-      storage: localStorage
-    }
-  ]
+  }
 })
 
 export const usePermissionStoreWithOut = () => {

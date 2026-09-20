@@ -50,8 +50,8 @@ src/
 
 | Store                                 | 用途                                              |
 | ------------------------------------- | ------------------------------------------------- |
-| user                                  | 用户信息、access token、roleRouters、登出         |
-| permission                            | 动态路由生成                                      |
+| user                                  | 用户信息、内存中的 access token、roleRouters、登出；token/userInfo 不写 localStorage |
+| permission                            | 动态路由生成（不持久化，刷新后按会话重建）       |
 | app                                   | 布局主题、`dynamicRouter` / `serverDynamicRouter` |
 | role / department / dictionary        | 对应业务列表状态                                  |
 | message / onlinePresence              | 消息未读、presence WS                             |
@@ -64,7 +64,7 @@ src/
 - `baseURL = import.meta.env.VITE_API_BASE_PATH`（开发 `api/`，生产 `/api/`）
 - 开发代理：Vite `/api` → `http://127.0.0.1:3000`，rewrite 去掉 `/api`
 - 业务成功码：`code === 200`
-- 401/406：调用 `POST /auth/refresh`（cookie 携带 refresh），刷新 access 后重试
+- 401/406：调用 `POST /auth/refresh`（cookie 携带 refresh），刷新 access 后重试；无内存 access 时也会尝试（页面刷新后的会话恢复）。登录/注册/验证码失败不会走 refresh。
 
 登录主路径：`auth/rt/login`（双 token，refresh 存 httpOnly cookie `rt`）。
 

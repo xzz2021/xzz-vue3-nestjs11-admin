@@ -41,7 +41,8 @@
 
 - 登录：`apps/web/src/api/login` → `auth/rt/login`
 - Refresh：`apps/web/src/axios/auth.ts`
-- Token 存 Pinia persist；RT 依赖浏览器 cookie（`withCredentials: true`）
+- Access token 只放 Pinia 内存，刷新页用 httpOnly cookie `rt` 换新 access 并重拉 userInfo / 菜单
+- 记住我只持久化手机号等登录标识，不含 token / userInfo / 密码
 - `loginOutApi`：`POST /auth/logout`，`withCredentials: true`；UI 确认登出时先调后端再清本地动态路由
 - 登录页短信/微信入口会请求不存在的后端路由
 
