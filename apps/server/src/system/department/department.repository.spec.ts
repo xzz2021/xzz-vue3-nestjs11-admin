@@ -3,7 +3,7 @@ import { DepartmentRepository } from "./department.repository.js";
 
 describe("DepartmentRepository", () => {
   it("loads an enabled subtree and excludes disabled departments", async () => {
-    const queryRaw = jest
+    const queryRaw = vi
       .fn()
       .mockResolvedValue([{ id: "root" }, { id: "child" }]);
     const repository = new DepartmentRepository({ $queryRaw: queryRaw });

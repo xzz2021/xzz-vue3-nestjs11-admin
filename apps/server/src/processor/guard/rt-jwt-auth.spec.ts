@@ -32,7 +32,7 @@ describe("RtJwtAuthGuard", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     vi.clearAllMocks();
-    jest
+    vi
       .spyOn(AuthGuard("jwt").prototype, "canActivate")
       .mockResolvedValue(true);
   });
@@ -68,7 +68,7 @@ describe("RtJwtAuthGuard", () => {
   });
 
   it("does not skip JWT for /public/ URLs without @Public()", async () => {
-    const jwtSpy = jest
+    const jwtSpy = vi
       .spyOn(AuthGuard("jwt").prototype, "canActivate")
       .mockResolvedValue(false);
     const guard = new RtJwtAuthGuard(
@@ -87,7 +87,7 @@ describe("RtJwtAuthGuard", () => {
     const reflector = {
       getAllAndOverride: () => true,
     } as unknown as Reflector;
-    const jwtSpy = jest
+    const jwtSpy = vi
       .spyOn(AuthGuard("jwt").prototype, "canActivate")
       .mockResolvedValue(false);
     const guard = new RtJwtAuthGuard(reflector, tokenService, rtTokenService);

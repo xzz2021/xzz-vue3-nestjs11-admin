@@ -25,7 +25,7 @@ describe("JwtRefreshAuthGuard", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     vi.clearAllMocks();
-    jest
+    vi
       .spyOn(AuthGuard("jwt-refresh").prototype, "canActivate")
       .mockResolvedValue(true);
   });
@@ -62,7 +62,7 @@ describe("JwtRefreshAuthGuard", () => {
   });
 
   it("does not skip refresh JWT for /public/ URLs", async () => {
-    const jwtSpy = jest
+    const jwtSpy = vi
       .spyOn(AuthGuard("jwt-refresh").prototype, "canActivate")
       .mockResolvedValue(false);
     const guard = new JwtRefreshAuthGuard(rtTokenService);

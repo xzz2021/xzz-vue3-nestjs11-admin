@@ -28,7 +28,7 @@ describe("TokenGuard", () => {
   });
 
   it("does not skip token auth for /public/ URLs without @Public()", async () => {
-    const jwtSpy = jest
+    const jwtSpy = vi
       .spyOn(AuthGuard("token").prototype, "canActivate")
       .mockResolvedValue(false);
     const guard = new TokenGuard(new Reflector(), tokenService);

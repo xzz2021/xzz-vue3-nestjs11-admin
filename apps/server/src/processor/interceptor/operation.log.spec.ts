@@ -40,7 +40,7 @@ describe("OperationLogInterceptor", () => {
           method: "POST",
           url: "/user",
           ip: "127.0.0.1",
-          headers: { "user-agent": "jest" },
+          headers: { "user-agent": "vitest" },
           user: { id: "user-1", username: "alice", phone: "13800000000" },
         }),
       }),
