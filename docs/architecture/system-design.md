@@ -125,7 +125,7 @@ Controller（HTTP / 权限装饰器）
 - 新增权限：菜单管理维护 Permission，角色分配后生效（含 Redis 缓存版本号）
 - 新增前端页：`apps/web/src/views/` 落地组件，由服务端菜单 `component` 字段映射
 - Schema 有 `Notice` 表，**当前无对应业务 Controller**
-- `AuditLog` 由 `AuditLogService` 写入，列表接口 `GET /log/getAuditLogList`（权限 `auditLog:view`，无删除）
+- `AuditLog` 由 `AuditLogService` 写入，列表接口 `GET /log/getAuditLogList`（权限 `auditLog:view`，无删除；`category=login|operation` 筛登录/业务操作）
 
 扩展步骤见 [extension-guide](../development/extension-guide.md)。
 

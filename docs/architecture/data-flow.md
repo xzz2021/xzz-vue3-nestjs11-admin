@@ -81,4 +81,4 @@ flowchart LR
 - 访问日志：`OperationLogInterceptor` 记录 HTTP 请求到 `UserOperationLog`（可查可删）
 - 操作日志：业务 Service 成功后调用 `AuditLogService.record()` 写入 `AuditLog`（可查不可删）
 - 写 IP 时尝试离线解析城市级地理位置并写入 `location`（内网为「内网IP」）。`ip2region-ts` 当前未列入依赖，解析失败会退回「未知」
-- 查询：`/log/getUserOperationLogList`、`/log/getAuditLogList`；删除仅访问日志 `/log/deleteUserOperationLog`
+- 查询：`/log/getUserOperationLogList`、`/log/getAuditLogList`（`category=login` 为登录日志）；删除仅访问日志 `/log/deleteUserOperationLog`

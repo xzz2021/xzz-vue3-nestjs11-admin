@@ -43,7 +43,7 @@ src/
 | Authorization/                      | Department、User、Menu、Role、Dictionary                                      |
 | Customer/                           | 客户数据权限 Demo                                                             |
 | Dashboard/                          | Analysis、Workplace（接口为本地 mock）                                        |
-| System/                             | File、Oss、Message、Notification、OnlineUser、Server、UserLog、AuditLog、DatabaseBackup |
+| System/                             | File、Oss、Message、Notification、OnlineUser、Server、UserLog、AuditLog、LoginLog、DatabaseBackup |
 | Login / Personal / Error / Redirect | 登录、个人中心、错误页                                                        |
 
 ## Pinia Stores

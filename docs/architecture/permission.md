@@ -66,7 +66,7 @@ CASL（`@casl/ability`）只用于 Customer 的字段/属性规则，不是全�
 | `notification:send`                                                                 | 发送站内信 / 系统通知                       |
 | `databaseBackup:view` / `update` / `run` / `download` / `delete`                    | DbBackupController                          |
 | `userLog:view` / `delete`                                                           | LoggerController（访问日志）                |
-| `auditLog:view`                                                                     | LoggerController（操作日志，无删除）        |
+| `auditLog:view`                                                                     | LoggerController（操作日志 / 登录日志，无删除；`category=login` 筛登录类动作） |
 
 消息收件箱（list / 已读 / 删除）以及 `GET /message/receivers` 当前只需登录，没有 `notification:send`。
 

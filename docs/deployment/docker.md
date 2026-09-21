@@ -24,11 +24,10 @@
 
 ### 当前与代码不一致的地方（部署前需处理）
 
-1. Server 健康检查访问 `GET /health`，应用只有受 JWT 保护的 `GET /`，容器会一直 unhealthy，`admin` 因 `service_healthy` 起不来。
-2. `apps/web/Dockerfile` 仍 `COPY packages packages/`，仓库没有 `packages/`，构建会失败。
-3. Server runner `CMD` 为 `node dist/main.js`，`start:prod` 与 `tsconfig.build.json` 的 `rootDir` 指向 `dist/main.js`，入口路径需要以实际 `nest build` 产物为准。
-4. 根目录没有 `.env.example`，也没有 `scripts/generate-production-env.mjs`；`compose.yml` 又要求根 `.env` 提供全部必填插值。
-5. Server 只挂载 `public`、`backups`，**没有** logs bind mount。
+1. `apps/web/Dockerfile` 仍 `COPY packages packages/`，仓库没有 `packages/`，构建会失败。
+2. Server runner `CMD` 为 `node dist/main.js`，`start:prod` 与 `tsconfig.build.json` 的 `rootDir` 指向 `dist/main.js`，入口路径需要以实际 `nest build` 产物为准。
+3. 根目录没有 `.env.example`，也没有 `scripts/generate-production-env.mjs`；`compose.yml` 又要求根 `.env` 提供全部必填插值。
+4. Server 只挂载 `public`、`backups`，**没有** logs bind mount。
 
 ## Dockerfile 要点
 

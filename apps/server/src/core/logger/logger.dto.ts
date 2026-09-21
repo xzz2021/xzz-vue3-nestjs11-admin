@@ -111,6 +111,13 @@ const QueryAuditLogParamsSchema = z.object({
     description: '业务是否成功',
     example: true,
   }),
+  category: z.preprocess((val: unknown) => {
+    if (val === undefined || val === '') return undefined;
+    return val;
+  }, z.enum(['login', 'operation']).optional()).meta({
+    description: '日志分类：login 登录相关，operation 业务操作',
+    example: 'login',
+  }),
   dateRange: dateRangeSchema.meta({ description: '日期范围' }),
 });
 export class QueryAuditLogParams extends createZodDto(

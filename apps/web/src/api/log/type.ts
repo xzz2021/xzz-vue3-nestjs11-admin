@@ -54,5 +54,6 @@ export interface AuditLogListParams {
   resource?: string
   resourceId?: string
   success?: boolean
+  category?: 'login' | 'operation'
   dateRange?: string
 }

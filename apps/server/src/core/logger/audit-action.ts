@@ -1,3 +1,5 @@
+export const LOGIN_AUDIT_ACTION_PREFIX = "auth.";
+
 export const AuditAction = {
   AUTH_LOGIN: "auth.login",
   AUTH_LOGIN_FAILED: "auth.login_failed",

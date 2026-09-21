@@ -8,7 +8,26 @@ import {
   sanitizeAuditMetadata,
   type AuditRecordInput,
 } from './audit-log.sanitize.js';
+import { LOGIN_AUDIT_ACTION_PREFIX } from './audit-action.js';
 import { QueryAuditLogParams } from './logger.dto.js';
+
+function buildActionWhere(
+  action?: string,
+  category?: 'login' | 'operation',
+): Prisma.StringFilter | string | undefined {
+  if (!action && !category) return undefined;
+  if (action && !category) return action;
+
+  const filter: Prisma.StringFilter = {};
+  if (category === 'login') {
+    filter.startsWith = LOGIN_AUDIT_ACTION_PREFIX;
+  }
+  if (category === 'operation') {
+    filter.not = { startsWith: LOGIN_AUDIT_ACTION_PREFIX };
+  }
+  if (action) filter.equals = action;
+  return filter;
+}
 
 @Injectable()
 export class AuditLogService {
@@ -54,13 +73,15 @@ export class AuditLogService {
       resource,
       resourceId,
       success,
+      category,
       dateRange,
     } = searchParam;
     const skip = (pageIndex - 1) * pageSize;
     const take = pageSize;
     const where: Prisma.AuditLogWhereInput = {};
 
-    if (action) where.action = action;
+    const actionWhere = buildActionWhere(action, category);
+    if (actionWhere) where.action = actionWhere;
     if (resource) where.resource = resource;
     if (resourceId) where.resourceId = resourceId;
     if (success !== undefined) where.success = success;

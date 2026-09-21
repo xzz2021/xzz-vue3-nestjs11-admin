@@ -48,7 +48,7 @@ CI 会跑 `pnpm test`。
 
 ## 生产 Compose 起不来
 
-常见原因见 [docker.md](../deployment/docker.md)「当前与代码不一致的地方」：健康检查 `/health`、web 镜像 `COPY packages`、server 入口路径、根 `.env` 缺失。
+常见原因见 [docker.md](../deployment/docker.md)「当前与代码不一致的地方」：web 镜像 `COPY packages`、server 入口路径、根 `.env` 缺失。
 
 ## 地理位置一直是「未知」
 

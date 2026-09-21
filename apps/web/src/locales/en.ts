@@ -205,6 +205,7 @@ export default {
     fileManagement: 'File',
     userLog: 'Access log',
     auditLog: 'Operate log',
+    loginLog: 'Login log',
     message: 'My messages',
     notification: 'Message notification',
     // 权限测试页面
@@ -858,6 +859,9 @@ export default {
   auditLog: {
     operator: 'Operator',
     action: 'Action',
+    category: 'Log type',
+    categoryLogin: 'Login log',
+    categoryOperation: 'Operation log',
     resource: 'Resource',
     resourceId: 'Resource ID',
     result: 'Result',

@@ -204,6 +204,7 @@ export default {
     fileManagement: '文件管理',
     userLog: '访问日志',
     auditLog: '操作日志',
+    loginLog: '登录日志',
     message: '我的消息',
     notification: '消息通知',
 
@@ -852,6 +853,9 @@ export default {
   auditLog: {
     operator: '操作人',
     action: '操作',
+    category: '日志类型',
+    categoryLogin: '登录日志',
+    categoryOperation: '操作日志',
     resource: '资源',
     resourceId: '资源 ID',
     result: '结果',
