@@ -1,5 +1,5 @@
-import { DataScope } from "#/prisma/generated/prisma/enums.js";
-import type { PgService } from "#/prisma/pg.service.js";
+import { DataScope } from "#/generated/prisma/enums.js";
+import type { PgService } from "#/infrastructure/database/prisma/pg.service.js";
 import { RoleRepository } from "./role.repository.js";
 
 describe("RoleRepository permission synchronization", () => {
@@ -61,7 +61,7 @@ describe("RoleRepository permission synchronization", () => {
           departmentIds: [],
         },
       ],
-      tx,
+      tx as any,
     );
 
     expect(create).not.toHaveBeenCalled();
@@ -91,7 +91,7 @@ describe("RoleRepository permission synchronization", () => {
       },
     ]);
 
-    await repository.syncRolePermissions("role-1", [], tx);
+    await repository.syncRolePermissions("role-1", [], tx as any);
 
     expect(deleteMany).toHaveBeenCalledWith({
       where: { id: { in: ["legacy_rp_removed"] } },
@@ -138,7 +138,7 @@ describe("RoleRepository permission synchronization", () => {
           departmentIds: ["dept-a", "dept-b"],
         },
       ],
-      tx,
+      tx as any,
     );
 
     expect(create).not.toHaveBeenCalled();
@@ -178,7 +178,7 @@ describe("RoleRepository permission synchronization", () => {
 describe("RoleRepository authorization tree ordering", () => {
   it("orders menus and permissions by sort then id for stable echo", async () => {
     const findMany = vi.fn().mockResolvedValue([]);
-    const repository = new RoleRepository({ menu: { findMany } });
+    const repository = new RoleRepository({ menu: { findMany } } as any);
 
     await repository.findEnabledMenusWithPermissions();
 

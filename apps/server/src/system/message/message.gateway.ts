@@ -187,7 +187,7 @@ export class MessageGateway
     const set = this.sockets.get(payload.userId);
     if (!set?.size) return;
     const packet = JSON.stringify({ event: 'message', data: payload });
-    for (const socket of [...set]) {
+    for (const socket of set) {
       try {
         if (socket.readyState === WebSocket.OPEN) {
           socket.send(packet);

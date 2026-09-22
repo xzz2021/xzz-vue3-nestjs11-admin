@@ -1,4 +1,4 @@
-import { Prisma } from "#/prisma/generated/prisma/client.js";
+import { Prisma } from "#/generated/prisma/client.js";
 import type { FileCleanupService } from "#/system/file-cleanup/file-cleanup.service.js";
 import { BadRequestException, NotFoundException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";

@@ -5,7 +5,6 @@ import { AuditLogService } from './audit-log.service.js';
 import { LoggerController } from './logger.controller.js';
 import { LogService } from './logger.service.js';
 import { createWinstonOptions } from './winston.config.js';
-import { CONFIG_MODULE } from '#/core/config.js';
 
 @Global()
 @Module({

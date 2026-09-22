@@ -13,7 +13,6 @@ import {
   DeleteDepartmentDto,
   DepartmentListResDto,
   DepartmentLookupResDto,
-  DepartmentSeedArrayDto,
   UpdateDepartmentDto,
 } from './dto/department.dto.js';
 

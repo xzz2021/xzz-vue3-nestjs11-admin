@@ -1,4 +1,4 @@
-import { PermissionType } from "#/prisma/generated/prisma/enums.js";
+import { PermissionType } from "#/generated/prisma/enums.js";
 import type { RoleRepository } from "#/system/role/role.repository.js";
 import type { RbacPermissionCacheService } from "#/processor/rbac/index.js";
 import { UpdatePermissionDto } from "./dto/permission.dto.js";

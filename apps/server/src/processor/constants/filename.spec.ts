@@ -1,4 +1,4 @@
-import { DANGEROUS_FILENAME_RE } from "./filename";
+import { DANGEROUS_FILENAME_RE } from "./filename.js";
 
 describe("DANGEROUS_FILENAME_RE", () => {
   it("blocks dangerous extensions including double extensions", () => {

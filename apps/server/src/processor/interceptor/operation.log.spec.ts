@@ -1,7 +1,7 @@
 import { ExecutionContext } from "@nestjs/common";
 import { lastValueFrom, of, throwError } from "rxjs";
-import type { LogService } from "#/core/logger/logger.service";
-import { OperationLogInterceptor } from "./operation.log";
+import type { LogService } from "#/core/logger/logger.service.js";
+import { OperationLogInterceptor } from "./operation.log.js";
 
 describe("OperationLogInterceptor", () => {
   it("skips non-http contexts without reading request headers", async () => {

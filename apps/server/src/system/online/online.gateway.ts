@@ -184,7 +184,7 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
     for (const jti of jtis) {
       const set = this.sockets.get(jti);
       if (!set) continue;
-      for (const socket of [...set]) {
+      for (const socket of set) {
         try {
           socket.send(
             JSON.stringify({ event: "forceLogout", data: { reason } }),

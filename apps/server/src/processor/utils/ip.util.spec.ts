@@ -1,6 +1,6 @@
 import type { IncomingMessage } from "node:http";
 import type { Request } from "express";
-import { formatIpRegion, getIp, lookupIpLocation } from "./ip.util";
+import { formatIpRegion, getIp, lookupIpLocation } from "./ip.util.js";
 
 describe("getIp", () => {
   it("prefers Express req.ip over client-supplied forwarding headers", () => {

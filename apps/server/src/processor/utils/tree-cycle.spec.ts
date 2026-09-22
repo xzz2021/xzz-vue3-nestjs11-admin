@@ -1,5 +1,5 @@
 import { BadRequestException } from "@nestjs/common";
-import { assertAcyclicParent, type ParentLink } from "./tree-cycle";
+import { assertAcyclicParent, type ParentLink } from "./tree-cycle.js";
 
 describe("assertAcyclicParent", () => {
   const links: ParentLink[] = [

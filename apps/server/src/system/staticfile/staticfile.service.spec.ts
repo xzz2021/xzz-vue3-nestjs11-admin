@@ -1,4 +1,3 @@
-import type { PgService } from "#/prisma/pg.service.js";
 import type { FileCleanupService } from "#/system/file-cleanup/file-cleanup.service.js";
 import { FileRepository } from "./file.repository.js";
 import { StaticfileService } from "./staticfile.service.js";
@@ -14,7 +13,7 @@ describe("StaticfileService", () => {
   const service = new StaticfileService(
     new FileRepository({
       file: { findMany, count, create, updateMany, deleteMany },
-    }),
+    } as any),
     { enqueue } as unknown as FileCleanupService,
   );
 

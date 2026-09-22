@@ -1,10 +1,10 @@
-import { SKIP_WRAP_KEY } from "#/processor/decorator/skip-wrap";
+import { SKIP_WRAP_KEY } from "#/processor/decorator/skip-wrap.js";
 import { StreamableFile } from "@nestjs/common";
 import type { CallHandler, ExecutionContext } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { of } from "rxjs";
 import { lastValueFrom } from "rxjs";
-import { TransformInterceptor } from "./transform";
+import { TransformInterceptor } from "./transform.js";
 
 describe("TransformInterceptor", () => {
   const interceptor = new TransformInterceptor(new Reflector());

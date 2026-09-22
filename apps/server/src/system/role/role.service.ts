@@ -9,7 +9,6 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   CreateRoleDto,
   QueryRoleParams,
-  RoleSeedDto,
   UpdateRoleDto,
 } from './dto/role.dto.js';
 import { RolePermissionSyncInput, RoleRepository } from './role.repository.js';

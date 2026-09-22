@@ -1,4 +1,4 @@
-import { httpCorsOptions, parseCorsOrigins, wsCorsOptions } from "./cors.util";
+import { httpCorsOptions, parseCorsOrigins, wsCorsOptions } from "./cors.util.js";
 
 describe("parseCorsOrigins", () => {
   it("returns empty when unset or blank", () => {

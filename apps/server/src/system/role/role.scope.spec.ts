@@ -1,4 +1,4 @@
-import { DataScope } from "#/prisma/generated/prisma/enums.js";
+import { DataScope } from "#/generated/prisma/enums.js";
 import { BadRequestException } from "@nestjs/common";
 import type { RoleRepository } from "./role.repository.js";
 import { RoleService } from "./role.service.js";

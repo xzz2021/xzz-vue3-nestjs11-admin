@@ -16,7 +16,7 @@ describe("MenuService tree updates", () => {
   );
 
   const service = new MenuService(
-    new MenuRepository({ $transaction: transaction }),
+    new MenuRepository({ $transaction: transaction } as any),
     {
       record: vi.fn(),
     } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,
@@ -108,7 +108,7 @@ describe("MenuService delete rules", () => {
     new MenuRepository({
       $transaction: transaction,
       menu: { findUnique, count, delete: remove },
-    }),
+    } as any),
     {
       record: vi.fn(),
     } as unknown as import("#/core/logger/audit-log.service.js").AuditLogService,

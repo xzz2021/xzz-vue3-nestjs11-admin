@@ -179,13 +179,13 @@ export const getStyle =
             case 'opacity':
               try {
                 return element.filters.item('alpha').opacity / 100
-              } catch (e) {
+              } catch {
                 return 1.0
               }
             default:
               return element.style[styleName] || element.currentStyle ? element.currentStyle[styleName] : null
           }
-        } catch (e) {
+        } catch {
           return element.style[styleName]
         }
       }
@@ -199,7 +199,7 @@ export const getStyle =
         try {
           const computed = (document as any).defaultView.getComputedStyle(element, '')
           return element.style[styleName] || computed ? computed[styleName] : null
-        } catch (e) {
+        } catch {
           return element.style[styleName]
         }
       }

@@ -1,4 +1,4 @@
-import { DataScope } from "#/prisma/generated/prisma/enums.js";
+import { DataScope } from "#/generated/prisma/enums.js";
 import { CreateRoleDto } from "./role.dto.js";
 
 describe("CreateRoleDto permission scopes", () => {

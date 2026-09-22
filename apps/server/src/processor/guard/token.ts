@@ -53,7 +53,7 @@ export class TokenGuard extends AuthGuard('token') {
    * 自动挂载任意新数据到  @Request 上
    * 主动失效token  直接抛出异常
    */
-  handleRequest(err: any, user: any, info: any, context: ExecutionContext) {
+  handleRequest(err: any, user: any, _info: any, _context: ExecutionContext) {
     if (err || !user) {
       throw err || new UnauthorizedException('Token 无效或未提供');
     }

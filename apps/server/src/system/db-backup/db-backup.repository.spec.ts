@@ -1,8 +1,7 @@
-import { BackupStatus, BackupTrigger } from "#/prisma/generated/prisma/client.js";
-import type { PgService } from "#/prisma/pg.service.js";
-import { DbBackupRepository } from "./db-backup.repository.js";
+import { BackupStatus, BackupTrigger } from '#/generated/prisma/client.js';
+import { DbBackupRepository } from './db-backup.repository.js';
 
-describe("DbBackupRepository", () => {
+describe('DbBackupRepository', () => {
   const db = {
     dbBackupConfig: {
       upsert: vi.fn(),
@@ -21,7 +20,7 @@ describe("DbBackupRepository", () => {
     $transaction: vi.fn(),
   };
 
-  const repo = () => new DbBackupRepository(db);
+  const repo = () => new DbBackupRepository(db as any);
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -32,17 +31,17 @@ describe("DbBackupRepository", () => {
     db.dbBackupConfig.update.mockResolvedValue({});
   });
 
-  it("writes job success and config last-run in one transaction", async () => {
-    const finishedAt = new Date("2026-01-01T12:01:00.000Z");
-    const startedAt = new Date("2026-01-01T12:00:00.000Z");
+  it('writes job success and config last-run in one transaction', async () => {
+    const finishedAt = new Date('2026-01-01T12:01:00.000Z');
+    const startedAt = new Date('2026-01-01T12:00:00.000Z');
 
     await repo().finishSuccess(
-      "job-1",
+      'job-1',
       {
-        fileName: "a.sql.gz",
-        filePath: "/backups/a.sql.gz",
+        fileName: 'a.sql.gz',
+        filePath: '/backups/a.sql.gz',
         fileSize: 10n,
-        checksum: "abc",
+        checksum: 'abc',
         startedAt,
         finishedAt,
       },
@@ -51,16 +50,16 @@ describe("DbBackupRepository", () => {
 
     expect(db.$transaction).toHaveBeenCalledTimes(1);
     expect(db.dbBackupJob.update).toHaveBeenCalledWith({
-      where: { id: "job-1" },
+      where: { id: 'job-1' },
       data: expect.objectContaining({
         status: BackupStatus.SUCCESS,
-        fileName: "a.sql.gz",
+        fileName: 'a.sql.gz',
         durationMs: 1000,
         errorMessage: null,
       }),
     });
     expect(db.dbBackupConfig.update).toHaveBeenCalledWith({
-      where: { id: "default" },
+      where: { id: 'default' },
       data: {
         lastRunAt: finishedAt,
         lastStatus: BackupStatus.SUCCESS,
@@ -69,36 +68,36 @@ describe("DbBackupRepository", () => {
     });
   });
 
-  it("writes job failure and config last-run in one transaction", async () => {
-    const startedAt = new Date("2026-01-01T12:00:00.000Z");
+  it('writes job failure and config last-run in one transaction', async () => {
+    const startedAt = new Date('2026-01-01T12:00:00.000Z');
 
-    await repo().finishFailure("job-1", startedAt, "pg_dump failed");
+    await repo().finishFailure('job-1', startedAt, 'pg_dump failed');
 
     expect(db.$transaction).toHaveBeenCalledTimes(1);
     expect(db.dbBackupJob.update).toHaveBeenCalledWith({
-      where: { id: "job-1" },
+      where: { id: 'job-1' },
       data: expect.objectContaining({
         status: BackupStatus.FAILED,
-        errorMessage: "pg_dump failed",
+        errorMessage: 'pg_dump failed',
       }),
     });
     expect(db.dbBackupConfig.update).toHaveBeenCalledWith({
-      where: { id: "default" },
+      where: { id: 'default' },
       data: expect.objectContaining({
         lastStatus: BackupStatus.FAILED,
-        lastError: "pg_dump failed",
+        lastError: 'pg_dump failed',
       }),
     });
   });
 
-  it("creates a running job with pending file placeholders", async () => {
-    db.dbBackupJob.create.mockResolvedValue({ id: "job-1" });
+  it('creates a running job with pending file placeholders', async () => {
+    db.dbBackupJob.create.mockResolvedValue({ id: 'job-1' });
     const startedAt = new Date();
 
     await repo().createRunningJob({
       trigger: BackupTrigger.MANUAL,
-      filePath: "/backups/pending",
-      createdById: "user-1",
+      filePath: '/backups/pending',
+      createdById: 'user-1',
       startedAt,
     });
 
@@ -106,15 +105,15 @@ describe("DbBackupRepository", () => {
       data: {
         trigger: BackupTrigger.MANUAL,
         status: BackupStatus.RUNNING,
-        fileName: "pending",
-        filePath: "/backups/pending",
-        createdById: "user-1",
+        fileName: 'pending',
+        filePath: '/backups/pending',
+        createdById: 'user-1',
         startedAt,
       },
     });
   });
 
-  it("does not issue an empty expired update", async () => {
+  it('does not issue an empty expired update', async () => {
     await repo().markJobsExpired([]);
     expect(db.dbBackupJob.updateMany).not.toHaveBeenCalled();
   });

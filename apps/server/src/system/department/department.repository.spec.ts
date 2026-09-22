@@ -1,4 +1,4 @@
-import type { PgService } from "#/prisma/pg.service.js";
+import type { PgService } from "#/infrastructure/database/prisma/pg.service.js";
 import { DepartmentRepository } from "./department.repository.js";
 
 describe("DepartmentRepository", () => {
@@ -6,7 +6,7 @@ describe("DepartmentRepository", () => {
     const queryRaw = vi
       .fn()
       .mockResolvedValue([{ id: "root" }, { id: "child" }]);
-    const repository = new DepartmentRepository({ $queryRaw: queryRaw });
+    const repository = new DepartmentRepository({ $queryRaw: queryRaw } as any);
 
     await expect(repository.findSubtreeDepartmentIds("root")).resolves.toEqual([
       "root",

@@ -1,6 +1,7 @@
 import { IS_AUTHENTICATED_KEY, IS_PUBLIC_KEY, PERMISSION_KEY } from "#/processor/decorator/index.js";
 import { AuthController } from "./auth.controller.js";
 import type { AuthService } from "./auth.service.js";
+import type { LoginInfoDto } from "./dto/auth.dto.js";
 import type { CookieCommand } from "./http-cookie.js";
 
 vi.mock("./auth.service", () => ({
@@ -98,7 +99,7 @@ describe("AuthController cookie adapter", () => {
     } as unknown as AuthService);
 
     const result = await controller.rtLogin(
-      {},
+      {} as LoginInfoDto,
       { ip: "127.0.0.1" } as never,
       res as never,
     );

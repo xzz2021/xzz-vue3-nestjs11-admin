@@ -4,6 +4,7 @@ import { RedisService } from "@liaoliaots/nestjs-redis";
 import { BadRequestException, ForbiddenException } from "@nestjs/common";
 import type { ConfigService } from "@nestjs/config";
 import type { JwtService } from "@nestjs/jwt";
+import type { Mock } from "vitest";
 import { AuthService } from "./auth.service.js";
 import type { LockoutService } from "./lockout.service.js";
 import type { RtTokenService } from "./rt.token.service.js";
@@ -67,7 +68,7 @@ describe("AuthService rtLogin lockout", () => {
       cookie: { action: "set", name: "rt", value: "refresh", options: {} },
     });
     record.mockResolvedValue(undefined);
-    (verifyPayPassword as vi.Mock).mockResolvedValue(true);
+    (verifyPayPassword as Mock).mockResolvedValue(true);
   });
 
   it("blocks login before credential lookup when the account is locked", async () => {
@@ -103,7 +104,7 @@ describe("AuthService rtLogin lockout", () => {
 
   it("records a failure for a wrong password with the same credential error", async () => {
     findEnabledByPhoneForLogin.mockResolvedValue(user);
-    (verifyPayPassword as vi.Mock).mockResolvedValue(false);
+    (verifyPayPassword as Mock).mockResolvedValue(false);
 
     await expect(createService().rtLogin(loginInfo, ip)).rejects.toThrow(
       "账号或密码错误",

@@ -2,7 +2,7 @@ import {
   DataScope,
   MenuType,
   PermissionType,
-} from "#/prisma/generated/prisma/enums.js";
+} from "#/generated/prisma/enums.js";
 import { RoleAuthorizationTreeRes } from "./role.dto.js";
 
 describe("RoleAuthorizationTreeRes", () => {

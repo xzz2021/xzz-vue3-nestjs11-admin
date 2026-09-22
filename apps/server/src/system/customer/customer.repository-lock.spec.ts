@@ -1,5 +1,5 @@
-import type { Prisma } from "#/prisma/generated/prisma/client.js";
-import type { PgService } from "#/prisma/pg.service.js";
+import type { Prisma } from "#/generated/prisma/client.js";
+import type { PgService } from "#/infrastructure/database/prisma/pg.service.js";
 import { CustomerRepository } from "./customer.repository.js";
 
 interface SqlQuery {

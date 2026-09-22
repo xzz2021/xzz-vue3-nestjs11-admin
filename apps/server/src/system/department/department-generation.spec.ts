@@ -1,5 +1,5 @@
 import type { AuditLogService } from "#/core/logger/audit-log.service.js";
-import { Prisma } from "#/prisma/generated/prisma/client.js";
+import { Prisma } from "#/generated/prisma/client.js";
 import { OrganizationGenerationUnavailableException } from "#/processor/authorization/authorization.errors.js";
 import type { OrganizationGenerationService } from "#/processor/authorization/organization-generation.service.js";
 import type { DepartmentRepository } from "./department.repository.js";

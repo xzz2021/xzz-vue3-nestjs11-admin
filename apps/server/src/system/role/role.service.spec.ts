@@ -29,7 +29,7 @@ describe("RoleService queries", () => {
       menu: { findMany: menuFindMany },
       roleMenu: { findMany: roleMenuFindMany },
       rolePermission: { findMany: rolePermissionFindMany },
-    }),
+    } as any),
     {} as unknown as RbacPermissionCacheService,
     {
       record: vi.fn(),

@@ -1,5 +1,5 @@
 import { ArgumentsHost, HttpException, HttpStatus } from "@nestjs/common";
-import { AllExceptionsFilter } from "./all-exceptions.filter";
+import { AllExceptionsFilter } from "./all-exceptions.filter.js";
 
 function createHost(url = "/user", method = "POST") {
   const json = vi.fn();

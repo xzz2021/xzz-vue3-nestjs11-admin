@@ -1,233 +1,233 @@
-import { ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus';
 // import * as XLSX from 'xlsx'
-import { AudioTypes, DocTypes, FileIcon, ImageTypes, VideoTypes, ZipTypes } from '@/constants/file'
+import { AudioTypes, DocTypes, FileIcon, ImageTypes, VideoTypes, ZipTypes } from '@/constants/file';
 
 /** 将后端静态资源路径转为可访问 URL */
 export const resolveStaticUrl = (url?: string) => {
-  if (!url) return ''
-  if (/^(https?:|data:)/.test(url)) return url
-  return url.startsWith('/') ? url : `/${url}`
-}
+  if (!url) return '';
+  if (/^(https?:|data:)/.test(url)) return url;
+  return url.startsWith('/') ? url : `/${url}`;
+};
 
 /** 头像 URL 追加版本参数，避免同路径覆盖后浏览器仍显示旧缓存 */
 export const resolveAvatarUrl = (url?: string, version?: number | string) => {
-  const resolved = resolveStaticUrl(url)
-  if (!resolved) return ''
-  if (version === undefined || version === '') return resolved
-  const separator = resolved.includes('?') ? '&' : '?'
-  return `${resolved}${separator}v=${version}`
-}
+  const resolved = resolveStaticUrl(url);
+  if (!resolved) return '';
+  if (version === undefined || version === '') return resolved;
+  const separator = resolved.includes('?') ? '&' : '?';
+  return `${resolved}${separator}v=${version}`;
+};
 
 export const formatFileSize = (size: number) => {
-  let formatSize = ''
+  let formatSize = '';
   if (size > 1024 * 1024 * 1024) {
-    formatSize = `${(size / 1024 / 1024 / 1024).toFixed(2)} GB`
+    formatSize = `${(size / 1024 / 1024 / 1024).toFixed(2)} GB`;
   } else if (size > 1024 * 1024) {
-    formatSize = `${(size / 1024 / 1024).toFixed(2)} MB`
+    formatSize = `${(size / 1024 / 1024).toFixed(2)} MB`;
   } else if (size > 1024) {
-    formatSize = `${(size / 1024).toFixed(2)} KB`
+    formatSize = `${(size / 1024).toFixed(2)} KB`;
   } else {
-    formatSize = `${size} B`
+    formatSize = `${size} B`;
   }
-  return formatSize
-}
+  return formatSize;
+};
 
 export function formatBytes(n: number) {
-  if (n < 1024) return `${n} B`
-  const k = 1024
-  const units = ['KB', 'MB', 'GB']
-  let i = -1
+  if (n < 1024) return `${n} B`;
+  const k = 1024;
+  const units = ['KB', 'MB', 'GB'];
+  let i = -1;
   do {
-    n /= k
-    i++
-  } while (n >= k && i < units.length - 1)
-  return `${n.toFixed(2)} ${units[i]}`
+    n /= k;
+    i++;
+  } while (n >= k && i < units.length - 1);
+  return `${n.toFixed(2)} ${units[i]}`;
 }
 
 // 计算文件的sha256（大文件走 Worker 流式哈希）
 export const getFileSha256 = async (file: File) => {
-  const { hashFileSha256 } = await import('./hash-file')
-  return hashFileSha256(file)
-}
+  const { hashFileSha256 } = await import('./hash-file');
+  return hashFileSha256(file);
+};
 
 export const getFileIcon = (extension: string) => {
-  return FileIcon[extension]
-}
+  return FileIcon[extension];
+};
 
-type FileType = 'image' | 'video' | 'doc' | 'other' | 'audio' | 'zip'
+type FileType = 'image' | 'video' | 'doc' | 'other' | 'audio' | 'zip';
 
 export const normalizeExtension = (extension?: string | null) => {
-  return (extension || '').replace(/^\./, '').trim().toLowerCase()
-}
+  return (extension || '').replace(/^\./, '').trim().toLowerCase();
+};
 
 export const isImage = (extension: string) => {
-  return ImageTypes.includes(normalizeExtension(extension))
-}
+  return ImageTypes.includes(normalizeExtension(extension));
+};
 
 export const getFileType = (extension: string): FileType => {
-  const ext = normalizeExtension(extension)
+  const ext = normalizeExtension(extension);
   if (ImageTypes.includes(ext)) {
-    return 'image'
+    return 'image';
   } else if (VideoTypes.includes(ext)) {
-    return 'video'
+    return 'video';
   } else if (DocTypes.includes(ext)) {
-    return 'doc'
+    return 'doc';
   } else if (AudioTypes.includes(ext)) {
-    return 'audio'
+    return 'audio';
   } else if (ZipTypes.includes(ext)) {
-    return 'zip'
+    return 'zip';
   } else {
-    return 'other'
+    return 'other';
   }
-}
+};
 
 export const getFileIcon2 = (extension: string) => {
-  const type = getFileType(extension)
+  const type = getFileType(extension);
   // console.log('xzz2021: type', type)
   switch (type) {
     case 'image':
-      return { icon: 'image', type: 'image' }
+      return { icon: 'image', type: 'image' };
     case 'video':
-      return { icon: 'video', type: 'video' }
+      return { icon: 'video', type: 'video' };
     case 'doc':
-      return { icon: 'file-text', type: 'doc' }
+      return { icon: 'file-text', type: 'doc' };
     case 'audio':
-      return { icon: 'headphones', type: 'audio' }
+      return { icon: 'headphones', type: 'audio' };
     case 'zip':
-      return { icon: 'folder-open', type: 'zip' }
+      return { icon: 'folder-open', type: 'zip' };
     default:
-      return { icon: 'file-text', type: 'other' }
+      return { icon: 'file-text', type: 'other' };
   }
-}
+};
 
 export class FileUnavailableError extends Error {
   constructor(message = '文件已失效或不存在') {
-    super(message)
-    this.name = 'FileUnavailableError'
+    super(message);
+    this.name = 'FileUnavailableError';
   }
 }
 
 const toAbsoluteUrl = (url: string) => {
   try {
-    return new URL(url, window.location.origin)
+    return new URL(url, window.location.origin);
   } catch {
-    throw new FileUnavailableError('无效的文件地址')
+    throw new FileUnavailableError('无效的文件地址');
   }
-}
+};
 
 /** 探测静态文件是否可访问（优先 Range，兼容不支持 HEAD 的静态服务） */
 export async function probeFileAccessible(url: string): Promise<boolean> {
-  if (!url) return false
+  if (!url) return false;
   try {
-    const absoluteUrl = toAbsoluteUrl(url)
+    const absoluteUrl = toAbsoluteUrl(url);
     const rangeRes = await fetch(absoluteUrl.href, {
       method: 'GET',
       headers: { Range: 'bytes=0-0' },
       credentials: 'include'
-    })
+    });
     if (rangeRes.ok || rangeRes.status === 206) {
-      rangeRes.body?.cancel?.()
-      return true
+      rangeRes.body?.cancel?.();
+      return true;
     }
     if (rangeRes.status === 404 || rangeRes.status === 410) {
-      return false
+      return false;
     }
     // 部分静态服务拒绝 Range，再试普通 GET
     const getRes = await fetch(absoluteUrl.href, {
       method: 'GET',
       credentials: 'include'
-    })
-    if (!getRes.ok) return false
-    getRes.body?.cancel?.()
-    return true
+    });
+    if (!getRes.ok) return false;
+    getRes.body?.cancel?.();
+    return true;
   } catch {
-    return false
+    return false;
   }
 }
 
 const triggerBlobDownload = (blob: Blob, fileName: string) => {
-  const link = document.createElement('a')
-  const objectUrl = URL.createObjectURL(blob)
-  link.href = objectUrl
-  link.download = fileName
-  link.style.display = 'none'
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-  URL.revokeObjectURL(objectUrl)
-}
+  const link = document.createElement('a');
+  const objectUrl = URL.createObjectURL(blob);
+  link.href = objectUrl;
+  link.download = fileName;
+  link.style.display = 'none';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(objectUrl);
+};
 
 export async function downloadFile({
   url,
   fileName
 }: {
-  url: string
-  target?: '_self' | '_blank'
-  fileName?: string
+  url: string;
+  target?: '_self' | '_blank';
+  fileName?: string;
 }): Promise<boolean> {
   if (!url) {
-    throw new FileUnavailableError('无效的文件地址')
+    throw new FileUnavailableError('无效的文件地址');
   }
 
-  const absoluteUrl = toAbsoluteUrl(url)
-  const downloadName = fileName || absoluteUrl.pathname.split('/').pop() || 'download'
-  const accessible = await probeFileAccessible(absoluteUrl.href)
+  const absoluteUrl = toAbsoluteUrl(url);
+  const downloadName = fileName || absoluteUrl.pathname.split('/').pop() || 'download';
+  const accessible = await probeFileAccessible(absoluteUrl.href);
   if (!accessible) {
-    throw new FileUnavailableError('文件已失效或不存在')
+    throw new FileUnavailableError('文件已失效或不存在');
   }
 
   // 同源：校验通过后走 <a download>，避免大文件整包进内存
   if (absoluteUrl.origin === window.location.origin || absoluteUrl.protocol === 'data:') {
     if (absoluteUrl.protocol === 'data:') {
-      const response = await fetch(absoluteUrl.href)
-      const blob = await response.blob()
-      triggerBlobDownload(blob, downloadName)
-      return true
+      const response = await fetch(absoluteUrl.href);
+      const blob = await response.blob();
+      triggerBlobDownload(blob, downloadName);
+      return true;
     }
-    const link = document.createElement('a')
-    link.href = absoluteUrl.href
-    link.download = downloadName
-    link.rel = 'noopener'
-    link.style.display = 'none'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    return true
+    const link = document.createElement('a');
+    link.href = absoluteUrl.href;
+    link.download = downloadName;
+    link.rel = 'noopener';
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    return true;
   }
 
   try {
-    const response = await fetch(absoluteUrl.href, { credentials: 'include' })
+    const response = await fetch(absoluteUrl.href, { credentials: 'include' });
     if (!response.ok) {
-      throw new FileUnavailableError('文件已失效或不存在')
+      throw new FileUnavailableError('文件已失效或不存在');
     }
-    const blob = await response.blob()
+    const blob = await response.blob();
     if (!blob.size) {
-      throw new FileUnavailableError('文件已失效或不存在')
+      throw new FileUnavailableError('文件已失效或不存在');
     }
-    const contentType = (response.headers.get('content-type') || '').toLowerCase()
+    const contentType = (response.headers.get('content-type') || '').toLowerCase();
     if (contentType.includes('text/html')) {
-      throw new FileUnavailableError('文件已失效或不存在')
+      throw new FileUnavailableError('文件已失效或不存在');
     }
-    triggerBlobDownload(blob, downloadName)
-    return true
+    triggerBlobDownload(blob, downloadName);
+    return true;
   } catch (error) {
     if (error instanceof FileUnavailableError) {
-      throw error
+      throw error;
     }
-    throw new FileUnavailableError('文件下载失败，可能已失效')
+    throw new FileUnavailableError('文件下载失败，可能已失效');
   }
 }
 
 export const formatDataFn = (data: any[]): any[] => {
   return data.map((item) => {
-    const { id, children, permissions, parentId, meta, ...rest } = item
+    const { id: _id, children, permissions, parentId: _parentId, meta, ...rest } = item;
     if (meta) {
-      delete meta.id
+      delete meta.id;
     }
     if (permissions) {
       permissions.forEach((item: any) => {
-        delete item.id
-      })
+        delete item.id;
+      });
     }
 
     return {
@@ -235,29 +235,29 @@ export const formatDataFn = (data: any[]): any[] => {
       permissions: permissions?.length ? permissions : undefined,
       meta: meta ? meta : undefined,
       children: children?.length ? formatDataFn(children) : undefined
-    }
-  })
-}
+    };
+  });
+};
 
 export const exportSeedData = (data: any[], fileName: string, download = false) => {
   if (!data?.length) {
-    ElMessage.error('数据为空')
-    return
+    ElMessage.error('数据为空');
+    return;
   }
   // const jsonData = formatDataFn(data)
-  const jsonData = JSON.stringify(data, null, 2)
+  const jsonData = JSON.stringify(data, null, 2);
   // 导出下载
   if (download) {
     downloadFile({
       url: 'data:text/json;charset=utf-8,' + encodeURIComponent(jsonData),
       fileName: `${fileName}-seed.json`
-    })
+    });
   } else {
     // 复制到剪贴板
-    navigator.clipboard.writeText(jsonData)
-    ElMessage.success('复制成功')
+    navigator.clipboard.writeText(jsonData);
+    ElMessage.success('复制成功');
   }
-}
+};
 
 // export const exportExcelData = (
 //   dataList: any[],

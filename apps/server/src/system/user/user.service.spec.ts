@@ -1,7 +1,6 @@
 import type { RbacPermissionCacheService } from "#/processor/rbac/index.js";
 import type { SessionRevocationService } from "#/system/auth/session-revocation.service.js";
 import type { FileCleanupService } from "#/system/file-cleanup/file-cleanup.service.js";
-import type { PgService } from "#/prisma/pg.service.js";
 import { UserRepository } from "./user.repository.js";
 import { UserService } from "./user.service.js";
 
@@ -34,7 +33,7 @@ describe("UserService session revocation", () => {
       new UserRepository({
         user: { update: userUpdate, findUnique: userFindUnique },
         $transaction: vi.fn(),
-      }),
+      } as any),
       { invalidateUsers } as unknown as RbacPermissionCacheService,
       { revokeAll } as unknown as SessionRevocationService,
       {
@@ -155,7 +154,7 @@ describe("UserService uploadAvatar", () => {
     new UserService(
       new UserRepository({
         user: { update: userUpdate, findUnique: userFindUnique },
-      }),
+      } as any),
       { invalidateUsers: vi.fn() } as unknown as RbacPermissionCacheService,
       { revokeAll: vi.fn() } as unknown as SessionRevocationService,
       {
@@ -261,7 +260,7 @@ describe("UserService role assignment", () => {
           findUnique: userFindUnique,
         },
         $transaction: transaction,
-      }),
+      } as any),
       { invalidateUsers: vi.fn() } as unknown as RbacPermissionCacheService,
       { revokeAll: vi.fn() } as unknown as SessionRevocationService,
       {
@@ -319,7 +318,7 @@ describe("UserService list queries", () => {
       new UserRepository({
         user: { findMany, count, update: vi.fn(), findUnique: vi.fn() },
         $transaction: vi.fn(),
-      }),
+      } as any),
       { invalidateUsers: vi.fn() } as unknown as RbacPermissionCacheService,
       { revokeAll: vi.fn() } as unknown as SessionRevocationService,
       {

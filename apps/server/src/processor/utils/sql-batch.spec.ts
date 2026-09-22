@@ -1,10 +1,10 @@
-import { Prisma } from "#/prisma/generated/prisma/client";
+import { Prisma } from "#/generated/prisma/client.js";
 import {
   sqlBatchUpdateDictionaryItems,
   sqlBatchUpdateDictionaryTypes,
   sqlBatchUpdateIntById,
   sqlReplaceDescendantPaths,
-} from "./sql-batch";
+} from "./sql-batch.js";
 
 function inspectSql(sql: Prisma.Sql) {
   return {

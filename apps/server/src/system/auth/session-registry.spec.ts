@@ -1,4 +1,4 @@
-import Redis from "ioredis";
+import type { Redis as RedisClient } from "ioredis";
 import { SessionRegistry } from "./session-registry.js";
 
 describe("SessionRegistry", () => {
@@ -29,7 +29,7 @@ describe("SessionRegistry", () => {
   };
 
   const createRegistry = (maxSessions = 2) =>
-    new SessionRegistry(redis as unknown as Redis, {
+    new SessionRegistry(redis as unknown as RedisClient, {
       listPrefix: "sessions:",
       expiryPrefix: "expiry:",
       blacklistPrefix: "blacklist:",

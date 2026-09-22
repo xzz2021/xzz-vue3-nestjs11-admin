@@ -1,6 +1,7 @@
 import type { ConfigService } from "@nestjs/config";
 import type { Queue } from "bullmq";
 import { promises as fs } from "node:fs";
+import type { MockedFunction } from "vitest";
 import { DiskCleanupEventBus } from "./disk-cleanup.events.js";
 import { FILE_CLEANUP_UNLINK } from "./file-cleanup.constants.js";
 import { FileCleanupService } from "./file-cleanup.service.js";
@@ -35,8 +36,8 @@ vi.mock("#/system/staticfile/multer.config.js", () => ({
 }));
 
 describe("FileCleanupService", () => {
-  const unlink = fs.unlink as vi.MockedFunction<typeof fs.unlink>;
-  const rm = fs.rm as vi.MockedFunction<typeof fs.rm>;
+  const unlink = fs.unlink as MockedFunction<typeof fs.unlink>;
+  const rm = fs.rm as MockedFunction<typeof fs.rm>;
   const queueAdd = vi.fn();
   const findUnique = vi.fn();
 
@@ -46,9 +47,9 @@ describe("FileCleanupService", () => {
       {
         get: (key: string) => (key === "dbBackup.dir" ? "/backups" : undefined),
       } as unknown as ConfigService,
-      { add: queueAdd },
+      { add: queueAdd } as any as Queue,
       events,
-      { file: { findUnique } },
+      { file: { findUnique } } as any,
     );
     return { service, events };
   };

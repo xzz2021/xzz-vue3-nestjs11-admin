@@ -1,10 +1,10 @@
-import type { RtTokenService } from "#/system/auth/rt.token.service";
-import type { TokenService } from "#/system/auth/token.service";
+import type { RtTokenService } from "#/system/auth/rt.token.service.js";
+import type { TokenService } from "#/system/auth/token.service.js";
 import type { ExecutionContext } from "@nestjs/common";
 import { UnauthorizedException } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { AuthGuard } from "@nestjs/passport";
-import { RtJwtAuthGuard } from "./rt-jwt-auth";
+import { RtJwtAuthGuard } from "./rt-jwt-auth.js";
 
 describe("RtJwtAuthGuard", () => {
   const isAccessBlacklisted = vi.fn();

@@ -126,21 +126,6 @@ const RoleSeedArraySchema = z.object({
 });
 export class RoleSeedArrayDto extends createZodDto(RoleSeedArraySchema) {}
 
-const PermissionSchema = PermissionModel.pick({
-  name: true,
-  code: true,
-});
-
-const RoleMenuListSchema = MenuModel.pick({
-  id: true,
-  name: true,
-  path: true,
-  sort: true,
-  parentId: true,
-}).extend({
-  permissions: z.array(PermissionSchema),
-});
-
 const RoleListSchema = RoleModel.pick({
   id: true,
   name: true,

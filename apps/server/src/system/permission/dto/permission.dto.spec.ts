@@ -1,4 +1,4 @@
-import { PermissionType } from "#/prisma/generated/prisma/enums.js";
+import { PermissionType } from "#/generated/prisma/enums.js";
 import { CreatePermissionDto } from "./permission.dto.js";
 
 describe("Permission DTO scope metadata", () => {

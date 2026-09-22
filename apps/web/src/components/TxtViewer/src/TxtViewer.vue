@@ -30,113 +30,113 @@
 </template>
 
 <script setup lang="ts">
-import { formatBytes } from '@/utils/file'
-import { ElButton, ElCard, ElDivider, ElMessage, ElSwitch } from 'element-plus'
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { formatBytes } from '@/utils/file';
+import { ElButton, ElCard, ElDivider, ElMessage, ElSwitch } from 'element-plus';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 const props = withDefaults(
   defineProps<{
     /** 单个 TXT 链接（已保证存在） */
-    url: string
+    url: string;
     /** 文本编码，默认 utf-8；如需 gbk/big5，请传相应名称（浏览器支持度依环境而定） */
-    charset?: string
+    charset?: string;
     /** 传递给 fetch 的可选参数（如 headers、credentials 等） */
-    fetchOptions?: RequestInit
+    fetchOptions?: RequestInit;
   }>(),
   {
     charset: 'utf-8'
   }
-)
+);
 
-const preEl = ref<HTMLPreElement | null>(null)
-const loading = ref(true) // 组件挂载后立即开始加载
-const error = ref('')
-const bytesLoaded = ref(0)
-const wrap = ref(true)
-const fullText = ref('')
-let controller: AbortController | null = null
+const preEl = ref<HTMLPreElement | null>(null);
+const loading = ref(true); // 组件挂载后立即开始加载
+const error = ref('');
+const bytesLoaded = ref(0);
+const wrap = ref(true);
+const fullText = ref('');
+let controller: AbortController | null = null;
 
-const charset = props.charset
+const charset = props.charset;
 
 function abort() {
-  if (controller) controller.abort()
+  if (controller) controller.abort();
 }
 
 async function copy() {
   try {
-    await navigator.clipboard.writeText(fullText.value)
-    ElMessage.success('已复制')
-  } catch (e) {
-    const ta = document.createElement('textarea')
-    ta.value = fullText.value
-    document.body.appendChild(ta)
-    ta.select()
-    document.execCommand('copy')
-    document.body.removeChild(ta)
-    ElMessage.success('已复制')
+    await navigator.clipboard.writeText(fullText.value);
+    ElMessage.success('已复制');
+  } catch {
+    const ta = document.createElement('textarea');
+    ta.value = fullText.value;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    ElMessage.success('已复制');
   }
 }
 
 async function load() {
-  abort()
-  error.value = ''
-  loading.value = true
-  bytesLoaded.value = 0
-  fullText.value = ''
+  abort();
+  error.value = '';
+  loading.value = true;
+  bytesLoaded.value = 0;
+  fullText.value = '';
 
-  if (preEl.value) preEl.value.textContent = ''
+  if (preEl.value) preEl.value.textContent = '';
 
-  controller = new AbortController()
+  controller = new AbortController();
   try {
-    const res = await fetch(props.url, { signal: controller.signal, ...props.fetchOptions })
-    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
+    const res = await fetch(props.url, { signal: controller.signal, ...props.fetchOptions });
+    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
 
     if (res.body) {
-      const reader = res.body.getReader()
-      const decoder = new TextDecoder(props.charset)
-      let buffer = ''
-      let lastFlush = performance.now()
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder(props.charset);
+      let buffer = '';
+      let lastFlush = performance.now();
 
       while (true) {
-        const { value, done } = await reader.read()
-        if (done) break
+        const { value, done } = await reader.read();
+        if (done) break;
         if (value) {
-          bytesLoaded.value += value.byteLength
-          const chunkText = decoder.decode(value, { stream: true })
-          fullText.value += chunkText
-          buffer += chunkText
+          bytesLoaded.value += value.byteLength;
+          const chunkText = decoder.decode(value, { stream: true });
+          fullText.value += chunkText;
+          buffer += chunkText;
         }
         if (buffer.length > 1 << 16 || performance.now() - lastFlush > 120) {
           if (preEl.value && buffer) {
-            preEl.value.append(document.createTextNode(buffer))
-            buffer = ''
-            lastFlush = performance.now()
+            preEl.value.append(document.createTextNode(buffer));
+            buffer = '';
+            lastFlush = performance.now();
           }
         }
       }
-      const tail = new TextDecoder(props.charset).decode()
-      if (preEl.value && tail) preEl.value.append(document.createTextNode(tail))
-      if (preEl.value && buffer) preEl.value.append(document.createTextNode(buffer))
+      const tail = new TextDecoder(props.charset).decode();
+      if (preEl.value && tail) preEl.value.append(document.createTextNode(tail));
+      if (preEl.value && buffer) preEl.value.append(document.createTextNode(buffer));
     } else {
-      const text = await res.text()
-      bytesLoaded.value = new Blob([text]).size
-      fullText.value = text
-      if (preEl.value) preEl.value.textContent = text
+      const text = await res.text();
+      bytesLoaded.value = new Blob([text]).size;
+      fullText.value = text;
+      if (preEl.value) preEl.value.textContent = text;
     }
   } catch (e: any) {
-    if (e?.name === 'AbortError') return
-    error.value = `加载失败：${e?.message || e}`
-    if (preEl.value) preEl.value.textContent = error.value
+    if (e?.name === 'AbortError') return;
+    error.value = `加载失败：${e?.message || e}`;
+    if (preEl.value) preEl.value.textContent = error.value;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
 onMounted(() => {
-  load()
-})
+  load();
+});
 
-onBeforeUnmount(() => abort())
+onBeforeUnmount(() => abort());
 </script>
 
 <style lang="less" scoped>

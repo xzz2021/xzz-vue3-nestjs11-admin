@@ -129,8 +129,9 @@ export class AuthService {
       metadata: { phone: user.phone },
     });
 
-    const { password, ...result } = user;
-    const { username, phone, id, roles } = result;
+    // 不返回密码
+    const { password: _password, ...userinfo } = user;
+    const { username, phone, id, roles } = userinfo;
     const { accessToken, cookie } = await this.rtTokenService.signToken(id, {
       username,
       phone,
@@ -147,7 +148,7 @@ export class AuthService {
       cookie,
       body: {
         message: `${username}登录成功`,
-        userinfo: result,
+        userinfo,
         access_token: accessToken,
       },
     };

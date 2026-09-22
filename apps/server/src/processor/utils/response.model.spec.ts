@@ -1,8 +1,8 @@
-import { ResOp, wrapSuccess } from "./response.model";
+import { ResOp, wrapSuccess } from "./response.model.js";
 import {
   RESPONSE_SUCCESS_CODE,
   RESPONSE_SUCCESS_MSG,
-} from "#/processor/constants";
+} from "#/processor/constants/response.js";
 
 describe("wrapSuccess", () => {
   it("wraps primitives, arrays and null as data", () => {

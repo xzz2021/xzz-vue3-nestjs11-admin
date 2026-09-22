@@ -1,4 +1,4 @@
-import { CustomerStatus } from "#/prisma/generated/prisma/enums.js";
+import { CustomerStatus } from "#/generated/prisma/enums.js";
 import {
   CreateCustomerSchema,
   CustomerDeleteSuccessEnvelopeSchema,

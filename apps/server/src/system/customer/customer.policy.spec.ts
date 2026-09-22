@@ -1,5 +1,5 @@
 import { AuthorizationContext } from "#/processor/authorization/authorization-context.js";
-import { CustomerStatus } from "#/prisma/generated/prisma/enums.js";
+import { CustomerStatus } from "#/generated/prisma/enums.js";
 import {
   CUSTOMER_HIGH_VALUE_THRESHOLD,
   CustomerPolicy,

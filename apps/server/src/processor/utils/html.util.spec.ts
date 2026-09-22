@@ -1,4 +1,4 @@
-import { isRichTextEmpty, sanitizeRichText } from "./html.util";
+import { isRichTextEmpty, sanitizeRichText } from "./html.util.js";
 
 describe("sanitizeRichText", () => {
   it("保留编辑器常用的排版标签与样式", () => {

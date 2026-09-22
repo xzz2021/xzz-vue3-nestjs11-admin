@@ -1,15 +1,15 @@
-import { AuthorizationContext } from "#/processor/authorization/authorization-context";
-import type { AuthorizationService } from "#/processor/authorization/authorization.service";
-import { PERMISSION_KEY } from "#/processor/decorator/permission";
-import { IS_AUTHENTICATED_KEY, IS_PUBLIC_KEY } from "#/processor/decorator/public";
-import { Prisma } from "#/generated/prisma/client";
+import { AuthorizationContext } from "#/processor/authorization/authorization-context.js";
+import type { AuthorizationService } from "#/processor/authorization/authorization.service.js";
+import { PERMISSION_KEY } from "#/processor/decorator/permission.js";
+import { IS_AUTHENTICATED_KEY, IS_PUBLIC_KEY } from "#/processor/decorator/public.js";
+import { Prisma } from "#/generated/prisma/client.js";
 import {
   ForbiddenException,
   ServiceUnavailableException,
   type ExecutionContext,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import { PermissionGuard } from "./permission";
+import { PermissionGuard } from "./permission.js";
 
 describe("PermissionGuard", () => {
   const authCreateContext = vi.fn();

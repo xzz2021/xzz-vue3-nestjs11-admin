@@ -1,9 +1,9 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { RedisHealthService } from "#/infrastructure/database/redis/redis-health.service";
-import { PgService } from "#/infrastructure/database/prisma/pg.service";
+import { RedisHealthService } from "#/infrastructure/database/redis/redis-health.service.js";
+import { PgService } from "#/infrastructure/database/prisma/pg.service.js";
 import { IS_PUBLIC_KEY, SKIP_WRAP_KEY } from "#/processor/decorator/index.js";
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
+import { AppController } from "./app.controller.js";
+import { AppService } from "./app.service.js";
 
 describe("AppController", () => {
   let appController: AppController;

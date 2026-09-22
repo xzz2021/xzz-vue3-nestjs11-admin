@@ -55,7 +55,7 @@ describe("oss-key error mapping", () => {
   it("uses OSS_INVALID_KEY for illegal names", () => {
     try {
       joinObjectKey("", "..");
-      fail("expected throw");
+      throw new Error("expected throw");
     } catch (error) {
       expect(error).toBeInstanceOf(HttpException);
       expect((error as HttpException).getStatus()).toBe(HttpStatus.BAD_REQUEST);

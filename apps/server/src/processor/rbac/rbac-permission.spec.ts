@@ -1,4 +1,4 @@
-import { ALL_PERMISSIONS, resolvePermissionCodes } from "./rbac-permission";
+import { ALL_PERMISSIONS, resolvePermissionCodes } from "./rbac-permission.js";
 
 describe("resolvePermissionCodes", () => {
   it("returns enabled role permission codes without duplicates", () => {

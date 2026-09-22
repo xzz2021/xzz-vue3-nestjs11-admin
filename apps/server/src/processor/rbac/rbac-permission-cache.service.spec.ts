@@ -1,5 +1,5 @@
 import type { RedisService } from "@liaoliaots/nestjs-redis";
-import { RbacPermissionCacheService } from "./rbac-permission-cache.service";
+import { RbacPermissionCacheService } from "./rbac-permission-cache.service.js";
 
 describe("RbacPermissionCacheService", () => {
   const redis = {

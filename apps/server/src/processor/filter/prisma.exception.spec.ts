@@ -1,5 +1,5 @@
 import { ConflictException } from "@nestjs/common";
-import { checkPrismaError, isTransientDbError } from "./prisma.exception";
+import { checkPrismaError, isTransientDbError } from "./prisma.exception.js";
 
 describe("Prisma transient database classification", () => {
   it.each(["40P01", "P2034"])(
