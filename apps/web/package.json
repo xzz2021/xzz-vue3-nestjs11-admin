@@ -5,7 +5,7 @@
   "description": "一套基于 Vue 3、Element Plus、TypeScript、Vite 8 的后台集成方案。",
   "type": "module",
   "scripts": {
-    "dev": "concurrently -k -n tsc,vite -c cyan,green \"vue-tsc -b --watch --preserveWatchOutput\" \"vite --mode base\"",
+    "dev": "vite --mode base",
     "preview": "vite preview --mode pro",
     "typecheck": "vue-tsc -b --pretty false",
     "build": "pnpm run build:pro",

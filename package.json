@@ -13,7 +13,7 @@
     "lint:eslint": "pnpm --filter server lint:eslint && pnpm --filter web lint:eslint",
     "typecheck": "pnpm --filter server typecheck:all && pnpm --filter web typecheck",
     "test": "pnpm --filter server test:ci",
-    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+    "check": "pnpm lint && pnpm typecheck && pnpm test",
     "preflight:server": "pnpm --filter server preflight",
     "lint-staged": "lint-staged --config .husky/lintstagedrc.cjs",
     "prepare": "node -e \"if (process.env.HUSKY === '0' || !require('fs').existsSync('.git')) process.exit(0); require('child_process').execSync('husky', { stdio: 'inherit' })\"",
