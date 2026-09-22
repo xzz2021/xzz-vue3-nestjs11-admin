@@ -149,11 +149,11 @@ export class DbBackupConfigService {
         await this.queue.removeJobScheduler(legacyId);
       }
 
-      const legacyJobs = await this.queue.getJobSchedulers();      
+      const legacyJobs = await this.queue.getJobSchedulers();
       for (const job of legacyJobs) {
         if (job.name !== DB_BACKUP_JOB_SCHEDULED) continue;
         if (job.key === DB_BACKUP_SCHEDULED_SCHEDULER_ID) continue;
-        await this.queue.removeDeduplicationKey(job.key); // type error
+        await this.queue.removeJobScheduler(job.key);
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);

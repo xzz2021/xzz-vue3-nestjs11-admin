@@ -20,8 +20,7 @@ describe('DbBackupService', () => {
     add: vi.fn(),
     getJob: vi.fn(),
     getJobScheduler: vi.fn(),
-    getRepeatableJobs: vi.fn(),
-    removeRepeatableByKey: vi.fn(),
+    getJobSchedulers: vi.fn(),
     upsertJobScheduler: vi.fn(),
     removeJobScheduler: vi.fn(),
   };
@@ -108,7 +107,7 @@ describe('DbBackupService', () => {
     pgService.dbBackupJob.findFirst.mockResolvedValue(null);
     queue.getJob.mockResolvedValue(null);
     queue.getJobScheduler.mockResolvedValue(null);
-    queue.getRepeatableJobs.mockResolvedValue([]);
+    queue.getJobSchedulers.mockResolvedValue([]);
   });
 
   it('serializes bigint file size in job list', async () => {

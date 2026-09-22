@@ -34,5 +34,8 @@ jobs:
           HUSKY: "0"
         run: pnpm install --frozen-lockfile
 
+      - name: Generate Prisma client
+        run: pnpm --filter server prisma:gen
+
       - name: Run quality gate
         run: pnpm check

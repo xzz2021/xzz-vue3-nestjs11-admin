@@ -8,8 +8,7 @@ import type { Queue } from 'bullmq';
 describe('DbBackupConfigService', () => {
   const queue = {
     getJobScheduler: vi.fn(),
-    getRepeatableJobs: vi.fn(),
-    removeRepeatableByKey: vi.fn(),
+    getJobSchedulers: vi.fn(),
     upsertJobScheduler: vi.fn(),
     removeJobScheduler: vi.fn(),
   };
@@ -51,7 +50,7 @@ describe('DbBackupConfigService', () => {
       filePrefix: 'backstage_db',
       gzip: true,
     });
-    queue.getRepeatableJobs.mockResolvedValue([]);
+    queue.getJobSchedulers.mockResolvedValue([]);
   });
 
   it('skips schedule reset when cron and timezone are unchanged', async () => {
