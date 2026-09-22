@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LoginForm, RegisterForm, Wechat, Sms } from './components'
+import { LoginForm, RegisterForm, ForgotPasswordForm, Wechat, Sms } from './components'
 import { ThemeSwitch } from '@/components/ThemeSwitch'
 import { LocaleDropdown } from '@/components/LocaleDropdown'
 import { useI18n } from '@/hooks/web/useI18n'
@@ -28,6 +28,7 @@ const themeChange = () => {
 const LoginType = {
   login: 'login',
   register: 'register',
+  forgot: 'forgot',
   wechat: 'wechat',
   sms: 'sms'
 } as const
@@ -80,11 +81,17 @@ const changeLoginType = (type: LoginType) => {
                 v-if="loginType == 'login'"
                 class="p-20px h-auto m-auto lt-xl:rounded-3xl lt-xl:light:bg-white"
                 @to-register="changeLoginType(LoginType.register)"
+                @to-forgot="changeLoginType(LoginType.forgot)"
                 @to-wechat="changeLoginType(LoginType.wechat)"
                 @to-sms="changeLoginType(LoginType.sms)"
               />
               <RegisterForm
                 v-else-if="loginType == 'register'"
+                class="p-20px h-auto m-auto lt-xl:rounded-3xl lt-xl:light:bg-white"
+                @to-login="changeLoginType(LoginType.login)"
+              />
+              <ForgotPasswordForm
+                v-else-if="loginType == 'forgot'"
                 class="p-20px h-auto m-auto lt-xl:rounded-3xl lt-xl:light:bg-white"
                 @to-login="changeLoginType(LoginType.login)"
               />

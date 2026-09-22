@@ -7,6 +7,7 @@ export const AuditAction = {
   AUTH_LOGOUT: "auth.logout",
   AUTH_FORCE_LOGOUT: "auth.force_logout",
   AUTH_REGISTER: "auth.register",
+  AUTH_FORGOT_PASSWORD: "auth.forgot_password",
   USER_CREATE: "user.create",
   USER_UPDATE: "user.update",
   USER_DELETE: "user.delete",

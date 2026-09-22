@@ -23,6 +23,12 @@ export interface SmsLoginType {
 
 export type UserRegisterType = UserLoginType & SmsLoginType
 
+export interface ForgotPasswordPayload {
+  phone: string
+  code: string
+  password: string
+}
+
 export interface RegisterResult {
   res?: { id: string }
 }

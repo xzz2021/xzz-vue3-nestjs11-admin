@@ -19,6 +19,9 @@ import { RtTokenService } from './rt.token.service.js';
 import { SessionRevocationService } from './session-revocation.service.js';
 import { TokenService } from './token.service.js';
 
+const SMS_CODE_TTL_SECONDS = 300;
+const SMS_COOLDOWN_SECONDS = 60;
+
 @Injectable()
 export class AuthService {
   private readonly redis: Redis;
@@ -168,15 +171,73 @@ export class AuthService {
   //   return newTokenVersion;
   // }
 
-  async getSmsCode(phone: string, cachekey: string) {
-    if (cachekey === 'register') {
+  async getSmsCode(phone: string, type: 'register' | 'reset') {
+    if (type === 'register') {
       const user = await this.isUserExist(phone);
       if (user) {
         throw new BadRequestException('用户已存在, 请直接登录!');
       }
     }
-    return { message: '演示模式, 模拟验证码已发送,请60秒后再试!' };
-    // return this.smsService.generateSmsCode(phone, cachekey);
+
+    const cooldownKey = `sms_cd_${type}_${phone}`;
+    const cooling = await this.redis.get(cooldownKey);
+    if (cooling) {
+      throw new BadRequestException('请60秒后再试');
+    }
+
+    // reset：不存在用户时也返回成功文案，防枚举；不写入有效验证码
+    if (type === 'reset') {
+      const exists = await this.isUserExist(phone);
+      if (!exists) {
+        await this.redis.set(cooldownKey, '1', 'EX', SMS_COOLDOWN_SECONDS);
+        return {
+          message: '演示模式, 模拟验证码已发送,请60秒后再试!',
+        };
+      }
+    }
+
+    const code = String(Math.floor(100000 + Math.random() * 900000));
+    const codeKey = `${type}_${phone}`;
+    await this.redis.set(codeKey, code, 'EX', SMS_CODE_TTL_SECONDS);
+    await this.redis.set(cooldownKey, '1', 'EX', SMS_COOLDOWN_SECONDS);
+    return {
+      message: `演示模式, 模拟验证码已发送: ${code},请60秒后再试!`,
+    };
+  }
+
+  async forgotPassword(
+    data: { phone: string; code: string; password: string },
+    ip?: string,
+  ) {
+    const codeKey = `reset_${data.phone}`;
+    const stored = await this.redis.get(codeKey);
+    if (!stored || stored !== data.code) {
+      throw new BadRequestException('验证码错误或已过期');
+    }
+    await this.redis.del(codeKey);
+
+    const user = await this.users.findByPhone(data.phone);
+    // 用户不存在或已禁用：统一文案，避免枚举账号状态
+    if (!user?.enabled) {
+      throw new BadRequestException('验证码错误或已过期');
+    }
+
+    const hashedPassword = await hashPayPassword(data.password);
+    await this.users.updateById(user.id, {
+      password: hashedPassword,
+      passwordChangedAt: new Date(),
+    });
+    await this.sessions.revokeAll(user.id);
+    await this.lockout.onSuccess(data.phone);
+    await this.audit.record({
+      actorId: user.id,
+      action: AuditAction.AUTH_FORGOT_PASSWORD,
+      resource: 'User',
+      resourceId: user.id,
+      ip,
+      metadata: { phone: data.phone },
+    });
+    return { message: '密码重置成功，请使用新密码登录' };
   }
 
   async forceLogout(id: string, operatorId: string, ip?: string) {

@@ -17,7 +17,7 @@ import { useLogin } from './hooks'
 const { required } = useValidator()
 const { successLogin } = useLogin()
 
-const emit = defineEmits(['to-register', 'to-wechat', 'to-sms'])
+const emit = defineEmits(['to-register', 'to-wechat', 'to-sms', 'to-forgot'])
 
 const userStore = useUserStore()
 
@@ -109,7 +109,7 @@ const schema = reactive<FormSchema[]>([
             <>
               <div class="flex justify-between items-center w-[100%]">
                 <ElCheckbox v-model={remember.value} label={t('login.remember')} size="small" />
-                <ElLink type="primary" underline="never">
+                <ElLink type="primary" underline="never" onClick={toForgot}>
                   {t('login.forgetPassword')}
                 </ElLink>
               </div>
@@ -229,6 +229,10 @@ const hoverColor = 'var(--el-color-primary)'
 // 去注册页面
 const toRegister = () => {
   emit('to-register')
+}
+
+const toForgot = () => {
+  emit('to-forgot')
 }
 
 const toWechat = () => {

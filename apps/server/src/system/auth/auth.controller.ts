@@ -8,6 +8,8 @@ import { AuthService } from "./auth.service.js";
 import type { JwtReqDto } from "./dto/auth.dto.js";
 import {
   ForceLogoutDto,
+  ForgotPasswordDto,
+  GetSmsCodeDto,
   LoginInfoDto,
   RegisterDto,
   RegisterResDto,
@@ -25,6 +27,20 @@ export class AuthController {
   @ApiOperation({ summary: "用户注册" })
   create(@Body() createUserinfo: RegisterDto, @Req() req: Request) {
     return this.authService.create(createUserinfo, true, clientIp(req.ip));
+  }
+
+  @Post("getSmsCode")
+  @Public()
+  @ApiOperation({ summary: "发送短信验证码（演示模式）" })
+  getSmsCode(@Body() body: GetSmsCodeDto) {
+    return this.authService.getSmsCode(body.phone, body.type);
+  }
+
+  @Post("forgot-password")
+  @Public()
+  @ApiOperation({ summary: "忘记密码：短信验证码重置" })
+  forgotPassword(@Body() body: ForgotPasswordDto, @Req() req: Request) {
+    return this.authService.forgotPassword(body, clientIp(req.ip));
   }
 
   @Post("rt/login")

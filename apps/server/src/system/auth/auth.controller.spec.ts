@@ -17,7 +17,7 @@ describe("AuthController authentication boundary", () => {
     expect(Reflect.getMetadata(IS_PUBLIC_KEY, AuthController)).toBeUndefined();
   });
 
-  it.each(["create", "rtLogin", "refresh"] as const)(
+  it.each(["create", "rtLogin", "refresh", "getSmsCode", "forgotPassword"] as const)(
     "marks %s as public",
     (methodName) => {
       expect(

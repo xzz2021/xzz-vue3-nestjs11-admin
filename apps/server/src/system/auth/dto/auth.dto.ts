@@ -32,6 +32,29 @@ const ForceLogoutSchema = z.object({
 });
 export class ForceLogoutDto extends createZodDto(ForceLogoutSchema) {}
 
+const GetSmsCodeSchema = z.object({
+  phone: UserModel.shape.phone,
+  type: z.enum(['register', 'reset']).meta({
+    description: '验证码用途',
+    example: 'reset',
+  }),
+});
+export class GetSmsCodeDto extends createZodDto(GetSmsCodeSchema) {}
+
+const ForgotPasswordSchema = z.object({
+  phone: UserModel.shape.phone,
+  code: z
+    .string()
+    .length(6)
+    .regex(/^\d{6}$/, '验证码须为6位数字')
+    .meta({ description: '短信验证码', example: '123456' }),
+  password: UserModel.shape.password.meta({
+    description: '新密码',
+    example: 'ChangeMe_Now!',
+  }),
+});
+export class ForgotPasswordDto extends createZodDto(ForgotPasswordSchema) {}
+
 /** JWT payload 挂到 req.user 上的结构 */
 const JwtUserSchema = z.object({
   id: z.string(),

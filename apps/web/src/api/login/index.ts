@@ -1,6 +1,7 @@
 import axios from 'axios'
 import request from '@/axios'
 import type {
+  ForgotPasswordPayload,
   RegisterResult,
   SmsLoginRes,
   SmsLoginType,
@@ -32,6 +33,12 @@ export const getRoleMenuApi = (): Promise<IResponse<{ list: AppCustomRouteRecord
 
 export const getSmsCode = (data: { phone: string; type: string }): Promise<IResponse<string>> => {
   return request.post({ url: 'auth/getSmsCode', data })
+}
+
+export const forgotPasswordApi = (
+  data: ForgotPasswordPayload
+): Promise<IResponse<{ message?: string }>> => {
+  return request.post({ url: 'auth/forgot-password', data })
 }
 
 export const smsBind = (data: SmsLoginType): Promise<IResponse<SmsLoginRes>> => {
