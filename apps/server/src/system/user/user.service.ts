@@ -1,7 +1,9 @@
 import { AuditAction } from '#/core/logger/audit-action.js';
 import { AuditLogService } from '#/core/logger/audit-log.service.js';
 import { Prisma } from '#/generated/prisma/client.js';
+import { formatZodErrorMessage } from '#/processor/pipe/zod-error.util.js';
 import { RbacPermissionCacheService } from '#/processor/rbac/index.js';
+import { recordsFromCsv } from '#/processor/utils/csv.js';
 import {
   formatDateToYMDHMS,
   hashPayPassword,
@@ -16,6 +18,8 @@ import {
 } from '#/system/staticfile/multer.config.js';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Readable } from 'node:stream';
+import { ZodError } from 'zod';
 import {
   AdminUpdatePwdDto,
   CreateUserDto,
@@ -24,6 +28,14 @@ import {
   UpdatePwdDto,
   UpdateUserDto,
 } from './dto/user.dto.js';
+import {
+  USER_EXPORT_BATCH_SIZE,
+  USER_EXPORT_MAX_ROWS,
+  USER_IMPORT_MAX_ROWS,
+  parseUserImportRow,
+  serializeUserExportRow,
+  userExportHeader,
+} from './user.csv.js';
 import { UserRepository } from './user.repository.js';
 
 @Injectable()
@@ -240,6 +252,165 @@ export class UserService {
     return { list, total, message: '获取用户列表成功' };
   }
 
+  async exportUsers(
+    searchParam: Partial<QueryUserParams>,
+    operatorId?: string,
+    ip?: string,
+  ): Promise<Readable> {
+    const where = await this.exportWhere(searchParam);
+    const users = this.users;
+    const audit = this.audit;
+    let count = 0;
+    let auditPromise: Promise<void> | undefined;
+    const recordOutcome = (
+      outcome: 'success' | 'failed' | 'aborted',
+      errorCode?: 'USER_EXPORT_READ_FAILED',
+    ): Promise<void> => {
+      auditPromise ??= Promise.resolve()
+        .then(() =>
+          audit.record({
+            actorId: operatorId,
+            action: AuditAction.USER_EXPORT,
+            resource: 'User',
+            success: outcome === 'success',
+            ip,
+            metadata: { outcome, count, ...(errorCode ? { errorCode } : {}) },
+          }),
+        )
+        .catch(() => undefined);
+      return auditPromise;
+    };
+
+    const stream = Readable.from(
+      (async function* () {
+        let cursor: string | undefined;
+        let outcome: 'success' | 'failed' | 'aborted' = 'aborted';
+        let errorCode: 'USER_EXPORT_READ_FAILED' | undefined;
+        try {
+          yield userExportHeader();
+          while (count < USER_EXPORT_MAX_ROWS) {
+            const take = Math.min(
+              USER_EXPORT_BATCH_SIZE,
+              USER_EXPORT_MAX_ROWS - count,
+            );
+            const batch = await users.findExportBatch(where, cursor, take);
+            if (batch.length === 0) break;
+            for (const row of batch) {
+              yield serializeUserExportRow({
+                username: row.username,
+                phone: row.phone,
+                nickname: row.nickname,
+                email: row.email,
+                departmentId: row.departmentId,
+                roleCodes: row.roles.map((item) => item.role.code),
+                enabled: row.enabled,
+                createdAt: row.createdAt,
+              });
+              count++;
+            }
+            cursor = batch.at(-1)!.id;
+            if (batch.length < take) break;
+          }
+          outcome = 'success';
+        } catch (error) {
+          outcome = 'failed';
+          errorCode = 'USER_EXPORT_READ_FAILED';
+          throw error;
+        } finally {
+          await recordOutcome(outcome, errorCode);
+        }
+      })(),
+    );
+    stream.once('close', () => {
+      void recordOutcome('aborted');
+    });
+    return stream;
+  }
+
+  async importUsers(buffer: Buffer, operatorId?: string, ip?: string) {
+    let records: Record<string, string>[];
+    try {
+      records = recordsFromCsv(buffer.toString('utf8'));
+    } catch (error) {
+      throw new BadRequestException(
+        error instanceof Error ? error.message : 'CSV 解析失败',
+      );
+    }
+    if (records.length > USER_IMPORT_MAX_ROWS) {
+      throw new BadRequestException(`最多导入 ${USER_IMPORT_MAX_ROWS} 行`);
+    }
+
+    const errors: { row: number; message: string }[] = [];
+    let success = 0;
+
+    for (let index = 0; index < records.length; index++) {
+      const rowNumber = index + 2;
+      try {
+        const parsed = parseUserImportRow(records[index]!);
+        const existingPhone = await this.users.findByPhone(parsed.phone);
+        if (existingPhone) {
+          throw new Error('手机号已存在');
+        }
+        if (parsed.email) {
+          const existingEmail = await this.users.findIdByEmail(parsed.email);
+          if (existingEmail) {
+            throw new Error('邮箱已存在');
+          }
+        }
+        const department = await this.users.findEnabledDepartment(
+          parsed.departmentId,
+        );
+        if (!department) {
+          throw new Error('部门不存在或已禁用');
+        }
+        let roleIds: string[] = [];
+        if (parsed.roleCodes.length > 0) {
+          const roles = await this.users.findEnabledRolesByCodes(
+            parsed.roleCodes,
+          );
+          const found = new Map(roles.map((role) => [role.code, role.id]));
+          const missing = parsed.roleCodes.filter((code) => !found.has(code));
+          if (missing.length > 0) {
+            throw new Error(`角色不存在或已禁用: ${missing.join(',')}`);
+          }
+          roleIds = [
+            ...new Set(
+              parsed.roleCodes.map((code) => found.get(code)!),
+            ),
+          ];
+        }
+        const password = await hashPayPassword(parsed.password);
+        await this.users.createWithRelations({
+          username: parsed.username,
+          password,
+          phone: parsed.phone,
+          departmentId: parsed.departmentId,
+          roleIds,
+          assignedById: operatorId ?? null,
+          nickname: parsed.nickname ?? null,
+          email: parsed.email ?? null,
+          enabled: parsed.enabled,
+        });
+        success++;
+      } catch (error) {
+        errors.push({
+          row: rowNumber,
+          message: this.importRowErrorMessage(error),
+        });
+      }
+    }
+
+    const failed = errors.length;
+    await this.audit.record({
+      actorId: operatorId,
+      action: AuditAction.USER_IMPORT,
+      resource: 'User',
+      ip,
+      metadata: { success, failed },
+    });
+    return { success, failed, errors, message: '导入完成' };
+  }
+
   async uploadAvatar(
     file: Express.Multer.File,
     userId: string,
@@ -293,6 +464,37 @@ export class UserService {
       };
     }
     return { skip: Number(skip), take: Number(take), where };
+  }
+
+  private async exportWhere(
+    searchParam: Partial<QueryUserParams>,
+  ): Promise<Prisma.UserWhereInput> {
+    const where: Prisma.UserWhereInput = {};
+    if (searchParam.username) {
+      where.username = { contains: searchParam.username };
+    }
+    if (searchParam.phone) {
+      where.phone = { contains: searchParam.phone };
+    }
+    if (searchParam.enabled !== undefined) {
+      where.enabled = searchParam.enabled;
+    }
+    if (searchParam.id) {
+      where.departmentId = {
+        in: await this.users.findSubtreeDepartmentIds(searchParam.id),
+      };
+    }
+    return where;
+  }
+
+  private importRowErrorMessage(error: unknown): string {
+    if (error instanceof ZodError) {
+      return formatZodErrorMessage(error);
+    }
+    if (error instanceof Error && error.message) {
+      return error.message;
+    }
+    return '导入失败';
   }
 
   private toAvatarDiskPath(avatar: string | null | undefined): string | null {

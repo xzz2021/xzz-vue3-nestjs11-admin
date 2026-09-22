@@ -596,6 +596,18 @@ const _permission: Partial<PermissionCreateInput>[] = [
     type: PermissionType.BUTTON,
   },
   {
+    name: '导出',
+    code: 'export',
+    resource: 'user',
+    type: PermissionType.BUTTON,
+  },
+  {
+    name: '导入',
+    code: 'import',
+    resource: 'user',
+    type: PermissionType.BUTTON,
+  },
+  {
     name: '新增',
     code: 'add',
     resource: 'menu',

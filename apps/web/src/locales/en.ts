@@ -685,7 +685,15 @@ export default {
     newPassword: 'New password',
     confirmNewPassword: 'Confirm password',
     personalInfo: 'Personal information',
-    basicInfo: 'Basic information'
+    basicInfo: 'Basic information',
+    export: 'Export',
+    import: 'Import',
+    downloadTemplate: 'Download template',
+    exportSuccess: 'Exported successfully',
+    exportFailed: 'Export failed',
+    importSuccess: 'Import finished: {success} succeeded, {failed} failed',
+    importFailed: 'Import failed',
+    importFileRequired: 'Please select a CSV file'
   },
   personal: {
     personalInfo: 'Personal information',

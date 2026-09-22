@@ -302,6 +302,50 @@ export const generateChunkMulterConfig = (
   };
 };
 
+const CSV_MIME = new Set([
+  "text/csv",
+  "application/csv",
+  "text/plain",
+  "application/vnd.ms-excel",
+]);
+const CSV_EXT = new Set([".csv"]);
+const CSV_IMPORT_MAX_BYTES = 2 * 1024 * 1024;
+
+/** CSV 导入：内存缓冲，仅允许 .csv */
+export const multerConfigForCsvImport: MulterOptions = {
+  storage: memoryStorage(),
+  fileFilter: (_req, file, cb) => {
+    try {
+      const decoded = decodeOriginalName(file.originalname);
+      const ext = extname(basename(decoded)).toLowerCase();
+      if (!CSV_EXT.has(ext)) {
+        cb(new BadRequestException("仅支持 CSV 文件"), false);
+        return;
+      }
+      if (
+        file.mimetype &&
+        !CSV_MIME.has(file.mimetype) &&
+        file.mimetype !== "application/octet-stream"
+      ) {
+        cb(new BadRequestException("仅支持 CSV 文件"), false);
+        return;
+      }
+      cb(null, true);
+    } catch (error) {
+      cb(
+        error instanceof Error
+          ? error
+          : new BadRequestException("文件校验失败"),
+        false,
+      );
+    }
+  },
+  limits: {
+    fileSize: CSV_IMPORT_MAX_BYTES,
+    files: 1,
+  },
+};
+
 export const UPLOAD_ALLOWLIST = {
   IMAGE_MIME,
   IMAGE_EXT,

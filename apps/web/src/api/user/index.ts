@@ -1,4 +1,4 @@
-import request from '@/axios'
+import request, { type DownloadResponse } from '@/axios'
 import type {
   CreateUserPayload,
   PersonalUserDetail,
@@ -7,6 +7,7 @@ import type {
   UpdatePasswordPayload,
   UpdatePersonalInfoPayload,
   UpdateUserPayload,
+  UserImportResult,
   UserItem
 } from './types'
 
@@ -62,6 +63,24 @@ export const updatePasswordApi = (data: UpdatePasswordPayload) => {
 export const uploadAvatarApi = (data: FormData): Promise<IResponse<{ filePath: string }>> => {
   return request.post({
     url: 'user/upload/avatar',
+    data,
+    headers: { 'Content-Type': 'multipart/form-data' }
+  })
+}
+
+export type ExportUserParams = Omit<QueryUserParams, 'pageIndex' | 'pageSize'>
+
+export const exportUserApi = (params: ExportUserParams): Promise<DownloadResponse> => {
+  return request.download({ url: 'user/export', params })
+}
+
+export const downloadUserImportTemplateApi = (): Promise<DownloadResponse> => {
+  return request.download({ url: 'user/import/template' })
+}
+
+export const importUserApi = (data: FormData): Promise<IResponse<UserImportResult>> => {
+  return request.post({
+    url: 'user/import',
     data,
     headers: { 'Content-Type': 'multipart/form-data' }
   })

@@ -44,6 +44,28 @@ export class UserRepository {
     return this.db.user.findUnique({ where: { phone } });
   }
 
+  findIdByEmail(email: string) {
+    return this.db.user.findUnique({
+      where: { email },
+      select: { id: true },
+    });
+  }
+
+  findEnabledDepartment(id: string) {
+    return this.db.department.findFirst({
+      where: { id, enabled: true },
+      select: { id: true },
+    });
+  }
+
+  findEnabledRolesByCodes(codes: string[]) {
+    if (codes.length === 0) return Promise.resolve([]);
+    return this.db.role.findMany({
+      where: { code: { in: codes }, enabled: true },
+      select: { id: true, code: true },
+    });
+  }
+
   findIdByPhone(phone: string) {
     return this.db.user.findUnique({
       where: { phone },
@@ -200,6 +222,34 @@ export class UserRepository {
     ]);
   }
 
+  findExportBatch(
+    where: Prisma.UserWhereInput,
+    cursor: string | undefined,
+    take: number,
+  ) {
+    return this.db.user.findMany({
+      where,
+      take,
+      ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+      orderBy: { id: 'asc' },
+      select: {
+        id: true,
+        username: true,
+        phone: true,
+        nickname: true,
+        email: true,
+        departmentId: true,
+        enabled: true,
+        createdAt: true,
+        roles: {
+          select: {
+            role: { select: { code: true } },
+          },
+        },
+      },
+    });
+  }
+
   async findSubtreeDepartmentIds(rootId: string): Promise<string[]> {
     const rows = await this.db.$queryRaw<{ id: string }[]>`
       WITH RECURSIVE dept_tree AS (
@@ -232,12 +282,18 @@ export class UserRepository {
     departmentId: string;
     roleIds?: string[];
     assignedById?: string | null;
+    nickname?: string | null;
+    email?: string | null;
+    enabled?: boolean;
   }) {
     return this.db.user.create({
       data: {
         username: data.username,
         password: data.password,
         phone: data.phone,
+        nickname: data.nickname,
+        email: data.email,
+        enabled: data.enabled,
         department: { connect: { id: data.departmentId } },
         roles: {
           create: this.roleAssignments(data.roleIds, data.assignedById),

@@ -1,7 +1,15 @@
-import { Authenticated, RequiredPermission } from "#/processor/decorator/index.js";
+import {
+  Authenticated,
+  RequiredPermission,
+  SkipWrap,
+} from "#/processor/decorator/index.js";
 import { clientIp } from "#/processor/utils/index.js";
+import { sendCsvStream } from "#/processor/utils/csv-download.js";
 import type { JwtReqDto } from "#/system/auth/dto/auth.dto.js";
-import { multerConfigForAvatar } from "#/system/staticfile/multer.config.js";
+import {
+  multerConfigForAvatar,
+  multerConfigForCsvImport,
+} from "#/system/staticfile/multer.config.js";
 import {
   BadRequestException,
   Body,
@@ -12,12 +20,20 @@ import {
   Post,
   Query,
   Req,
+  Res,
   UploadedFile,
   UseInterceptors,
 } from "@nestjs/common";
-// import { ConfigService } from '@nestjs/config';
 import { FileInterceptor } from "@nestjs/platform-express";
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import {
+  ApiConsumes,
+  ApiOperation,
+  ApiProduces,
+  ApiResponse,
+  ApiTags,
+} from "@nestjs/swagger";
+import type { Response } from "express";
+import { Readable } from "node:stream";
 import {
   AdminUpdatePwdDto,
   BatchDeleteUserDto,
@@ -29,13 +45,14 @@ import {
   UserListRes,
   UserLookupListRes,
 } from "./dto/user.dto.js";
+import { userImportTemplateCsv } from "./user.csv.js";
 import { UserService } from "./user.service.js";
+
 @ApiTags("用户")
 @Controller("user")
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    // private readonly configService: ConfigService,
   ) {}
 
   @Get("listByDepartmentId")
@@ -59,7 +76,6 @@ export class UserController {
   @Get("detailInfo")
   @Authenticated()
   @ApiOperation({ summary: "获取用户详情信息" })
-  // @ApiResponse({ type: UpdateUserDto })
   detailInfo(@Req() req: JwtReqDto) {
     const userId = req.user.id;
     return this.userService.getUserInfo(userId);
@@ -147,6 +163,65 @@ export class UserController {
   @ApiOperation({ summary: "按条件获取所有用户" })
   allList(@Query() params: QueryUserParams) {
     return this.userService.findAll(params);
+  }
+
+  @Get("export")
+  @RequiredPermission("user:export")
+  @SkipWrap()
+  @ApiProduces("text/csv")
+  @ApiOperation({ summary: "流式导出用户 CSV" })
+  @ApiResponse({
+    status: 200,
+    description: "UTF-8 CSV 文件流",
+    content: {
+      "text/csv": {
+        schema: { type: "string", format: "binary" },
+      },
+    },
+  })
+  async exportUsers(
+    @Query() params: QueryUserParams,
+    @Req() req: JwtReqDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const stream = await this.userService.exportUsers(
+      params,
+      req.user.id,
+      clientIp(req.ip),
+    );
+    return sendCsvStream(req, response, stream, "users.csv");
+  }
+
+  @Get("import/template")
+  @RequiredPermission("user:import")
+  @SkipWrap()
+  @ApiProduces("text/csv")
+  @ApiOperation({ summary: "下载用户导入 CSV 模板" })
+  importTemplate(
+    @Req() req: JwtReqDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const stream = Readable.from([userImportTemplateCsv()]);
+    return sendCsvStream(req, response, stream, "user-import-template.csv");
+  }
+
+  @Post("import")
+  @RequiredPermission("user:import")
+  @ApiConsumes("multipart/form-data")
+  @ApiOperation({ summary: "导入用户 CSV（逐行报告）" })
+  @UseInterceptors(FileInterceptor("file", multerConfigForCsvImport))
+  importUsers(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: JwtReqDto,
+  ) {
+    if (!file?.buffer) {
+      throw new BadRequestException("请上传 CSV 文件");
+    }
+    return this.userService.importUsers(
+      file.buffer,
+      req.user.id,
+      clientIp(req.ip),
+    );
   }
 
   @Post("upload/avatar")

@@ -13,6 +13,9 @@ describe("UserController permission boundary", () => {
     ["user:update", "update"],
     ["user:delete", "delete"],
     ["user:view", "allList"],
+    ["user:export", "exportUsers"],
+    ["user:import", "importUsers"],
+    ["user:import", "importTemplate"],
   ] as const)("requires %s on %s", (permission, methodName) => {
     expect(
       Reflect.getMetadata(PERMISSION_KEY, UserController.prototype[methodName]),

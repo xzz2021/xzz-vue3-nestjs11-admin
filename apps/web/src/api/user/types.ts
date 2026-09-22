@@ -88,3 +88,15 @@ export interface ResetPasswordPayload {
   id: string
   password: string
 }
+
+export interface UserImportError {
+  row: number
+  message: string
+}
+
+export interface UserImportResult {
+  success: number
+  failed: number
+  errors: UserImportError[]
+  message?: string
+}

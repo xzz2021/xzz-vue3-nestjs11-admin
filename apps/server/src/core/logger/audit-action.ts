@@ -13,6 +13,8 @@ export const AuditAction = {
   USER_RESET_PASSWORD: "user.reset_password",
   USER_UPDATE_PASSWORD: "user.update_password",
   USER_UPDATE_PROFILE: "user.update_profile",
+  USER_EXPORT: "user.export",
+  USER_IMPORT: "user.import",
   ROLE_CREATE: "role.create",
   ROLE_UPDATE: "role.update",
   ROLE_DELETE: "role.delete",

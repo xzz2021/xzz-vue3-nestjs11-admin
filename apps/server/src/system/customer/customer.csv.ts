@@ -1,4 +1,7 @@
+import { escapeCsvCell, serializeCsvRow } from '#/processor/utils/csv.js';
 import type { CustomerStatus } from '#/generated/prisma/enums.js';
+
+export { escapeCsvCell };
 
 export const CUSTOMER_EXPORT_BATCH_SIZE = 500;
 export const CUSTOMER_EXPORT_MAX_ROWS = 10_000;
@@ -16,39 +19,21 @@ export interface CustomerCsvRow {
   createdAt: Date;
 }
 
-export const CUSTOMER_CSV_HEADER =
-  'id,name,phone,status,dealAmount,internalCost,createdAt,confidential,ownerId,departmentId\r\n';
-
-export function escapeCsvCell(value: unknown): string {
-  let text =
-    value == null
-      ? ''
-      : typeof value === 'string'
-        ? value
-        : typeof value === 'number' ||
-            typeof value === 'boolean' ||
-            typeof value === 'bigint'
-          ? `${value}`
-          : value instanceof Date
-            ? value.toISOString()
-            : (JSON.stringify(value) ?? '');
-  const firstSignificant = [...text].find((character) => {
-    const codePoint = character.codePointAt(0) ?? 0;
-    const controlCharacter =
-      codePoint <= 0x1f || (codePoint >= 0x7f && codePoint <= 0x9f);
-    return !/\s/u.test(character) && !controlCharacter;
-  });
-  if (
-    text.startsWith('\t') ||
-    (firstSignificant !== undefined && '=+-@'.includes(firstSignificant))
-  ) {
-    text = `'${text}`;
-  }
-  return /[",\r\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
-}
+export const CUSTOMER_CSV_HEADER = serializeCsvRow([
+  'id',
+  'name',
+  'phone',
+  'status',
+  'dealAmount',
+  'internalCost',
+  'createdAt',
+  'confidential',
+  'ownerId',
+  'departmentId',
+]);
 
 export function serializeCustomerCsvRow(row: CustomerCsvRow): string {
-  return [
+  return serializeCsvRow([
     row.id,
     row.name,
     row.phone,
@@ -59,8 +44,5 @@ export function serializeCustomerCsvRow(row: CustomerCsvRow): string {
     row.confidential,
     row.ownerId,
     row.departmentId,
-  ]
-    .map(escapeCsvCell)
-    .join(',')
-    .concat('\r\n');
+  ]);
 }

@@ -1,11 +1,20 @@
 <script setup lang="tsx">
 import type { DepartmentItem } from '@/api/department/types'
-import { addUserApi, deleteUserApi, getUserByDepartmentIdApi, updateUserApi } from '@/api/user'
+import {
+  addUserApi,
+  deleteUserApi,
+  downloadUserImportTemplateApi,
+  exportUserApi,
+  getUserByDepartmentIdApi,
+  importUserApi,
+  updateUserApi
+} from '@/api/user'
 import type { UserItem } from '@/api/user/types'
 import { BaseButton } from '@/components/Button'
 import { ContentWrap } from '@/components/ContentWrap'
 import { Dialog } from '@/components/Dialog'
 import type { FormSchema } from '@/components/Form'
+import { hasPermi } from '@/components/Permission'
 import { Search } from '@/components/Search'
 import { Table, type TableColumn } from '@/components/Table'
 import { useI18n } from '@/hooks/web/useI18n'
@@ -13,10 +22,11 @@ import { useTable } from '@/hooks/web/useTable'
 import { useDepartmentStore } from '@/store/modules/department'
 import { useRoleStore } from '@/store/modules/role'
 import { formatToDateTime } from '@/utils/dateUtil'
-import { ElDivider, ElInput, ElTag, ElTree } from 'element-plus'
+import { ElDivider, ElInput, ElMessage, ElTag, ElTree } from 'element-plus'
 import { computed, nextTick, onMounted, reactive, ref, unref, watch } from 'vue'
 import Detail from './components/Detail.vue'
 import Write from './components/Write.vue'
+
 const { t } = useI18n()
 const departmentStore = useDepartmentStore()
 const roleStore = useRoleStore()
@@ -30,8 +40,15 @@ const currentRow = ref<UserItem>()
 const defaultDepartmentId = ref('')
 const writeRef = ref<ComponentRef<typeof Write>>()
 const saveLoading = ref(false)
+const exportLoading = ref(false)
+const importLoading = ref(false)
+const templateLoading = ref(false)
+const importInputRef = ref<HTMLInputElement>()
 const treeEl = ref<InstanceType<typeof ElTree>>()
 const currentDepartment = ref('')
+
+const canExport = () => hasPermi('user:export')
+const canImport = () => hasPermi('user:import')
 
 const { tableRegister, tableState, tableMethods } = useTable<UserItem, string>({
   immediate: false,
@@ -220,6 +237,104 @@ const save = async () => {
   }
 }
 
+const parseFileName = (contentDisposition?: string) => {
+  if (!contentDisposition) return undefined
+  const utfMatch = contentDisposition.match(/filename\*=UTF-8''([^;]+)/i)
+  if (utfMatch?.[1]) return decodeURIComponent(utfMatch[1])
+  const match = contentDisposition.match(/filename="?([^";]+)"?/i)
+  return match?.[1]
+}
+
+const downloadBlob = (blob: Blob, fileName: string) => {
+  const objectUrl = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = objectUrl
+  link.download = fileName
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(objectUrl)
+}
+
+const handleExport = async () => {
+  if (!canExport()) return
+  exportLoading.value = true
+  try {
+    const departmentId = unref(currentNodeKey) === '__all__' ? undefined : unref(currentNodeKey)
+    const response = await exportUserApi({
+      ...(departmentId ? { id: departmentId } : {}),
+      ...unref(searchParams)
+    })
+    if (response.data.type.includes('application/json')) {
+      ElMessage.error(t('userDemo.exportFailed'))
+      return
+    }
+    downloadBlob(response.data, parseFileName(response.headers['content-disposition']) || 'users.csv')
+    ElMessage.success(t('userDemo.exportSuccess'))
+  } catch {
+    ElMessage.error(t('userDemo.exportFailed'))
+  } finally {
+    exportLoading.value = false
+  }
+}
+
+const handleDownloadTemplate = async () => {
+  if (!canImport()) return
+  templateLoading.value = true
+  try {
+    const response = await downloadUserImportTemplateApi()
+    if (response.data.type.includes('application/json')) {
+      ElMessage.error(t('userDemo.importFailed'))
+      return
+    }
+    downloadBlob(
+      response.data,
+      parseFileName(response.headers['content-disposition']) || 'user-import-template.csv'
+    )
+  } catch {
+    ElMessage.error(t('userDemo.importFailed'))
+  } finally {
+    templateLoading.value = false
+  }
+}
+
+const triggerImport = () => {
+  if (!canImport()) return
+  importInputRef.value?.click()
+}
+
+const handleImportFile = async (event: Event) => {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  input.value = ''
+  if (!file) {
+    ElMessage.warning(t('userDemo.importFileRequired'))
+    return
+  }
+  importLoading.value = true
+  try {
+    const formData = new FormData()
+    formData.append('file', file)
+    const res = await importUserApi(formData)
+    const result = res.data
+    ElMessage.success(
+      t('userDemo.importSuccess', { success: result.success, failed: result.failed })
+    )
+    if (result.failed > 0 && result.errors?.length) {
+      const preview = result.errors
+        .slice(0, 3)
+        .map((item) => `第${item.row}行: ${item.message}`)
+        .join('；')
+      ElMessage.warning(preview)
+    }
+    if (result.success > 0) getList()
+  } catch {
+    ElMessage.error(t('userDemo.importFailed'))
+  } finally {
+    importLoading.value = false
+  }
+}
+
 const loadBaseData = async () => {
   await departmentStore.ensureList()
   currentNodeKey.value = '__all__'
@@ -274,6 +389,22 @@ onMounted(() => {
         <BaseButton :loading="delLoading" type="danger" @click="removeSelection()">
           {{ t('exampleDemo.del') }}
         </BaseButton>
+        <BaseButton v-hasPermi="'user:export'" :loading="exportLoading" @click="handleExport">
+          {{ t('userDemo.export') }}
+        </BaseButton>
+        <BaseButton v-hasPermi="'user:import'" :loading="templateLoading" @click="handleDownloadTemplate">
+          {{ t('userDemo.downloadTemplate') }}
+        </BaseButton>
+        <BaseButton v-hasPermi="'user:import'" :loading="importLoading" @click="triggerImport">
+          {{ t('userDemo.import') }}
+        </BaseButton>
+        <input
+          ref="importInputRef"
+          type="file"
+          accept=".csv,text/csv"
+          class="hidden"
+          @change="handleImportFile"
+        />
       </div>
 
       <Table

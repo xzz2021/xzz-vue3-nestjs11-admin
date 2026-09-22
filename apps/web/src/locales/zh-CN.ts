@@ -679,7 +679,15 @@ export default {
     confirmNewPassword: '确认新密码',
     //  个人信息  修改密码  基本资料
     personalInfo: '个人信息',
-    basicInfo: '基本资料'
+    basicInfo: '基本资料',
+    export: '导出',
+    import: '导入',
+    downloadTemplate: '下载模板',
+    exportSuccess: '导出成功',
+    exportFailed: '导出失败',
+    importSuccess: '导入完成：成功 {success}，失败 {failed}',
+    importFailed: '导入失败',
+    importFileRequired: '请选择 CSV 文件'
   },
   personal: {
     personalInfo: '个人信息',
