@@ -1,4 +1,7 @@
-import { AuditLogModel, UserOperationLogModel } from '#/generated/zod/index.js';
+import {
+  AuditLogSchema,
+  UserOperationLogSchema,
+} from '#/generated/zod/schemas/models/index.js';
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
@@ -22,7 +25,7 @@ const dateRangeSchema = z.preprocess(
   z.tuple([z.iso.datetime(), z.iso.datetime()]).optional(),
 );
 
-const LogSchema = UserOperationLogModel.pick({
+const LogSchema = UserOperationLogSchema.pick({
   id: true,
   ip: true,
   location: true,
@@ -124,7 +127,7 @@ export class QueryAuditLogParams extends createZodDto(
   QueryAuditLogParamsSchema,
 ) {}
 
-const AuditLogListResSchema = AuditLogModel.pick({
+const AuditLogListResSchema = AuditLogSchema.pick({
   id: true,
   userId: true,
   action: true,

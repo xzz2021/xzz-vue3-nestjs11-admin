@@ -1,4 +1,5 @@
-import { MenuType } from "#/generated/zod/enums.js";
+import { MenuType } from "#/generated/prisma/enums.js";
+import { UpdateMenuDto } from "./dto/menu.dto.js";
 import { MenuRepository } from "./menu.repository.js";
 import { MenuService } from "./menu.service.js";
 
@@ -38,15 +39,17 @@ describe("MenuService tree updates", () => {
   });
 
   it("preserves the current parent when parentId is omitted", async () => {
-    await service.update({
-      id: "menu-1",
-      name: "Menu",
-      path: "menu",
-      type: MenuType.MENU,
-      sort: 0,
-      enabled: true,
-      title: "Menu",
-    });
+    await service.update(
+      UpdateMenuDto.schema.parse({
+        id: "menu-1",
+        name: "Menu",
+        path: "menu",
+        type: MenuType.MENU,
+        sort: 0,
+        enabled: true,
+        title: "Menu",
+      }) as UpdateMenuDto,
+    );
 
     expect(update).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -58,16 +61,18 @@ describe("MenuService tree updates", () => {
 
   it("rejects moving a menu under its descendant", async () => {
     await expect(
-      service.update({
-        id: "menu-1",
-        parentId: "child",
-        name: "Menu",
-        path: "menu",
-        type: MenuType.MENU,
-        sort: 0,
-        enabled: true,
-        title: "Menu",
-      }),
+      service.update(
+        UpdateMenuDto.schema.parse({
+          id: "menu-1",
+          parentId: "child",
+          name: "Menu",
+          path: "menu",
+          type: MenuType.MENU,
+          sort: 0,
+          enabled: true,
+          title: "Menu",
+        }) as UpdateMenuDto,
+      ),
     ).rejects.toThrow("不能将菜单移动到自己的后代节点下");
     expect(update).not.toHaveBeenCalled();
   });

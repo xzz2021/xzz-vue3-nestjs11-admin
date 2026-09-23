@@ -1,4 +1,4 @@
-import { DictionaryTypeModel } from '#/generated/zod/dictionarytype.js';
+import { DictionaryTypeSchema } from '#/generated/zod/schemas/models/DictionaryType.schema.js';
 import z from 'zod';
 import { createZodDto } from 'nestjs-zod';
 import { DictionaryItemSchema } from './entry.dto.js';
@@ -51,7 +51,7 @@ const DeleteDictionarySchema = z.object({
 });
 export class DeleteDictionaryDto extends createZodDto(DeleteDictionarySchema) {}
 
-const DictionaryListItemSchema = DictionaryTypeModel.omit({
+const DictionaryListItemSchema = DictionaryTypeSchema.omit({
   updatedAt: true,
 }).extend({
   createdAt: z.coerce.string().optional(),

@@ -3,8 +3,6 @@ packages:
   - packages/*
 
 allowBuilds:
-  # preinstall 使用 Unix find，Windows 会失败；该脚本仅清理测试目录，可安全跳过
-  "@hatkom/nestjs-zod-prisma": false
   "@parcel/watcher": true
   "@prisma/engines": true
   "@scarf/scarf": true
@@ -15,6 +13,7 @@ allowBuilds:
   ip2region-ts: false
   msgpackr-extract: true
   prisma: true
+  prisma-zod-generator: true
   unrs-resolver: true
   vue-demi: true
   workerd: true

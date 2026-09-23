@@ -1,4 +1,4 @@
-import { DepartmentModel } from '#/generated/zod/index.js';
+import { DepartmentSchema } from '#/generated/zod/schemas/models/Department.schema.js';
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
@@ -7,7 +7,7 @@ const DepartmentIdSchema = z
   .min(1)
   .meta({ description: '部门ID', example: 'department-1' });
 
-const DepartmentBaseSchema = DepartmentModel.pick({
+const DepartmentBaseSchema = DepartmentSchema.pick({
   name: true,
   enabled: true,
   description: true,
@@ -16,14 +16,14 @@ const DepartmentBaseSchema = DepartmentModel.pick({
   parentId: DepartmentIdSchema.nullish(),
 });
 
-const DepartmentSchema = DepartmentBaseSchema.extend({
+const DepartmentDtoSchema = DepartmentBaseSchema.extend({
   id: DepartmentIdSchema,
 });
 
 const CreateDepartmentSchema = DepartmentBaseSchema;
 export class CreateDepartmentDto extends createZodDto(CreateDepartmentSchema) {}
 
-const UpdateDepartmentSchema = DepartmentSchema.refine(
+const UpdateDepartmentSchema = DepartmentDtoSchema.refine(
   (data) => data.parentId == null || data.id !== data.parentId,
   {
     message: '部门不能设置为自己的父部门',
@@ -39,7 +39,7 @@ const FindDepartmentSchema = z.object({
 export class DeleteDepartmentDto extends createZodDto(FindDepartmentSchema) {}
 
 // 排除updatedAt字段
-const DepartmentTreeSchema = DepartmentModel.omit({
+const DepartmentTreeSchema = DepartmentSchema.omit({
   updatedAt: true,
 }).extend({
   createdAt: z.iso.datetime(),

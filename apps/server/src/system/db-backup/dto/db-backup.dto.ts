@@ -1,4 +1,4 @@
-import { DbBackupConfigModel } from '#/generated/zod/index.js';
+import { DbBackupConfigSchema } from '#/generated/zod/schemas/models/DbBackupConfig.schema.js';
 import { BackupStatus, BackupTrigger } from '#/generated/prisma/client.js';
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
@@ -28,7 +28,7 @@ const timezoneSchema = z
   .refine((value) => isValidTimezone(value), '时区格式不正确')
   .meta({ description: 'IANA 时区', example: 'Asia/Shanghai' });
 
-const prefixSchema = DbBackupConfigModel.shape.filePrefix
+const prefixSchema = DbBackupConfigSchema.shape.filePrefix
   .trim()
   .refine(
     (value) => /^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(value),

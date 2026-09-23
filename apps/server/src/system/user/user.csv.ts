@@ -1,4 +1,4 @@
-import { UserModel } from '#/generated/zod/user.js';
+import { UserSchema } from '#/generated/zod/schemas/models/User.schema.js';
 import { csvHeaderLine, serializeCsvRow } from '#/processor/utils/csv.js';
 import { z } from 'zod';
 
@@ -32,14 +32,14 @@ const blankToUndefined = (value: unknown) =>
   value === undefined || value === null || value === '' ? undefined : value;
 
 const UserImportRowSchema = z.object({
-  username: UserModel.shape.username,
-  phone: UserModel.shape.phone,
-  password: UserModel.shape.password,
+  username: UserSchema.shape.username,
+  phone: UserSchema.shape.phone,
+  password: UserSchema.shape.password,
   nickname: z.preprocess(
     blankToUndefined,
-    UserModel.shape.nickname.optional(),
+    UserSchema.shape.nickname.optional(),
   ),
-  email: z.preprocess(blankToUndefined, UserModel.shape.email.optional()),
+  email: z.preprocess(blankToUndefined, UserSchema.shape.email.optional()),
   departmentId: z.string().min(1, '部门 ID 不能为空'),
   roleCodes: z.preprocess((value: unknown) => {
     if (value === undefined || value === null || value === '') return [];

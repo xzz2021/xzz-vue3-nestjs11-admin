@@ -1,0 +1,18 @@
+{
+  "mode": "custom",
+  "pureModels": true,
+  "dateTimeStrategy": "coerce",
+  "zodImportTarget": "v4",
+  "variants": {
+    "pure": { "enabled": true },
+    "input": { "enabled": false },
+    "result": { "enabled": false }
+  },
+  "emit": {
+    "objects": false,
+    "crud": false,
+    "pureModels": true,
+    "variants": false,
+    "enums": true
+  }
+}

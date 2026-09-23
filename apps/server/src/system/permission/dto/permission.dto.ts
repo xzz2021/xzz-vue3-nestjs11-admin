@@ -1,4 +1,4 @@
-import { PermissionType } from '#/generated/zod/enums.js';
+import { PermissionType } from '#/generated/prisma/enums.js';
 import { z } from 'zod';
 import { createZodDto } from 'nestjs-zod';
 

@@ -1,4 +1,4 @@
-import { UserModel } from '#/generated/zod/user.js';
+import { UserSchema } from '#/generated/zod/schemas/models/User.schema.js';
 import { z } from 'zod';
 import { createZodDto } from 'nestjs-zod';
 
@@ -35,7 +35,7 @@ const QueryUserParamsSchema = z.object({
 });
 export class QueryUserParams extends createZodDto(QueryUserParamsSchema) {}
 
-const UserSchema = UserModel.pick({
+const UserDtoSchema = UserSchema.pick({
   username: true,
   phone: true,
   avatar: true,
@@ -48,9 +48,9 @@ const UserSchema = UserModel.pick({
   email: true,
   nickname: true,
 });
-export class UserDto extends createZodDto(UserSchema) {}
+export class UserDto extends createZodDto(UserDtoSchema) {}
 
-const UpdateUserSchema = UserSchema.extend({
+const UpdateUserSchema = UserDtoSchema.extend({
   id: z.string().min(1).meta({ description: '用户ID', example: '1' }),
   roles: z
     .array(z.string().min(1))
@@ -62,14 +62,14 @@ const UpdateUserSchema = UserSchema.extend({
 export class UpdateUserDto extends createZodDto(UpdateUserSchema) {}
 
 const CreateUserSchema = UpdateUserSchema.omit({ id: true }).extend({
-  password: UserModel.shape.password.meta({
+  password: UserSchema.shape.password.meta({
     description: '初始密码',
     example: 'ChangeMe_Now!',
   }),
 });
 export class CreateUserDto extends createZodDto(CreateUserSchema) {}
 
-const UpdatePersonalInfoSchema = UserSchema.extend({
+const UpdatePersonalInfoSchema = UserDtoSchema.extend({
   id: z.string().min(1).meta({ description: '用户ID', example: '1' }),
 });
 export class UpdatePersonalInfo extends createZodDto(
@@ -78,7 +78,7 @@ export class UpdatePersonalInfo extends createZodDto(
 
 const UserListResSchema = z.object({
   total: z.number().meta({ description: '总条数', example: 10 }),
-  list: z.array(UserSchema).meta({ description: '列表数据' }),
+  list: z.array(UserDtoSchema).meta({ description: '列表数据' }),
 });
 export class UserListRes extends createZodDto(UserListResSchema) {}
 
@@ -98,11 +98,11 @@ export class UserLookupListRes extends createZodDto(UserLookupListResSchema) {}
 
 const UpdatePwdSchema = z.object({
   id: z.string().min(1).meta({ description: '用户ID', example: '1' }),
-  password: UserModel.shape.password.meta({
+  password: UserSchema.shape.password.meta({
     description: '旧密码',
     example: 'OldPass_123!',
   }),
-  newPassword: UserModel.shape.password.meta({
+  newPassword: UserSchema.shape.password.meta({
     description: '新密码',
     example: 'NewPass_123!',
   }),
@@ -111,7 +111,7 @@ export class UpdatePwdDto extends createZodDto(UpdatePwdSchema) {}
 
 const AdminUpdatePwdSchema = z.object({
   id: z.string().min(1).meta({ description: '用户ID', example: '1' }),
-  password: UserModel.shape.password.meta({
+  password: UserSchema.shape.password.meta({
     description: '新密码',
     example: 'NewPass_123!',
   }),

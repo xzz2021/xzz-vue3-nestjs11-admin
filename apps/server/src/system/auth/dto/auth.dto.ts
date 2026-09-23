@@ -1,9 +1,9 @@
-import { UserModel } from '#/generated/zod/index.js';
+import { UserSchema } from '#/generated/zod/schemas/models/User.schema.js';
 import { z } from 'zod';
 import { createZodDto } from 'nestjs-zod/dto';
 import type { Request } from 'express';
 
-const RegisterSchema = UserModel.pick({
+const RegisterSchema = UserSchema.pick({
   username: true,
   password: true,
   phone: true,
@@ -13,7 +13,7 @@ const RegisterSchema = UserModel.pick({
 
 export class RegisterDto extends createZodDto(RegisterSchema) {}
 
-const RegisterResSchema = UserModel.omit({
+const RegisterResSchema = UserSchema.omit({
   password: true,
 }).extend({
   updatedAt: z.string(),
@@ -21,7 +21,7 @@ const RegisterResSchema = UserModel.omit({
 });
 export class RegisterResDto extends createZodDto(RegisterResSchema) {}
 
-const LoginInfoSchema = UserModel.pick({
+const LoginInfoSchema = UserSchema.pick({
   phone: true,
   password: true,
 });
@@ -33,7 +33,7 @@ const ForceLogoutSchema = z.object({
 export class ForceLogoutDto extends createZodDto(ForceLogoutSchema) {}
 
 const GetSmsCodeSchema = z.object({
-  phone: UserModel.shape.phone,
+  phone: UserSchema.shape.phone,
   type: z.enum(['register', 'reset']).meta({
     description: '验证码用途',
     example: 'reset',
@@ -42,13 +42,13 @@ const GetSmsCodeSchema = z.object({
 export class GetSmsCodeDto extends createZodDto(GetSmsCodeSchema) {}
 
 const ForgotPasswordSchema = z.object({
-  phone: UserModel.shape.phone,
+  phone: UserSchema.shape.phone,
   code: z
     .string()
     .length(6)
     .regex(/^\d{6}$/, '验证码须为6位数字')
     .meta({ description: '短信验证码', example: '123456' }),
-  password: UserModel.shape.password.meta({
+  password: UserSchema.shape.password.meta({
     description: '新密码',
     example: 'ChangeMe_Now!',
   }),

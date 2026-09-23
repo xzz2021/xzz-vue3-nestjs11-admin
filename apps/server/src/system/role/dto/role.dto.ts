@@ -1,8 +1,8 @@
 import {
-  MenuModel,
-  PermissionModel,
-  RoleModel,
-} from '#/generated/zod/index.js';
+  MenuSchema,
+  PermissionSchema,
+  RoleSchema,
+} from '#/generated/zod/schemas/models/index.js';
 import { DataScope } from '#/generated/prisma/enums.js';
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
@@ -16,7 +16,7 @@ const PermissionScopeSchema = z.object({
     .optional(),
 });
 
-const RoleMenuSchema = z.object({
+const RoleMenuAssignSchema = z.object({
   id: z.string().min(1),
 
   // 允许为空数组，因为更新时可能不勾选权限
@@ -43,14 +43,14 @@ const RoleMenuSchema = z.object({
       }
     }),
 });
-const CreateRoleSchema = RoleModel.pick({
+const CreateRoleSchema = RoleSchema.pick({
   name: true,
   code: true,
   enabled: true,
   description: true,
 }).extend({
   menus: z
-    .array(RoleMenuSchema)
+    .array(RoleMenuAssignSchema)
     .default([])
     .superRefine((menus, context) => {
       const seen = new Set<string>();
@@ -110,7 +110,7 @@ const DeleteRoleSchema = z.object({
 });
 export class DeleteRoleDto extends createZodDto(DeleteRoleSchema) {}
 
-const RoleSeedSchema = RoleModel.pick({
+const RoleSeedSchema = RoleSchema.pick({
   name: true,
   code: true,
   enabled: true,
@@ -126,7 +126,7 @@ const RoleSeedArraySchema = z.object({
 });
 export class RoleSeedArrayDto extends createZodDto(RoleSeedArraySchema) {}
 
-const RoleListSchema = RoleModel.pick({
+const RoleListSchema = RoleSchema.pick({
   id: true,
   name: true,
   code: true,
@@ -145,7 +145,7 @@ const RoleListResSchema = z.object({
 });
 export class RoleListRes extends createZodDto(RoleListResSchema) {}
 
-const MetaPermissionSchema = MenuModel.pick({
+const MetaPermissionSchema = MenuSchema.pick({
   title: true,
   icon: true,
   affix: true,
@@ -162,7 +162,7 @@ const MetaPermissionSchema = MenuModel.pick({
     .meta({ description: '权限code列表', example: ['add', 'edit', 'delete'] }),
 });
 
-const MenuPermissionListSchema = MenuModel.pick({
+const MenuPermissionListSchema = MenuSchema.pick({
   id: true,
   name: true,
   path: true,
@@ -183,7 +183,7 @@ export class MenuPermissionListRes extends createZodDto(
   MenuPermissionListResSchema,
 ) {}
 
-const RoleAuthorizationPermissionSchema = PermissionModel.extend({
+const RoleAuthorizationPermissionSchema = PermissionSchema.extend({
   resource: z.string().nullable(),
   action: z.string().nullable(),
   sort: z.number().int(),
@@ -196,7 +196,7 @@ const RoleAuthorizationPermissionSchema = PermissionModel.extend({
   disabledDepartmentIds: z.array(z.string()),
 });
 
-const RoleAuthorizationMenuBaseSchema = MenuModel.extend({
+const RoleAuthorizationMenuBaseSchema = MenuSchema.extend({
   sort: z.number().int(),
   enabled: z.boolean(),
   parentId: z.string().nullable(),

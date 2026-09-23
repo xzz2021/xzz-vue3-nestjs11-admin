@@ -2,17 +2,17 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider     = "prisma-client"
-  output       = "../src/generated/prisma"
-  moduleFormat = "cjs"
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  moduleFormat        = "esm"
+  importFileExtension = "js"
 }
 
-// Zod DTO 生成器（字段校验通过 /// @z.xxx 注释注入）
+// Zod schema 生成器（字段校验通过 /// @zod.xxx 注释注入）
 generator zod {
-  provider    = "nestjs-zod-prisma"
-  output      = "../src/generated/zod"
-  generateDto = true
-  moduleFormat = "esm"
+  provider = "prisma-zod-generator"
+  output   = "../src/generated/zod"
+  config   = "./zod-generator.config.json"
 }
 
 datasource db {
@@ -86,31 +86,31 @@ enum FileUploadStatus {
 
 model User {
   id       String @id @default(cuid())
-  /// @z.string().min(2).max(50).meta({ description: '用户名', example: 'admin' })
+  /// @zod.min(2).max(50).meta({ description: '用户名', example: 'admin' })
   username String
-  /// @z.string().min(6).max(128).meta({ description: '密码（存储哈希值）', example: '123456' })
+  /// @zod.min(6).max(128).meta({ description: '密码（存储哈希值）', example: '123456' })
   password String
-  /// @z.string().max(50).optional().meta({ description: '昵称', example: 'admin' })
+  /// @zod.max(50).meta({ description: '昵称', example: 'admin' })
   nickname String?
-  /// @z.string().email({ message: '邮箱格式不正确' }).optional().meta({ description: '邮箱', example: 'admin@example.com' })
+  /// @zod.email('邮箱格式不正确').meta({ description: '邮箱', example: 'admin@example.com' })
   email    String? @unique
-  /// @z.string().regex(/^1[3-9]\d{9}$/, { message: '手机号格式不正确' }).meta({ description: '手机号', example: '13800138000' })
+  /// @zod.regex(/^1[3-9]\d{9}$/, '手机号格式不正确').meta({ description: '手机号', example: '13800138000' })
   phone    String  @unique
-  /// @z.string().url({ message: '头像地址格式不正确' }).optional().meta({ description: '头像 URL', example: 'https://example.com/avatar.png' })
+  /// @zod.url('头像地址格式不正确').meta({ description: '头像 URL', example: 'https://example.com/avatar.png' })
   avatar   String?
-  /// @z.boolean().optional().meta({ description: '是否启用', example: true })
+  /// @zod.meta({ description: '是否启用', example: true })
   enabled  Boolean @default(true)
-  /// @z.coerce.date().optional().meta({ description: '最后登录时间', example: '2026-01-01T12:00:00.000Z' })
+  /// @zod.meta({ description: '最后登录时间', example: '2026-01-01T12:00:00.000Z' })
   lastLoginAt DateTime?
-  /// @z.string().max(45).optional().meta({ description: '最后登录 IP', example: '127.0.0.1' })
+  /// @zod.max(45).meta({ description: '最后登录 IP', example: '127.0.0.1' })
   lastLoginIp String?
-  /// @z.string().max(100).optional().meta({ description: '最后登录地理位置', example: '中国 广东省 深圳市' })
+  /// @zod.max(100).meta({ description: '最后登录地理位置', example: '中国 广东省 深圳市' })
   lastLoginLocation String? @db.VarChar(100)
-  /// @z.string().max(500).optional().meta({ description: '备注', example: '备注' })
+  /// @zod.max(500).meta({ description: '备注', example: '备注' })
   remark String?
-  /// @z.coerce.date().optional().meta({ description: '密码修改时间', example: '2026-01-01T12:00:00.000Z' })
+  /// @zod.meta({ description: '密码修改时间', example: '2026-01-01T12:00:00.000Z' })
   passwordChangedAt DateTime?
-  /// @z.string().optional().meta({ description: '部门 ID', example: 'clxxx' })
+  /// @zod.meta({ description: '部门 ID', example: 'clxxx' })
   departmentId String?
   department   Department?       @relation(fields: [departmentId], references: [id], onDelete: SetNull)
   roles        UserRole[]
@@ -134,22 +134,22 @@ model User {
 
 model Role {
   id String @id @default(cuid())
-  /// @z.string().min(1).max(50).meta({ description: '角色编码，唯一标识', example: 'SUPER_ADMIN' })
+  /// @zod.min(1).max(50).meta({ description: '角色编码，唯一标识', example: 'SUPER_ADMIN' })
   code        String  @unique
-  /// @z.string().min(1).max(50).meta({ description: '角色名称', example: '超级管理员' })
+  /// @zod.min(1).max(50).meta({ description: '角色名称', example: '超级管理员' })
   name        String
-  /// @z.string().max(200).optional().meta({ description: '角色描述', example: '拥有全部后台权限' })
+  /// @zod.max(200).meta({ description: '角色描述', example: '拥有全部后台权限' })
   description String?
-  /// @z.number().int().min(0).optional().meta({ description: '排序', example: 0 })
+  /// @zod.min(0).meta({ description: '排序', example: 0 }).default(0)
   sort    Int     @default(0)
-  /// @z.boolean().optional().meta({ description: '是否启用', example: true })
+  /// @zod.meta({ description: '是否启用', example: true })
   enabled Boolean @default(true)
-  /// @z.boolean().optional().meta({ description: '是否系统角色，系统角色不可删除', example: false })
+  /// @zod.meta({ description: '是否系统角色，系统角色不可删除', example: false }).default(false)
   isSystem Boolean @default(false)
   users       UserRole[]
   menus       RoleMenu[]
   permissions RolePermission[]
-  /// @z.string().optional().meta({ description: '创建人用户 ID', example: 'clxxx' })
+  /// @zod.meta({ description: '创建人用户 ID', example: 'clxxx' })
   createdById String?
   createdBy   User?   @relation("RoleCreator", fields: [createdById], references: [id], onDelete: SetNull)
   createdAt DateTime @default(now())
@@ -163,10 +163,10 @@ model UserRole {
   roleId String
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   role   Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  /// @z.string().optional().meta({ description: '分配人用户 ID', example: 'clxxx' })
+  /// @zod.meta({ description: '分配人用户 ID', example: 'clxxx' })
   assignedById String?
   assignedBy   User?   @relation("UserRoleAssigner", fields: [assignedById], references: [id], onDelete: SetNull)
-  /// @z.coerce.date().optional().meta({ description: '分配时间', example: '2026-01-01T12:00:00.000Z' })
+  /// @zod.meta({ description: '分配时间', example: '2026-01-01T12:00:00.000Z' })
   assignedAt DateTime?
   createdAt  DateTime @default(now())
 
@@ -181,47 +181,46 @@ model Menu {
   parentId String?
   parent   Menu?    @relation("MenuTree", fields: [parentId], references: [id], onDelete: SetNull)
   children Menu[]   @relation("MenuTree")
-  /// @z.nativeEnum(MenuType).meta({ description: 'DIRECTORY 目录 / MENU 页面', example: 'DIRECTORY' })
   type MenuType @default(DIRECTORY)
-  /// @z.string().min(1).max(50).meta({ description: '路由名称，全局唯一，用于前端 keep-alive', example: 'User' })
+  /// @zod.min(1).max(50).meta({ description: '路由名称，全局唯一，用于前端 keep-alive', example: 'User' })
   name String @unique
-  /// @z.string().min(1).max(100).meta({ description: '路由路径，全局唯一', example: 'authorization/user' })
+  /// @zod.min(1).max(100).meta({ description: '路由路径，全局唯一', example: 'authorization/user' })
   path String @db.VarChar(100) @unique
-  /// @z.string().max(100).optional().meta({ description: '前端组件路径', example: 'views/Authorization/User/User' })
+  /// @zod.max(100).meta({ description: '前端组件路径', example: 'views/Authorization/User/User' })
   component String? @db.VarChar(100)
-  /// @z.string().max(100).optional().meta({ description: '重定向路径', example: '/authorization/user' })
+  /// @zod.max(100).meta({ description: '重定向路径', example: '/authorization/user' })
   redirect String? @db.VarChar(100)
-  /// @z.string().min(1).max(50).meta({ description: '菜单标题，用于 i18n 展示', example: '用户管理' })
+  /// @zod.min(1).max(50).meta({ description: '菜单标题，用于 i18n 展示', example: '用户管理' })
   title String @db.VarChar(50)
-  /// @z.boolean().optional().meta({ description: '是否启用', example: true })
+  /// @zod.meta({ description: '是否启用', example: true })
   enabled Boolean @default(true)
 
   // 以下 meta 字段内嵌于 Menu，供前端路由渲染
-  /// @z.boolean().optional().meta({ description: '是否缓存页面', example: false })
+  /// @zod.meta({ description: '是否缓存页面', example: false }).default(false)
   keepAlive  Boolean @default(false)
-  /// @z.number().int().min(0).optional().meta({ description: '排序', example: 0 })
+  /// @zod.min(0).meta({ description: '排序', example: 0 }).default(0)
   sort       Int     @default(0)
-  /// @z.string().max(50).optional().meta({ description: '菜单图标', example: 'mdi:account' })
+  /// @zod.max(50).meta({ description: '菜单图标', example: 'mdi:account' })
   icon       String? @db.VarChar(50)
-  /// @z.boolean().optional().meta({ description: '是否固定标签页', example: false })
+  /// @zod.meta({ description: '是否固定标签页', example: false }).default(false)
   affix      Boolean @default(false)
-  /// @z.string().max(100).optional().meta({ description: '高亮菜单路径（隐藏子路由时指向父级）', example: '/authorization/user' })
+  /// @zod.max(100).meta({ description: '高亮菜单路径（隐藏子路由时指向父级）', example: '/authorization/user' })
   activeMenu String? @db.VarChar(100)
-  /// @z.boolean().optional().meta({ description: '是否始终显示根菜单', example: false })
+  /// @zod.meta({ description: '是否始终显示根菜单', example: false }).default(false)
   alwaysShow Boolean @default(false)
-  /// @z.boolean().optional().meta({ description: '是否显示面包屑', example: true })
+  /// @zod.meta({ description: '是否显示面包屑', example: true })
   breadcrumb Boolean @default(true)
-  /// @z.boolean().optional().meta({ description: '是否允许跳转', example: false })
+  /// @zod.meta({ description: '是否允许跳转', example: false }).default(false)
   canTo      Boolean @default(false)
-  /// @z.boolean().optional().meta({ description: '是否在侧边栏隐藏', example: false })
+  /// @zod.meta({ description: '是否在侧边栏隐藏', example: false }).default(false)
   hidden     Boolean @default(false)
-  /// @z.boolean().optional().meta({ description: '是否禁用 keep-alive', example: false })
+  /// @zod.meta({ description: '是否禁用 keep-alive', example: false }).default(false)
   noCache    Boolean @default(false)
-  /// @z.boolean().optional().meta({ description: '是否隐藏标签页', example: false })
+  /// @zod.meta({ description: '是否隐藏标签页', example: false }).default(false)
   noTagsView Boolean @default(false)
-  /// @z.boolean().optional().meta({ description: '是否外部链接', example: false })
+  /// @zod.meta({ description: '是否外部链接', example: false }).default(false)
   external Boolean @default(false)
-  /// @z.string().max(100).regex(/^(https?:\/\/.+|\/.*)$/, { message: '外部链接格式不正确' }).optional().meta({ description: '外部链接地址，支持 http(s) 绝对地址或 / 开头的相对地址', example: 'https://example.com' })
+  /// @zod.max(100).regex(/^(https?:\/\/.+|\/.*)$/, '外部链接格式不正确').meta({ description: '外部链接地址，支持 http(s) 绝对地址或 / 开头的相对地址', example: 'https://example.com' })
   link String? @db.VarChar(100)
 
   roles       RoleMenu[]
@@ -235,20 +234,20 @@ model Menu {
 }
 
 model Permission {
-  /// @z.string().meta({ description: '所属菜单 ID', example: 'clxxx' })
+  /// @zod.meta({ description: '所属菜单 ID', example: 'clxxx' })
   id   String @id @default(cuid())
-  /// @z.string().min(1).max(50).meta({ description: '权限名称', example: '用户列表' })
+  /// @zod.min(1).max(50).meta({ description: '权限名称', example: '用户列表' })
   name String
-  /// @z.string().min(1).max(100).meta({ description: '权限编码，唯一标识', example: 'system:user:list' })
+  /// @zod.min(1).max(100).meta({ description: '权限编码，唯一标识', example: 'system:user:list' })
   code String @unique
   resource String? @db.VarChar(100)
   action String? @db.VarChar(50)
+  /// @zod.default(false)
   scopeEnabled Boolean @default(false)
-  /// @z.nativeEnum(PermissionType).meta({ description: '权限类型', example: 'BUTTON' })
   type PermissionType
-  /// @z.number().int().min(0).optional().meta({ description: '排序', example: 0 })
+  /// @zod.min(0).meta({ description: '排序', example: 0 }).default(0)
   sort Int @default(0)
-  /// @z.boolean().optional().meta({ description: '是否启用', example: true })
+  /// @zod.meta({ description: '是否启用', example: true })
   enabled Boolean @default(true)
   menuId String
   menu   Menu   @relation(fields: [menuId], references: [id], onDelete: Cascade)
@@ -308,15 +307,15 @@ model Department {
   parentId String?
   parent   Department?  @relation("DepartmentTree", fields: [parentId], references: [id], onDelete: SetNull)
   children Department[] @relation("DepartmentTree")
-  /// @z.string().min(1).max(50).meta({ description: '部门名称', example: '研发部' })
+  /// @zod.min(1).max(50).meta({ description: '部门名称', example: '研发部' })
   name String
-  /// @z.string().max(512).meta({ description: '物化路径，用于树形查询', example: 'ROOT/child' })
+  /// @zod.max(512).meta({ description: '物化路径，用于树形查询', example: 'ROOT/child' })
   path String @db.VarChar(512)
-  /// @z.number().int().min(0).optional().meta({ description: '排序', example: 0 })
+  /// @zod.min(0).meta({ description: '排序', example: 0 }).default(0)
   sort        Int     @default(0)
-  /// @z.boolean().optional().meta({ description: '是否启用', example: true })
+  /// @zod.meta({ description: '是否启用', example: true })
   enabled     Boolean @default(true)
-  /// @z.string().max(200).optional().meta({ description: '部门描述', example: '负责产品研发' })
+  /// @zod.max(200).meta({ description: '部门描述', example: '负责产品研发' })
   description String?
   users                     User[]
   rolePermissionDepartments RolePermissionDepartment[]
@@ -338,6 +337,7 @@ model Customer {
   status       CustomerStatus @default(LEAD)
   dealAmount   Decimal        @default(0) @db.Decimal(18, 2)
   internalCost Decimal        @default(0) @db.Decimal(18, 2)
+  /// @zod.default(false)
   confidential Boolean        @default(false)
   ownerId      String
   owner        User           @relation("CustomerOwner", fields: [ownerId], references: [id], onDelete: Restrict)
@@ -345,6 +345,7 @@ model Customer {
   department   Department     @relation(fields: [departmentId], references: [id], onDelete: Restrict)
   createdById  String
   createdBy    User           @relation("CustomerCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  /// @zod.default(0)
   version      Int            @default(0)
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
@@ -359,11 +360,11 @@ model Customer {
 
 model DictionaryType {
   id   String @id @default(cuid())
-  /// @z.string().min(1).max(50).meta({ description: '字典编码，唯一标识', example: 'user_status' })
+  /// @zod.min(1).max(50).meta({ description: '字典编码，唯一标识', example: 'user_status' })
   code String @unique
-  /// @z.string().min(1).max(50).meta({ description: '字典名称', example: '用户状态' })
+  /// @zod.min(1).max(50).meta({ description: '字典名称', example: '用户状态' })
   name    String
-  /// @z.boolean().optional().meta({ description: '是否启用', example: true })
+  /// @zod.meta({ description: '是否启用', example: true })
   enabled Boolean @default(true)
   items   DictionaryItem[]
   createdAt DateTime @default(now())
@@ -374,13 +375,13 @@ model DictionaryItem {
   id     String         @id @default(cuid())
   typeId String
   type   DictionaryType @relation(fields: [typeId], references: [id], onDelete: Cascade)
-  /// @z.string().min(1).max(50).meta({ description: '字典项标签', example: '启用' })
+  /// @zod.min(1).max(50).meta({ description: '字典项标签', example: '启用' })
   label String
-  /// @z.string().min(1).max(50).meta({ description: '字典项值', example: '1' })
+  /// @zod.min(1).max(50).meta({ description: '字典项值', example: '1' })
   value String
-  /// @z.number().int().min(0).optional().meta({ description: '排序', example: 0 })
+  /// @zod.min(0).meta({ description: '排序', example: 0 }).default(0)
   sort    Int     @default(0)
-  /// @z.boolean().optional().meta({ description: '是否启用', example: true })
+  /// @zod.meta({ description: '是否启用', example: true })
   enabled Boolean @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -391,17 +392,16 @@ model DictionaryItem {
 
 model Notice {
   id      String      @id @default(cuid())
-  /// @z.string().min(1).max(100).meta({ description: '公告标题', example: '系统维护通知' })
+  /// @zod.min(1).max(100).meta({ description: '公告标题', example: '系统维护通知' })
   title   String
-  /// @z.string().min(1).meta({ description: '公告内容', example: '系统将于今晚 22:00 维护' })
+  /// @zod.min(1).meta({ description: '公告内容', example: '系统将于今晚 22:00 维护' })
   content String      @db.Text
-  /// @z.nativeEnum(NoticeLevel).optional().meta({ description: '公告级别', example: 'INFO' })
   level     NoticeLevel @default(INFO)
-  /// @z.boolean().optional().meta({ description: '是否已发布', example: false })
+  /// @zod.meta({ description: '是否已发布', example: false }).default(false)
   published Boolean     @default(false)
-  /// @z.coerce.date().optional().meta({ description: '生效开始时间', example: '2026-01-01T00:00:00.000Z' })
+  /// @zod.meta({ description: '生效开始时间', example: '2026-01-01T00:00:00.000Z' })
   startsAt DateTime?
-  /// @z.coerce.date().optional().meta({ description: '生效结束时间', example: '2026-12-31T23:59:59.000Z' })
+  /// @zod.meta({ description: '生效结束时间', example: '2026-12-31T23:59:59.000Z' })
   endsAt   DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -414,21 +414,19 @@ model Message {
   id    String      @id @default(cuid())
   /// 派发批次 ID（Bull 任务幂等，防重试重复落库）
   dispatchId String
-  /// @z.nativeEnum(MessageType).meta({ description: '消息类型', example: 'SYSTEM' })
   type  MessageType
-  /// @z.string().min(1).max(200).meta({ description: '消息标题', example: '系统通知' })
+  /// @zod.min(1).max(200).meta({ description: '消息标题', example: '系统通知' })
   title String      @db.VarChar(200)
-  /// @z.string().min(1).meta({ description: '消息内容', example: '服务已恢复' })
+  /// @zod.min(1).meta({ description: '消息内容', example: '服务已恢复' })
   content String @db.Text
-  /// @z.nativeEnum(NoticeLevel).optional().meta({ description: '级别', example: 'INFO' })
   level NoticeLevel @default(INFO)
-  /// @z.string().optional().meta({ description: '发送人 ID，系统/告警可为空', example: 'clxxx' })
+  /// @zod.meta({ description: '发送人 ID，系统/告警可为空', example: 'clxxx' })
   senderId String?
   sender   User?   @relation("MessageSender", fields: [senderId], references: [id], onDelete: SetNull)
-  /// @z.string().meta({ description: '接收人 ID', example: 'clxxx' })
+  /// @zod.meta({ description: '接收人 ID', example: 'clxxx' })
   receiverId String
   receiver   User   @relation("MessageReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
-  /// @z.coerce.date().optional().meta({ description: '已读时间', example: '2026-01-01T12:00:00.000Z' })
+  /// @zod.meta({ description: '已读时间', example: '2026-01-01T12:00:00.000Z' })
   readAt DateTime?
   /// 扩展信息：链接、来源模块等
   meta Json?
@@ -444,15 +442,15 @@ model UserSession {
   id     String @id @default(cuid())
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  /// @z.string().min(1).meta({ description: 'Token 哈希值', example: 'sha256...' })
+  /// @zod.min(1).meta({ description: 'Token 哈希值', example: 'sha256..' })
   tokenHash String   @unique
-  /// @z.string().max(45).optional().meta({ description: '登录 IP', example: '127.0.0.1' })
+  /// @zod.max(45).meta({ description: '登录 IP', example: '127.0.0.1' })
   ip        String?
-  /// @z.string().max(100).optional().meta({ description: '登录地理位置', example: '中国 广东省 深圳市' })
+  /// @zod.max(100).meta({ description: '登录地理位置', example: '中国 广东省 深圳市' })
   location  String? @db.VarChar(100)
-  /// @z.string().max(500).optional().meta({ description: 'User-Agent', example: 'Mozilla/5.0' })
+  /// @zod.max(500).meta({ description: 'User-Agent', example: 'Mozilla/5.0' })
   userAgent String?
-  /// @z.coerce.date().meta({ description: '过期时间', example: '2026-01-02T12:00:00.000Z' })
+  /// @zod.meta({ description: '过期时间', example: '2026-01-02T12:00:00.000Z' })
   expiresAt DateTime
   createdAt DateTime @default(now())
 
@@ -464,17 +462,17 @@ model AuditLog {
   id     String  @id @default(cuid())
   userId String?
   user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
-  /// @z.string().min(1).max(80).meta({ description: '领域动作', example: 'user.update' })
+  /// @zod.min(1).max(80).meta({ description: '领域动作', example: 'user.update' })
   action String @db.VarChar(80)
-  /// @z.string().min(1).max(100).meta({ description: '聚合根类型', example: 'User' })
+  /// @zod.min(1).max(100).meta({ description: '聚合根类型', example: 'User' })
   resource String @db.VarChar(100)
-  /// @z.string().max(64).optional().meta({ description: '聚合根 ID', example: 'clxxx' })
+  /// @zod.max(64).meta({ description: '聚合根 ID', example: 'clxxx' })
   resourceId String? @db.VarChar(64)
-  /// @z.boolean().optional().meta({ description: '业务是否成功', example: true })
+  /// @zod.meta({ description: '业务是否成功', example: true })
   success Boolean @default(true)
-  /// @z.string().max(45).optional().meta({ description: '操作 IP', example: '127.0.0.1' })
+  /// @zod.max(45).meta({ description: '操作 IP', example: '127.0.0.1' })
   ip String? @db.VarChar(45)
-  /// @z.string().max(100).optional().meta({ description: '操作地理位置', example: '中国 广东省 深圳市' })
+  /// @zod.max(100).meta({ description: '操作地理位置', example: '中国 广东省 深圳市' })
   location String? @db.VarChar(100)
   metadata Json?
   createdAt DateTime @default(now())
@@ -486,25 +484,24 @@ model AuditLog {
 }
 
 model DbBackupConfig {
-  /// @z.string().meta({ description: '配置主键', example: 'default' })
+  /// @zod.meta({ description: '配置主键', example: 'default' })
   id String @id @default("default")
-  /// @z.boolean().optional().meta({ description: '是否启用定时备份', example: true })
+  /// @zod.meta({ description: '是否启用定时备份', example: true })
   enabled Boolean @default(true)
-  /// @z.string().min(9).max(100).meta({ description: 'Cron 表达式', example: '0 0 * * * *' })
+  /// @zod.min(9).max(100).meta({ description: 'Cron 表达式', example: '0 0 * * * *' })
   cron String @db.VarChar(100)
-  /// @z.string().min(1).max(50).meta({ description: '时区', example: 'Asia/Shanghai' })
+  /// @zod.min(1).max(50).meta({ description: '时区', example: 'Asia/Shanghai' })
   timezone String @db.VarChar(50)
-  /// @z.number().int().min(1).max(999).meta({ description: '最大保留数量', example: 24 })
+  /// @zod.min(1).max(999).meta({ description: '最大保留数量', example: 24 })
   retentionMax Int @default(24)
-  /// @z.string().min(1).max(80).meta({ description: '备份文件名前缀', example: 'backstage_db' })
+  /// @zod.min(1).max(80).meta({ description: '备份文件名前缀', example: 'backstage_db' })
   filePrefix String @db.VarChar(80)
-  /// @z.boolean().optional().meta({ description: '是否启用 gzip 压缩', example: true })
+  /// @zod.meta({ description: '是否启用 gzip 压缩', example: true })
   gzip Boolean @default(true)
-  /// @z.coerce.date().optional().meta({ description: '最近一次执行时间', example: '2026-01-01T12:00:00.000Z' })
+  /// @zod.meta({ description: '最近一次执行时间', example: '2026-01-01T12:00:00.000Z' })
   lastRunAt DateTime?
-  /// @z.nativeEnum(BackupStatus).optional().meta({ description: '最近一次执行状态', example: 'SUCCESS' })
   lastStatus BackupStatus?
-  /// @z.string().max(1000).optional().meta({ description: '最近一次错误信息', example: 'pg_dump exited with code 1' })
+  /// @zod.max(1000).meta({ description: '最近一次错误信息', example: 'pg_dump exited with code 1' })
   lastError String? @db.VarChar(1000)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -512,27 +509,25 @@ model DbBackupConfig {
 
 model DbBackupJob {
   id String @id @default(cuid())
-  /// @z.nativeEnum(BackupTrigger).meta({ description: '触发方式', example: 'MANUAL' })
   trigger BackupTrigger
-  /// @z.nativeEnum(BackupStatus).meta({ description: '任务状态', example: 'RUNNING' })
   status BackupStatus
-  /// @z.string().min(1).max(255).meta({ description: '备份文件名', example: 'backstage_db_20260101_120000.sql.gz' })
+  /// @zod.min(1).max(255).meta({ description: '备份文件名', example: 'backstage_db_20260101_120000.sql.gz' })
   fileName String @db.VarChar(255)
-  /// @z.string().min(1).max(500).meta({ description: '备份文件路径', example: '/app/apps/server/backups/backstage_db_20260101_120000.sql.gz' })
+  /// @zod.min(1).max(500).meta({ description: '备份文件路径', example: '/app/apps/server/backups/backstage_db_20260101_120000.sql.gz' })
   filePath String @db.VarChar(500)
-  /// @z.bigint().optional().meta({ description: '备份文件大小（字节）', example: '1024' })
+  /// @zod.meta({ description: '备份文件大小（字节）', example: '1024' })
   fileSize BigInt?
-  /// @z.string().length(64).optional().meta({ description: '文件 SHA-256 校验值', example: '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' })
+  /// @zod.length(64).meta({ description: '文件 SHA-256 校验值', example: '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' })
   checksum String? @db.VarChar(64)
-  /// @z.coerce.date().meta({ description: '开始执行时间', example: '2026-01-01T12:00:00.000Z' })
+  /// @zod.meta({ description: '开始执行时间', example: '2026-01-01T12:00:00.000Z' })
   startedAt DateTime @default(now())
-  /// @z.coerce.date().optional().meta({ description: '执行完成时间', example: '2026-01-01T12:01:00.000Z' })
+  /// @zod.meta({ description: '执行完成时间', example: '2026-01-01T12:01:00.000Z' })
   finishedAt DateTime?
-  /// @z.number().int().min(0).optional().meta({ description: '执行耗时（毫秒）', example: 1200 })
+  /// @zod.min(0).meta({ description: '执行耗时（毫秒）', example: 1200 })
   durationMs Int?
-  /// @z.string().max(2000).optional().meta({ description: '错误信息', example: 'spawn pg_dump ENOENT' })
+  /// @zod.max(2000).meta({ description: '错误信息', example: 'spawn pg_dump ENOENT' })
   errorMessage String? @db.VarChar(2000)
-  /// @z.string().optional().meta({ description: '手动触发人用户 ID', example: 'clxxx' })
+  /// @zod.meta({ description: '手动触发人用户 ID', example: 'clxxx' })
   createdById String?
   createdBy   User?   @relation(fields: [createdById], references: [id], onDelete: SetNull)
   createdAt DateTime @default(now())
@@ -545,22 +540,22 @@ model DbBackupJob {
 
 model File {
   id   Int    @id @default(autoincrement())
-  /// @z.string().min(1).max(255).meta({ description: '文件名', example: 'avatar.png' })
+  /// @zod.min(1).max(255).meta({ description: '文件名', example: 'avatar.png' })
   name      String  @db.VarChar(255)
-  /// @z.string().min(1).max(255).meta({ description: 'MIME 类型', example: 'image/png' })
+  /// @zod.min(1).max(255).meta({ description: 'MIME 类型', example: 'image/png' })
   mimeType  String  @db.VarChar(255)
-  /// @z.string().min(1).max(255).meta({ description: '存储路径', example: '/uploads/2026/avatar.png' })
+  /// @zod.min(1).max(255).meta({ description: '存储路径', example: '/uploads/2026/avatar.png' })
   path      String  @unique @db.VarChar(255)
-  /// @z.string().max(20).optional().meta({ description: '文件扩展名', example: 'png' })
+  /// @zod.max(20).meta({ description: '文件扩展名', example: 'png' })
   extension String? @db.VarChar(20)
-  /// @z.coerce.bigint().meta({ description: '文件大小（字节）', example: '1024' })
+  /// @zod.coerce().meta({ description: '文件大小（字节）', example: '1024' })
   size BigInt
-  /// @z.string().url({ message: '文件 URL 格式不正确' }).max(255).meta({ description: '访问 URL', example: 'https://example.com/uploads/avatar.png' })
+  /// @zod.url('文件 URL 格式不正确').max(255).meta({ description: '访问 URL', example: 'https://example.com/uploads/avatar.png' })
   url  String @db.VarChar(255)
-  /// @z.string().length(64).regex(/^[0-9a-f]{64}$/).optional().meta({ description: 'SHA-256', example: '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' })
+  /// @zod.length(64).regex(/^[0-9a-f]{64}$/).meta({ description: 'SHA-256', example: '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' })
   sha256 String? @db.Char(64)
   createdAt DateTime @default(now())
-  /// @z.coerce.date().optional().meta({ description: '软删除时间，待异步清理磁盘', example: '2026-01-01T12:00:00.000Z' })
+  /// @zod.meta({ description: '软删除时间，待异步清理磁盘', example: '2026-01-01T12:00:00.000Z' })
   deletedAt DateTime?
 
   @@index([extension])
@@ -571,23 +566,22 @@ model File {
 
 model FileUploadSession {
   id           String           @id @default(cuid())
-  /// @z.string().length(64).regex(/^[0-9a-f]{64}$/).meta({ description: '申报 SHA-256', example: '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' })
+  /// @zod.length(64).regex(/^[0-9a-f]{64}$/).meta({ description: '申报 SHA-256', example: '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' })
   sha256       String           @db.Char(64)
-  /// @z.coerce.bigint().meta({ description: '文件大小（字节）', example: '1024' })
+  /// @zod.coerce().meta({ description: '文件大小（字节）', example: '1024' })
   size         BigInt
-  /// @z.string().min(1).max(255).meta({ description: '原始文件名', example: 'report.docx' })
+  /// @zod.min(1).max(255).meta({ description: '原始文件名', example: 'report.docx' })
   originalName String           @db.VarChar(255)
-  /// @z.string().min(1).max(255).meta({ description: 'MIME 类型', example: 'application/pdf' })
+  /// @zod.min(1).max(255).meta({ description: 'MIME 类型', example: 'application/pdf' })
   mimeType     String           @db.VarChar(255)
-  /// @z.coerce.number().int().positive().meta({ description: '分片大小', example: 5242880 })
+  /// @zod.coerce().int().positive().meta({ description: '分片大小', example: 5242880 })
   chunkSize    Int
-  /// @z.coerce.number().int().positive().meta({ description: '分片总数', example: 12 })
+  /// @zod.coerce().int().positive().meta({ description: '分片总数', example: 12 })
   totalChunks  Int
-  /// @z.nativeEnum(FileUploadStatus).meta({ description: '上传会话状态', example: 'UPLOADING' })
   status       FileUploadStatus @default(INITIATED)
   createdById  String
   createdBy    User             @relation(fields: [createdById], references: [id], onDelete: Cascade)
-  /// @z.string().min(1).max(255).meta({ description: '临时目录相对路径', example: 'file/tmp/clxxx' })
+  /// @zod.min(1).max(255).meta({ description: '临时目录相对路径', example: 'file/tmp/clxxx' })
   tempDir      String           @db.VarChar(255)
   expiresAt    DateTime
   createdAt    DateTime         @default(now())
@@ -612,24 +606,24 @@ model FileUploadChunk {
 
 model UserOperationLog {
   id Int @id @default(autoincrement())
-  /// @z.string().max(45).meta({ description: '请求 IP', example: '127.0.0.1' })
+  /// @zod.max(45).meta({ description: '请求 IP', example: '127.0.0.1' })
   ip         String  @db.VarChar(50)
-  /// @z.string().max(100).optional().meta({ description: '请求地理位置', example: '中国 广东省 深圳市' })
+  /// @zod.max(100).meta({ description: '请求地理位置', example: '中国 广东省 深圳市' })
   location   String? @db.VarChar(100)
-  /// @z.string().max(500).meta({ description: 'User-Agent', example: 'Mozilla/5.0' })
+  /// @zod.max(500).meta({ description: 'User-Agent', example: 'Mozilla/5.0' })
   userAgent  String  @db.VarChar(500)
-  /// @z.string().max(10).meta({ description: 'HTTP 方法', example: 'GET' })
+  /// @zod.max(10).meta({ description: 'HTTP 方法', example: 'GET' })
   method     String  @db.VarChar(10)
-  /// @z.string().max(255).meta({ description: '请求 URL', example: '/api/users' })
+  /// @zod.max(255).meta({ description: '请求 URL', example: '/api/users' })
   requestUrl String  @db.VarChar(255)
-  /// @z.boolean().optional().meta({ description: '是否成功', example: true })
+  /// @zod.meta({ description: '是否成功', example: true })
   isSuccess     Boolean     @default(true)
-  /// @z.string().max(500).optional().meta({ description: '响应消息', example: 'OK' })
+  /// @zod.max(500).meta({ description: '响应消息', example: 'OK' })
   responseMsg String? @db.VarChar(500)
   detailInfo  Json?
-  /// @z.coerce.number().int().min(0).meta({ description: '请求耗时（毫秒）', example: 120 })
+  /// @zod.coerce().int().min(0).meta({ description: '请求耗时（毫秒）', example: 120 })
   duration    Int
-  /// @z.string().optional().meta({ description: '操作用户 ID', example: 'clxxx' })
+  /// @zod.meta({ description: '操作用户 ID', example: 'clxxx' })
   userId      String?
   user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   createdAt   DateTime @default(now())

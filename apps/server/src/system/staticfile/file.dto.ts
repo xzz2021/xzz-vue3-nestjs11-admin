@@ -1,4 +1,4 @@
-import { FileModel } from '#/generated/zod/file.js';
+import { FileSchema } from '#/generated/zod/schemas/models/File.schema.js';
 import { z } from 'zod';
 import { createZodDto } from 'nestjs-zod';
 
@@ -11,7 +11,7 @@ const DeleteFileSchema = z.object({
 });
 export class DeleteFileDto extends createZodDto(DeleteFileSchema) {}
 
-const UploadFileSchema = FileModel.omit({
+const UploadFileSchema = FileSchema.omit({
   id: true,
   createdAt: true,
   deletedAt: true,

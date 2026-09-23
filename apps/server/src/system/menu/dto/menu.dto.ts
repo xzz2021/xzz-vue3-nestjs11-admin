@@ -1,8 +1,11 @@
-import { MenuModel, PermissionModel } from '#/generated/zod/index.js';
+import {
+  MenuSchema,
+  PermissionSchema,
+} from '#/generated/zod/schemas/models/index.js';
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
-const MetaSchema = MenuModel.pick({
+const MetaSchema = MenuSchema.pick({
   title: true,
   icon: true,
   affix: true,
@@ -16,14 +19,14 @@ const MetaSchema = MenuModel.pick({
 });
 export class MetaDto extends createZodDto(MetaSchema) {}
 
-const PermissionSchema = PermissionModel.pick({
+const PermissionPickSchema = PermissionSchema.pick({
   name: true,
   code: true,
 });
 
-export class PermissionNoIdDto extends createZodDto(PermissionSchema) {}
+export class PermissionNoIdDto extends createZodDto(PermissionPickSchema) {}
 
-const MenuSchema = MenuModel.pick({
+const MenuDtoSchema = MenuSchema.pick({
   id: true,
   name: true,
   path: true,
@@ -49,9 +52,9 @@ const MenuSchema = MenuModel.pick({
   id: z.string().min(1),
   parentId: z.string().min(1).nullish(),
 });
-export class MenuDto extends createZodDto(MenuSchema) {}
+export class MenuDto extends createZodDto(MenuDtoSchema) {}
 
-const MenuSortSchema = MenuModel.pick({
+const MenuSortSchema = MenuSchema.pick({
   id: true,
   sort: true,
 }).extend({
@@ -59,14 +62,14 @@ const MenuSortSchema = MenuModel.pick({
 });
 export class MenuSortDto extends createZodDto(MenuSortSchema) {}
 
-const CreateMenuSchema = MenuSchema.omit({
+const CreateMenuSchema = MenuDtoSchema.omit({
   id: true,
 });
 export class CreateMenuDto extends createZodDto(CreateMenuSchema) {}
 
-//  继承MenuSchema 并且 限制id 不能等于 parentId
-const UpdateMenuSchema = MenuSchema.refine(
-  (data: MenuDto) => data.parentId == null || data.id !== data.parentId,
+//  继承 MenuDtoSchema 并且 限制id 不能等于 parentId
+const UpdateMenuSchema = MenuDtoSchema.refine(
+  (data) => data.parentId == null || data.id !== data.parentId,
   {
     message: 'id 不能等于 parentId',
     path: ['parentId'], // 错误挂到 parentId 上，方便前端展示
@@ -79,18 +82,18 @@ const MenuSortArraySchema = z.object({
 });
 export class MenuSortArrayDto extends createZodDto(MenuSortArraySchema) {}
 
-const MenuListSchema = MenuSchema.extend({
-  permissions: z.array(PermissionSchema),
-  children: z.array(MenuSchema),
+const MenuListSchema = MenuDtoSchema.extend({
+  permissions: z.array(PermissionPickSchema),
+  children: z.array(MenuDtoSchema),
 });
 export class MenuListRes extends createZodDto(MenuListSchema) {}
 
-const SeedMenuSchema = MenuSchema.omit({
+const SeedMenuSchema = MenuDtoSchema.omit({
   id: true,
   parentId: true,
 }).extend({
-  children: z.array(MenuSchema),
-  permissions: z.array(PermissionSchema),
+  children: z.array(MenuDtoSchema),
+  permissions: z.array(PermissionPickSchema),
 });
 export class SeedMenuDto extends createZodDto(SeedMenuSchema) {}
 

@@ -857,7 +857,7 @@ export default {
     responseMsg: '响应信息',
     duration: '响应时长',
     method: '方法',
-    path: '路径',
+    path: '访问路径',
     ip: 'IP地址',
     location: '地理位置',
     operateTime: '操作时间',
@@ -1123,4 +1123,4 @@ export default {
   avatarsDemo: {
     title: '头像列表组件，基于element-plus的Avatar组件二次封装'
   }
-}
+};
